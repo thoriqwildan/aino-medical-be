@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/thoriqwildan/aino-medical-be/db/seed"
 	"github.com/thoriqwildan/aino-medical-be/internal/config"
 	"github.com/thoriqwildan/aino-medical-be/internal/delivery/middleware"
 )
@@ -21,6 +22,11 @@ func main() {
 		Config: viperConfig,
 		JWT: jwtMiddleware,
 	})
+
+	seeding := viperConfig.GetBool("SEED")
+	if seeding {
+		seed.RunAllSeeders(db)
+	}
 
 	webPort := ":" + viperConfig.GetString("WEB_PORT")
 	err := app.Listen(webPort)

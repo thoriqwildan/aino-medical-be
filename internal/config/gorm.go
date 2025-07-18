@@ -29,7 +29,7 @@ func NewDatabase(viper *viper.Viper, log *logrus.Logger) *gorm.DB {
 			Colorful: true,
 			IgnoreRecordNotFoundError: true,
 			ParameterizedQueries: true,
-			LogLevel: logger.Info,
+			LogLevel: logger.Warn,
 		}),
 	})
 
