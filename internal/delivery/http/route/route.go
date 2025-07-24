@@ -47,4 +47,6 @@ func (rc *RouteConfig) PlanTypeRoutes() {
 	planType.Post("/", rc.PlanTypeController.Create)
 	planType.Get("/:id", rc.PlanTypeController.GetById)
 	planType.Get("/", rc.PlanTypeController.Get)
+	planType.Put("/:id", rc.PlanTypeController.Update)
+	planType.Delete("/:id", rc.PlanTypeController.Delete)
 }

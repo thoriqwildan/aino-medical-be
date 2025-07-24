@@ -100,3 +100,62 @@ func (ptu *PlanTypeUseCase) Get(ctx context.Context, request *model.PagingQuery)
 	}
 	return responses, total, nil
 }
+
+func (ptu *PlanTypeUseCase) Update(ctx context.Context, request *model.UpdatePlanTypeRequest) (*model.PlanTypeResponse, error) {
+	tx := ptu.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	if err := ptu.Validate.Struct(request); err != nil {
+		ptu.Log.WithError(err).Error("Validation error in UpdatePlanType")
+		return nil, err
+	}
+
+	planType := &entity.PlanType{}
+	if err := ptu.Repository.FindById(tx, planType, request.ID); err != nil {
+		ptu.Log.WithError(err).Error("Error finding plan type by ID for update")
+		return nil, fiber.NewError(fiber.StatusNotFound, "Plan type not found")
+	}
+
+	if err := ptu.Repository.FindByName(tx, request.Name); err == nil {
+		ptu.Log.WithField("name", request.Name).Error("Plan type with this name already exists")
+		return nil, fiber.NewError(fiber.StatusConflict, "Plan type with this name already exists")
+	}
+
+	planType.Name = request.Name
+	planType.Description = &request.Description
+
+	if err := ptu.Repository.Update(tx, planType); err != nil {
+		ptu.Log.WithError(err).Error("Error updating plan type")
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		ptu.Log.WithError(err).Error("Error committing transaction in UpdatePlanType")
+		return nil, err
+	}
+
+	return converter.PlanTypeToResponse(planType), nil
+} 
+
+func (ptu *PlanTypeUseCase) Delete(ctx context.Context, id uint) error {
+	tx := ptu.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	planType := &entity.PlanType{}
+	if err := ptu.Repository.FindById(tx, planType, id); err != nil {
+		ptu.Log.WithError(err).Error("Error finding plan type by ID for deletion")
+		return fiber.NewError(fiber.StatusNotFound, "Plan type not found")
+	}
+
+	if err := ptu.Repository.Delete(tx, planType); err != nil {
+		ptu.Log.WithError(err).Error("Error deleting plan type")
+		return fiber.NewError(fiber.StatusNotFound, "Plan type not found")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		ptu.Log.WithError(err).Error("Error committing transaction in DeletePlanType")
+		return err
+	}
+
+	return nil
+}

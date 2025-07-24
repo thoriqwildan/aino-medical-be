@@ -10,3 +10,9 @@ type PlanTypeResponse struct {
 	Name        string `json:"name"`
 	Description *string `json:"description,omitempty"`
 }
+
+type UpdatePlanTypeRequest struct {
+	ID          uint   `json:"id" validate:"required"`
+	Name        string `json:"name" validate:"required,min=1,max=1"`
+	Description string `json:"description,omitempty" validate:"omitempty,max=500"`
+}
