@@ -10,11 +10,13 @@ type RouteConfig struct {
 	App *fiber.App
 	JWT *middleware.MiddlewareConfig
 	UserController *http.UserController
+	TransactionTypeController *http.TransactionTypeController
 }
 
 func (rc *RouteConfig) Setup() {
 	rc.GeneralRoutes()
 	rc.ProtectedRoutes()
+	rc.TransactionTypeRotes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -27,4 +29,10 @@ func (rc *RouteConfig) ProtectedRoutes() {
 	protected := rc.App.Group("/api/v1/coba", rc.JWT.JWTProtected())
 	protected.Get("/test", rc.UserController.GetTest)
 	// Add more protected routes here
+}
+
+func (rc *RouteConfig) TransactionTypeRotes() {
+	transactionType := rc.App.Group("/api/v1/transaction-types", rc.JWT.JWTProtected())
+	transactionType.Post("/", rc.TransactionTypeController.Create)
+	transactionType.Get("/:id", rc.TransactionTypeController.GetById)
 }

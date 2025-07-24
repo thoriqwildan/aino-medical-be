@@ -1,7 +1,6 @@
 package http
 
 import (
-	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -101,7 +100,6 @@ func (uc *UserController) GenerateToken(username string) (string, error) {
 	claims["exp"] = time.Now().Add(time.Minute * time.Duration(30)).Unix()
 
 	t, err := token.SignedString([]byte(uc.Config.GetString("JWT_SECRET")))
-	log.Println("JWT_SECRET:", uc.Config.GetString("JWT_SECRET"))
 	if err != nil {
 		return "", err
 	}
