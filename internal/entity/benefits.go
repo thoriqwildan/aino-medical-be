@@ -11,42 +11,38 @@ type PlanType struct {
 	FamilyMembers []FamilyMember `gorm:"foreignKey:PlanTypeID"`
 }
 
-// TransactionType represents the transaction_types table.
 type TransactionType struct {
 	ID    uint   `gorm:"primaryKey;autoIncrement"`
 	Name  string `gorm:"unique;not null"`
 	Claims []Claim `gorm:"foreignKey:TransactionTypeID"`
 }
 
-// LimitationType represents the limitation_types table.
 type LimitationType struct {
 	ID       uint   `gorm:"primaryKey;autoIncrement"`
 	Name     string `gorm:"unique;not null"`
 	Benefits []Benefit `gorm:"foreignKey:LimitationTypeID"`
 }
 
-// Department represents the departments table.
 type Department struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement"`
 	Name      string    `gorm:"unique;not null"`
 	CreatedAt time.Time `gorm:"not null;autoCreateTime"`
 	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
-	DeletedAt *time.Time `gorm:"index"` // For soft delete
+	DeletedAt *time.Time `gorm:"index"`
 	Employees []Employee `gorm:"foreignKey:DepartmentID"`
 }
 
-// Patient represents the patients table.
 type Patient struct {
 	ID          uint      `gorm:"primaryKey;autoIncrement"`
 	Name        string    `gorm:"not null"`
 	BirthDate   time.Time `gorm:"type:date;not null"`
 	Gender      Genders   `gorm:"type:enum('male','female');not null"`
-	Employee    *Employee `gorm:"foreignKey:PatientID"` // A patient might be an employee
-	FamilyMember *FamilyMember `gorm:"foreignKey:PatientID"` // A patient might be a family member
+	Employee    *Employee `gorm:"foreignKey:PatientID"`
+	FamilyMember *FamilyMember `gorm:"foreignKey:PatientID"`
 	Claims      []Claim   `gorm:"foreignKey:PatientID"`
+	PatientBenefits []PatientBenefit `gorm:"foreignKey:PatientID"`
 }
 
-// Employee represents the employees table.
 type Employee struct {
 	ID            uint      `gorm:"primaryKey;autoIncrement"`
 	Name          string    `gorm:"not null"`
@@ -61,14 +57,13 @@ type Employee struct {
 	Dependence    *string
 	BankNumber    string    `gorm:"not null"`
 	JoinDate      time.Time `gorm:"type:date;not null"`
-	Patient       Patient   `gorm:"foreignKey:PatientID"` // Belongs To Patient
-	Department    Department `gorm:"foreignKey:DepartmentID"` // Belongs To Department
-	PlanType      PlanType  `gorm:"foreignKey:PlanTypeID"` // Belongs To PlanType
-	FamilyMembers []FamilyMember `gorm:"foreignKey:EmployeeID"` // Has Many FamilyMembers
-	Claims        []Claim   `gorm:"foreignKey:EmployeeID"` // Has Many Claims
+	Patient       Patient   `gorm:"foreignKey:PatientID"`
+	Department    Department `gorm:"foreignKey:DepartmentID"`
+	PlanType      PlanType  `gorm:"foreignKey:PlanTypeID"`
+	FamilyMembers []FamilyMember `gorm:"foreignKey:EmployeeID"`
+	Claims        []Claim   `gorm:"foreignKey:EmployeeID"`
 }
 
-// FamilyMember represents the family_members table.
 type FamilyMember struct {
 	ID          uint      `gorm:"primaryKey;autoIncrement"`
 	PatientID   uint      `gorm:"unique;not null"`
@@ -77,12 +72,11 @@ type FamilyMember struct {
 	PlanTypeID  uint      `gorm:"not null"`
 	BirthDate   time.Time `gorm:"type:date;not null"`
 	Gender      Genders   `gorm:"type:enum('male','female');not null"`
-	Patient     Patient   `gorm:"foreignKey:PatientID"` // Belongs To Patient
-	Employee    Employee  `gorm:"foreignKey:EmployeeID"` // Belongs To Employee
-	PlanType    PlanType  `gorm:"foreignKey:PlanTypeID"` // Belongs To PlanType
+	Patient     Patient   `gorm:"foreignKey:PatientID"`
+	Employee    Employee  `gorm:"foreignKey:EmployeeID"`
+	PlanType    PlanType  `gorm:"foreignKey:PlanTypeID"`
 }
 
-// Benefit represents the benefits table.
 type Benefit struct {
 	ID               uint           `gorm:"primaryKey;autoIncrement"`
 	Name             string         `gorm:"not null"`
@@ -92,17 +86,35 @@ type Benefit struct {
 	LimitationTypeID uint           `gorm:"not null"`
 	Plafond          int            `gorm:"not null"`
 	YearlyMax        int            `gorm:"not null"`
-	PlanType         PlanType       `gorm:"foreignKey:PlanTypeID"` // Belongs To PlanType
-	LimitationType   LimitationType `gorm:"foreignKey:LimitationTypeID"` // Belongs To LimitationType
+	PlanType         PlanType       `gorm:"foreignKey:PlanTypeID"`
+	LimitationType   LimitationType `gorm:"foreignKey:LimitationTypeID"`
 	Claims           []Claim        `gorm:"foreignKey:BenefitID"`
+	PatientBenefits  []PatientBenefit `gorm:"foreignKey:BenefitID"`
 }
 
-// Claim represents the claims table.
+type PatientBenefit struct {
+	ID             uint                 `gorm:"primaryKey;autoIncrement"`
+	PatientID      uint                 `gorm:"not null"`
+	BenefitID      uint                 `gorm:"not null"`
+	RemainingPlafond float64            `gorm:"type:decimal(10,2);not null"`
+	InitialPlafond float64            `gorm:"type:decimal(10,2);not null"`
+	StartDate      time.Time            `gorm:"type:date;not null"`
+	EndDate        *time.Time           `gorm:"type:date"`
+	Status         PatientBenefitStatus `gorm:"type:enum('active','exhausted','expired');default:'active'"`
+	CreatedAt      time.Time            `gorm:"not null;autoCreateTime"`
+	UpdatedAt      *time.Time           `gorm:"autoUpdateTime"`
+
+	Patient Patient `gorm:"foreignKey:PatientID"`
+	Benefit Benefit `gorm:"foreignKey:BenefitID"`
+	Claims  []Claim `gorm:"foreignKey:PatientBenefitID"`
+}
+
 type Claim struct {
 	ID                  uint            `gorm:"primaryKey;autoIncrement"`
 	PatientID           uint            `gorm:"not null"`
 	EmployeeID          uint            `gorm:"not null"`
 	BenefitID           uint            `gorm:"not null"`
+	PatientBenefitID    uint            `gorm:"not null"`
 	ClaimAmount         float64         `gorm:"type:decimal(10,2);not null"`
 	TransactionTypeID   uint            `gorm:"not null"`
 	TransactionDate     time.Time       `gorm:"type:date;not null"`
@@ -117,10 +129,11 @@ type Claim struct {
 	TransactionStatus   TransactionStatus `gorm:"type:enum('Successful','Pending','Failed');not null"`
 	CreatedAt           time.Time       `gorm:"not null;autoCreateTime"`
 	UpdatedAt           *time.Time       `gorm:"autoUpdateTime"`
-	DeletedAt           *time.Time       `gorm:"index"` // For soft delete
+	DeletedAt           *time.Time       `gorm:"index"`
 
-	Patient         Patient         `gorm:"foreignKey:PatientID"` // Belongs To Patient
-	Employee        Employee        `gorm:"foreignKey:EmployeeID"` // Belongs To Employee
-	Benefit         Benefit         `gorm:"foreignKey:BenefitID"` // Belongs To Benefit
-	TransactionType TransactionType `gorm:"foreignKey:TransactionTypeID"` // Belongs To TransactionType
+	Patient         Patient         `gorm:"foreignKey:PatientID"`
+	Employee        Employee        `gorm:"foreignKey:EmployeeID"`
+	Benefit         Benefit         `gorm:"foreignKey:BenefitID"`
+	PatientBenefit  PatientBenefit  `gorm:"foreignKey:PatientBenefitID"`
+	TransactionType TransactionType `gorm:"foreignKey:TransactionTypeID"`
 }

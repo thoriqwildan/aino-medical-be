@@ -35,4 +35,7 @@ func (rc *RouteConfig) TransactionTypeRotes() {
 	transactionType := rc.App.Group("/api/v1/transaction-types", rc.JWT.JWTProtected())
 	transactionType.Post("/", rc.TransactionTypeController.Create)
 	transactionType.Get("/:id", rc.TransactionTypeController.GetById)
+	transactionType.Get("/", rc.TransactionTypeController.Get)
+	transactionType.Put("/:id", rc.TransactionTypeController.Update)
+	transactionType.Delete("/:id", rc.TransactionTypeController.Delete)
 }

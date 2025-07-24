@@ -7,7 +7,6 @@ const (
 	GenderFemale Genders = "female"
 )
 
-// SLA Enum
 type SLA string
 
 const (
@@ -15,7 +14,6 @@ const (
 	SLAOverdue SLA = "overdue"
 )
 
-// ClaimStatus Enum
 type ClaimStatus string
 
 const (
@@ -23,11 +21,18 @@ const (
 	ClaimStatusOverPlafond ClaimStatus = "Over Plafond"
 )
 
-// TransactionStatus Enum
 type TransactionStatus string
 
 const (
 	TransactionStatusSuccessful TransactionStatus = "Successful"
 	TransactionStatusPending    TransactionStatus = "Pending"
 	TransactionStatusFailed     TransactionStatus = "Failed"
+)
+
+type PatientBenefitStatus string
+
+const (
+	PatientBenefitStatusActive    PatientBenefitStatus = "active"
+	PatientBenefitStatusExhausted PatientBenefitStatus = "exhausted"
+	PatientBenefitStatusExpired   PatientBenefitStatus = "expired"
 )

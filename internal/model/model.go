@@ -14,3 +14,8 @@ type PaginationPage struct {
 	Limit 	int `json:"limit"`
 	Total int `json:"total"`
 }
+
+type PagingQuery struct {
+	Page int `json:"page,omitempty" validate:"omitempty,numeric"`
+	Limit int `json:"limit,omitempty" validate:"omitempty,numeric"`
+}
