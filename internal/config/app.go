@@ -25,18 +25,22 @@ type BootstrapConfig struct {
 func Bootstrap(config *BootstrapConfig) {
 	userRepository := repository.NewUserRepository(config.Log)
 	transactionTypeRepository := repository.NewTransactionTypeRepository(config.Log)
+	planTypeRepository := repository.NewPlanTypeRepository(config.Log)
 
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, config.Validate)
 	transactionTypeUseCase := usecase.NewTransactionTypeUseCase(config.DB, config.Log, transactionTypeRepository, config.Validate)
+	planTypeUseCase := usecase.NewPlanTypeUseCase(config.DB, config.Log, planTypeRepository, config.Validate)
 
 	userController := http.NewUserController(userUseCase, config.Log, config.Config)
 	transactionTypeController := http.NewTransactionTypeController(transactionTypeUseCase, config.Log, config.Config)
+	planTypeController := http.NewPlanTypeController(planTypeUseCase, config.Log, config.Config)
 
 	routeConfig := route.RouteConfig{
 		App: config.App,
 		JWT: config.JWT,
 		UserController: userController,
-		TransactionTypeController: transactionTypeController,	
+		TransactionTypeController: transactionTypeController,
+		PlanTypeController: planTypeController,
 	}
 
 	routeConfig.Setup()

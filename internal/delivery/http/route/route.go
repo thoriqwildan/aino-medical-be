@@ -11,12 +11,14 @@ type RouteConfig struct {
 	JWT *middleware.MiddlewareConfig
 	UserController *http.UserController
 	TransactionTypeController *http.TransactionTypeController
+	PlanTypeController *http.PlanTypeController
 }
 
 func (rc *RouteConfig) Setup() {
 	rc.GeneralRoutes()
 	rc.ProtectedRoutes()
 	rc.TransactionTypeRotes()
+	rc.PlanTypeRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -38,4 +40,11 @@ func (rc *RouteConfig) TransactionTypeRotes() {
 	transactionType.Get("/", rc.TransactionTypeController.Get)
 	transactionType.Put("/:id", rc.TransactionTypeController.Update)
 	transactionType.Delete("/:id", rc.TransactionTypeController.Delete)
+}
+
+func (rc *RouteConfig) PlanTypeRoutes() {
+	planType := rc.App.Group("/api/v1/plan-types", rc.JWT.JWTProtected())
+	planType.Post("/", rc.PlanTypeController.Create)
+	planType.Get("/:id", rc.PlanTypeController.GetById)
+	planType.Get("/", rc.PlanTypeController.Get)
 }

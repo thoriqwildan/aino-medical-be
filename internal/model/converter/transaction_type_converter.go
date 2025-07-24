@@ -11,3 +11,4 @@ func TransactionTypeToResponse(transactionType *entity.TransactionType) *model.T
 		Name: transactionType.Name,
 	}
 }
+
