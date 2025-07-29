@@ -22,7 +22,7 @@ func (ptr *PlanTypeRepository) FindByName(db *gorm.DB, name string) error {
 	return db.Where("name = ?", name).First(&entity.PlanType{}).Error
 }
 
-func (ptr *PlanTypeRepository) Search(db *gorm.DB, request *model.PagingQuery) ([]entity.PlanType, int64, error) {
+func (ptr *PlanTypeRepository) SearchPlanTypes(db *gorm.DB, request *model.PagingQuery) ([]entity.PlanType, int64, error) {
 	var planTypes []entity.PlanType
 	var total int64
 

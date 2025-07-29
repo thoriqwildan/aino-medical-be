@@ -88,7 +88,7 @@ func (ptu *PlanTypeUseCase) Get(ctx context.Context, request *model.PagingQuery)
 		return nil, 0, err
 	}
 
-	planTypes, total, err := ptu.Repository.Search(tx, request)
+	planTypes, total, err := ptu.Repository.SearchPlanTypes(tx, request)
 	if err != nil {
 		ptu.Log.WithError(err).Error("Error searching plan types")
 		return nil, 0, err
