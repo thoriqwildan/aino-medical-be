@@ -1,0 +1,986 @@
+basePath: /
+definitions:
+  model.BenefitResponse:
+    properties:
+      code:
+        type: string
+      detail:
+        type: string
+      id:
+        type: integer
+      limitation_type:
+        $ref: '#/definitions/model.LimitationTypeResponse'
+      name:
+        type: string
+      plafond:
+        type: integer
+      plan_type:
+        $ref: '#/definitions/model.PlanTypeResponse'
+      yearly_max:
+        type: integer
+    type: object
+  model.BenefitResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.BenefitResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.CreateBenefitRequest:
+    properties:
+      code:
+        maxLength: 50
+        minLength: 3
+        type: string
+      detail:
+        maxLength: 500
+        type: string
+      limitation_type_id:
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+      plafond:
+        type: number
+      plan_type_id:
+        type: integer
+      yearly_max:
+        type: number
+    required:
+    - code
+    - limitation_type_id
+    - name
+    - plan_type_id
+    type: object
+  model.ErrorWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data: {}
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.LimitationTypeRequest:
+    properties:
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - name
+    type: object
+  model.LimitationTypeResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.LimitationTypeResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.LimitationTypeResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.LoginRequest:
+    properties:
+      password:
+        maxLength: 255
+        minLength: 3
+        type: string
+      username:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.PaginationPage:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  model.PlanTypeRequest:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      name:
+        maxLength: 1
+        minLength: 1
+        type: string
+    required:
+    - name
+    type: object
+  model.PlanTypeResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.PlanTypeResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.PlanTypeResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.RegisterRequest:
+    properties:
+      name:
+        maxLength: 255
+        type: string
+      password:
+        maxLength: 255
+        minLength: 3
+        type: string
+      username:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.TransactionTypeRequest:
+    properties:
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+  model.TransactionTypeResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.TransactionTypeResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.TransactionTypeResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.UpdateBenefitRequest:
+    properties:
+      code:
+        maxLength: 50
+        minLength: 3
+        type: string
+      detail:
+        maxLength: 500
+        type: string
+      id:
+        type: integer
+      limitation_type_id:
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+      plafond:
+        type: number
+      plan_type_id:
+        type: integer
+      yearly_max:
+        type: number
+    required:
+    - code
+    - id
+    - limitation_type_id
+    - name
+    - plan_type_id
+    type: object
+  model.UpdateLimitationTypeRequest:
+    properties:
+      id:
+        type: integer
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  model.UpdatePlanTypeRequest:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      id:
+        type: integer
+      name:
+        maxLength: 1
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  model.UpdateTransactionTypeRequest:
+    properties:
+      id:
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  model.UserResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.UserResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+host: 192.168.110.65:3000
+info:
+  contact: {}
+  description: Enter your API Key as X-API-Key header value
+  title: Aino Medical API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user with the provided credentials.
+      parameters:
+      - description: Login User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      summary: Login a user
+      tags:
+      - Users
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided details.
+      parameters:
+      - description: Create User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RegisterRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      summary: Create a new user
+      tags:
+      - Users
+  /api/v1/benefits:
+    get:
+      consumes:
+      - application/json
+      description: Find benefit types by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find benefit types
+      tags:
+      - Benefit Types
+    post:
+      consumes:
+      - application/json
+      description: Create a new benefit type with the provided details.
+      parameters:
+      - description: Create Benefit Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateBenefitRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new benefit type
+      tags:
+      - Benefit Types
+  /api/v1/benefits/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a benefit type with the provided details.
+      parameters:
+      - description: Benefit ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete a benefit type
+      tags:
+      - Benefit Types
+    get:
+      consumes:
+      - application/json
+      description: Get a benefit type by its ID.
+      parameters:
+      - description: Benefit ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get a benefit type by ID
+      tags:
+      - Benefit Types
+    put:
+      consumes:
+      - application/json
+      description: Update a benefit type with the provided details.
+      parameters:
+      - description: Update Benefit Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateBenefitRequest'
+      - description: Benefit ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update a benefit type
+      tags:
+      - Benefit Types
+  /api/v1/limitation-types:
+    get:
+      consumes:
+      - application/json
+      description: Find limitation types by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find limitation types
+      tags:
+      - Limitation Types
+    post:
+      consumes:
+      - application/json
+      description: Create a new limitation type with the provided details.
+      parameters:
+      - description: Create Limitation Type Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.LimitationTypeRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new limitation type
+      tags:
+      - Plan Types
+  /api/v1/limitation-types/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a limitation type with the provided details.
+      parameters:
+      - description: Limitation Type ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete a limitation type
+      tags:
+      - Limitation Types
+    get:
+      consumes:
+      - application/json
+      description: Get a limitation type by its ID.
+      parameters:
+      - description: Limitation Type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get a limitation type by ID
+      tags:
+      - Limitation Types
+    put:
+      consumes:
+      - application/json
+      description: Update a limitation type with the provided details.
+      parameters:
+      - description: Update Limitation Type Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateLimitationTypeRequest'
+      - description: Limitation Type ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update a limitation type
+      tags:
+      - Limitation Types
+  /api/v1/plan-types:
+    get:
+      consumes:
+      - application/json
+      description: Find plan types by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PlanTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find plan types
+      tags:
+      - Plan Types
+    post:
+      consumes:
+      - application/json
+      description: Create a new plan type with the provided details.
+      parameters:
+      - description: Create Plan Type Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.PlanTypeRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PlanTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new plan type
+      tags:
+      - Plan Types
+  /api/v1/plan-types/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a plan type with the provided details.
+      parameters:
+      - description: Plan Type ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PlanTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete a plan type
+      tags:
+      - Plan Types
+    get:
+      consumes:
+      - application/json
+      description: Get a plan type by its ID.
+      parameters:
+      - description: Plan Type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PlanTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get a plan type by ID
+      tags:
+      - Plan Types
+    put:
+      consumes:
+      - application/json
+      description: Update a plan type with the provided details.
+      parameters:
+      - description: Update Plan Type Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdatePlanTypeRequest'
+      - description: Plan Type ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PlanTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update a plan type
+      tags:
+      - Plan Types
+  /api/v1/transaction-types:
+    get:
+      consumes:
+      - application/json
+      description: Find transaction types by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find transaction types
+      tags:
+      - Transaction Types
+    post:
+      consumes:
+      - application/json
+      description: Create a new transaction type with the provided details.
+      parameters:
+      - description: Create Transaction Type Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.TransactionTypeRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new transaction type
+      tags:
+      - Transaction Types
+  /api/v1/transaction-types/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a transaction type with the provided details.
+      parameters:
+      - description: Transaction Type ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete a transaction type
+      tags:
+      - Transaction Types
+    get:
+      consumes:
+      - application/json
+      description: Get a transaction type by its ID.
+      parameters:
+      - description: Transaction Type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get a transaction type by ID
+      tags:
+      - Transaction Types
+    put:
+      consumes:
+      - application/json
+      description: Update a transaction type with the provided details.
+      parameters:
+      - description: Update Transaction Type Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateTransactionTypeRequest'
+      - description: Transaction Type ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TransactionTypeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update a transaction type
+      tags:
+      - Transaction Types
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

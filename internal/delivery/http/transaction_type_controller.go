@@ -24,6 +24,16 @@ func NewTransactionTypeController(useCase *usecase.TransactionTypeUseCase, log *
 	}
 }
 
+// @Router /api/v1/transaction-types [post]
+// @Param  request body model.TransactionTypeRequest true "Create Transaction Type Request"
+// @Success 200 {object} model.TransactionTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Transaction Types
+// @Security    BearerAuth api_key
+// @Summary Create a new transaction type
+// @Description Create a new transaction type with the provided details.
+// @Accept json
 func (c *TransactionTypeController) Create(ctx *fiber.Ctx) error {
 	request := new(model.TransactionTypeRequest)
 
@@ -42,6 +52,16 @@ func (c *TransactionTypeController) Create(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/transaction-types/{id} [get]
+// @Param  id path int true "Transaction Type ID"
+// @Success 200 {object} model.TransactionTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Transaction Types
+// @Security    BearerAuth api_key
+// @Summary Get a transaction type by ID
+// @Description Get a transaction type by its ID.
+// @Accept json
 func (c *TransactionTypeController) GetById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
@@ -72,6 +92,17 @@ func (c *TransactionTypeController) GetById(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/transaction-types [get]
+// @Success 200 {object} model.TransactionTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Transaction Types
+// @Security    BearerAuth api_key
+// @Summary Find transaction types
+// @Description Find transaction types by their attributes.
+// @Param   page query     int               false       "Page number" default(1)
+// @Param   limit query    int               false       "Number of items per page" default
+// @Accept json
 func (c *TransactionTypeController) Get(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
 		Page: ctx.QueryInt("page", 1),
@@ -98,6 +129,17 @@ func (c *TransactionTypeController) Get(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/transaction-types/{id} [put]
+// @Param  request body model.UpdateTransactionTypeRequest true "Update Transaction Type Request"
+// @Param id path string true "Transaction Type ID"
+// @Success 200 {object} model.TransactionTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Transaction Types
+// @Security    BearerAuth api_key
+// @Summary Update a transaction type
+// @Description Update a transaction type with the provided details.
+// @Accept json
 func (c *TransactionTypeController) Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
@@ -131,6 +173,16 @@ func (c *TransactionTypeController) Update(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/transaction-types/{id} [delete]
+// @Param id path string true "Transaction Type ID"
+// @Success 200 {object} model.TransactionTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Transaction Types
+// @Security    BearerAuth api_key
+// @Summary Delete a transaction type
+// @Description Delete a transaction type with the provided details.
+// @Accept json
 func (c *TransactionTypeController) Delete(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {

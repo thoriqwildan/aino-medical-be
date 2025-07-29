@@ -25,6 +25,16 @@ func NewPlanTypeController(useCase *usecase.PlanTypeUseCase, log *logrus.Logger,
 	}
 }
 
+// @Router /api/v1/plan-types [post]
+// @Param  request body model.PlanTypeRequest true "Create Plan Type Request"
+// @Success 200 {object} model.PlanTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Plan Types
+// @Security    BearerAuth api_key
+// @Summary Create a new plan type
+// @Description Create a new plan type with the provided details.
+// @Accept json
 func (c *PlanTypeController) Create(ctx *fiber.Ctx) error {
 	request := new(model.PlanTypeRequest)
 
@@ -43,6 +53,16 @@ func (c *PlanTypeController) Create(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/plan-types/{id} [get]
+// @Param  id path int true "Plan Type ID"
+// @Success 200 {object} model.PlanTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Plan Types
+// @Security    BearerAuth api_key
+// @Summary Get a plan type by ID
+// @Description Get a plan type by its ID.
+// @Accept json
 func (c *PlanTypeController) GetById(ctx *fiber.Ctx) error {
 	idStr := ctx.Params("id")
 	if idStr == "" {
@@ -69,6 +89,17 @@ func (c *PlanTypeController) GetById(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/plan-types [get]
+// @Success 200 {object} model.PlanTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Plan Types
+// @Security    BearerAuth api_key
+// @Summary Find plan types
+// @Description Find plan types by their attributes.
+// @Param   page query     int               false       "Page number" default(1)
+// @Param   limit query    int               false       "Number of items per page" default
+// @Accept json
 func (c *PlanTypeController) Get(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
 		Page: ctx.QueryInt("page", 1),
@@ -95,6 +126,17 @@ func (c *PlanTypeController) Get(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/plan-types/{id} [put]
+// @Param  request body model.UpdatePlanTypeRequest true "Update Plan Type Request"
+// @Param id path string true "Plan Type ID"
+// @Success 200 {object} model.PlanTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Plan Types
+// @Security    BearerAuth api_key
+// @Summary Update a plan type
+// @Description Update a plan type with the provided details.
+// @Accept json
 func (c *PlanTypeController) Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
@@ -124,6 +166,16 @@ func (c *PlanTypeController) Update(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/plan-types/{id} [delete]
+// @Param id path string true "Plan Type ID"
+// @Success 200 {object} model.PlanTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Plan Types
+// @Security    BearerAuth api_key
+// @Summary Delete a plan type
+// @Description Delete a plan type with the provided details.
+// @Accept json
 func (c *PlanTypeController) Delete(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {

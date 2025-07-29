@@ -34,6 +34,15 @@ func (uc *UserController) GetTest(c *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/auth/register [post]
+// @Param  request body model.RegisterRequest true "Create User Request"
+// @Success 200 {object} model.UserResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Users
+// @Summary Create a new user
+// @Description Create a new user with the provided details.
+// @Accept json
 func (uc *UserController) Register(ctx *fiber.Ctx) error {
 	request := new(model.RegisterRequest)
 	ctx.BodyParser(request)
@@ -58,6 +67,15 @@ func (uc *UserController) Register(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/auth/login [post]
+// @Param  request body model.LoginRequest true "Login User Request"
+// @Success 200 {object} model.UserResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Users
+// @Summary Login a user
+// @Description Login a user with the provided credentials.
+// @Accept json
 func (uc *UserController) Login(ctx *fiber.Ctx) error {
 	request := new(model.LoginRequest)
 	ctx.BodyParser(request)
@@ -97,7 +115,7 @@ func (uc *UserController) GenerateToken(username string) (string, error) {
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = username
-	claims["exp"] = time.Now().Add(time.Minute * time.Duration(30)).Unix()
+	claims["exp"] = time.Now().Add(time.Minute * time.Duration(60)).Unix()
 
 	t, err := token.SignedString([]byte(uc.Config.GetString("JWT_SECRET")))
 	if err != nil {

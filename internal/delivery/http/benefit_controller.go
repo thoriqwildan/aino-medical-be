@@ -22,6 +22,16 @@ func NewBenefitController(useCase *usecase.BenefitUseCase, log *logrus.Logger) *
 	}
 }
 
+// @Router /api/v1/benefits [post]
+// @Param  request body model.CreateBenefitRequest true "Create Benefit Request"
+// @Success 200 {object} model.BenefitResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Benefit Types
+// @Security    BearerAuth api_key
+// @Summary Create a new benefit type
+// @Description Create a new benefit type with the provided details.
+// @Accept json
 func (c *BenefitController) Create(ctx *fiber.Ctx) error {
 	request := new(model.CreateBenefitRequest)
 
@@ -40,6 +50,16 @@ func (c *BenefitController) Create(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/benefits/{id} [get]
+// @Param  id path int true "Benefit ID"
+// @Success 200 {object} model.BenefitResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Benefit Types
+// @Security    BearerAuth api_key
+// @Summary Get a benefit type by ID
+// @Description Get a benefit type by its ID.
+// @Accept json
 func (c *BenefitController) GetById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
@@ -65,6 +85,17 @@ func (c *BenefitController) GetById(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/benefits [get]
+// @Success 200 {object} model.BenefitResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Benefit Types
+// @Security    BearerAuth api_key
+// @Summary Find benefit types
+// @Description Find benefit types by their attributes.
+// @Param   page query     int               false       "Page number" default(1)
+// @Param   limit query    int               false       "Number of items per page" default
+// @Accept json
 func (c *BenefitController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
 		Page: ctx.QueryInt("page", 1),
@@ -91,6 +122,17 @@ func (c *BenefitController) GetAll(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/benefits/{id} [put]
+// @Param  request body model.UpdateBenefitRequest true "Update Benefit Request"
+// @Param id path string true "Benefit ID"
+// @Success 200 {object} model.BenefitResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Benefit Types
+// @Security    BearerAuth api_key
+// @Summary Update a benefit type
+// @Description Update a benefit type with the provided details.
+// @Accept json
 func (c *BenefitController) Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
@@ -120,6 +162,16 @@ func (c *BenefitController) Update(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/benefits/{id} [delete]
+// @Param id path string true "Benefit ID"
+// @Success 200 {object} model.BenefitResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Benefit Types
+// @Security    BearerAuth api_key
+// @Summary Delete a benefit type
+// @Description Delete a benefit type with the provided details.
+// @Accept json
 func (c *BenefitController) Delete(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {

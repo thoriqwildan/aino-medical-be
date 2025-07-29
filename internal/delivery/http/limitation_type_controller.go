@@ -25,6 +25,16 @@ func NewLimitationTypeController(useCase *usecase.LimitationTypeUseCase, log *lo
 	}
 }
 
+// @Router /api/v1/limitation-types [post]
+// @Param  request body model.LimitationTypeRequest true "Create Limitation Type Request"
+// @Success 200 {object} model.LimitationTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Plan Types
+// @Security    BearerAuth api_key
+// @Summary Create a new limitation type
+// @Description Create a new limitation type with the provided details.
+// @Accept json
 func (c *LimitationTypeController) Create(ctx *fiber.Ctx) error {
 	request := new(model.LimitationTypeRequest)
 
@@ -43,6 +53,16 @@ func (c *LimitationTypeController) Create(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/limitation-types/{id} [get]
+// @Param  id path int true "Limitation Type ID"
+// @Success 200 {object} model.LimitationTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Limitation Types
+// @Security    BearerAuth api_key
+// @Summary Get a limitation type by ID
+// @Description Get a limitation type by its ID.
+// @Accept json
 func (c *LimitationTypeController) GetById(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
@@ -69,6 +89,17 @@ func (c *LimitationTypeController) GetById(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/limitation-types [get]
+// @Success 200 {object} model.LimitationTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Limitation Types
+// @Security    BearerAuth api_key
+// @Summary Find limitation types
+// @Description Find limitation types by their attributes.
+// @Param   page query     int               false       "Page number" default(1)
+// @Param   limit query    int               false       "Number of items per page" default
+// @Accept json
 func (c *LimitationTypeController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
 		Page: ctx.QueryInt("page", 1),
@@ -95,6 +126,17 @@ func (c *LimitationTypeController) GetAll(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/limitation-types/{id} [put]
+// @Param  request body model.UpdateLimitationTypeRequest true "Update Limitation Type Request"
+// @Param id path string true "Limitation Type ID"
+// @Success 200 {object} model.LimitationTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Limitation Types
+// @Security    BearerAuth api_key
+// @Summary Update a limitation type
+// @Description Update a limitation type with the provided details.
+// @Accept json
 func (c *LimitationTypeController) Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
@@ -124,6 +166,16 @@ func (c *LimitationTypeController) Update(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/limitation-types/{id} [delete]
+// @Param id path string true "Limitation Type ID"
+// @Success 200 {object} model.LimitationTypeResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Limitation Types
+// @Security    BearerAuth api_key
+// @Summary Delete a limitation type
+// @Description Delete a limitation type with the provided details.
+// @Accept json
 func (c *LimitationTypeController) Delete(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	if id == "" {
