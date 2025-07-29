@@ -92,6 +92,86 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
+  model.EmployeeRequest:
+    properties:
+      bank_number:
+        type: string
+      birth_date:
+        type: string
+      department_id:
+        type: integer
+      dependence:
+        type: string
+      email:
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        type: string
+      join_date:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      plan_type_id:
+        type: integer
+      position:
+        type: string
+    required:
+    - bank_number
+    - birth_date
+    - department_id
+    - email
+    - gender
+    - join_date
+    - name
+    - phone
+    - plan_type_id
+    - position
+    type: object
+  model.EmployeeResponse:
+    properties:
+      bank_number:
+        type: string
+      birth_date:
+        type: string
+      department:
+        $ref: '#/definitions/model.DepartmentResponse'
+      dependence:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      id:
+        type: integer
+      join_date:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      plan_type:
+        $ref: '#/definitions/model.PlanTypeResponse'
+      position:
+        type: string
+    type: object
+  model.EmployeeResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.EmployeeResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
   model.ErrorWrapper:
     properties:
       access_token:
@@ -279,6 +359,48 @@ definitions:
     required:
     - id
     - name
+    type: object
+  model.UpdateEmployeeRequest:
+    properties:
+      bank_number:
+        type: string
+      birth_date:
+        type: string
+      department_id:
+        type: integer
+      dependence:
+        type: string
+      email:
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        type: string
+      id:
+        type: integer
+      join_date:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      plan_type_id:
+        type: integer
+      position:
+        type: string
+    required:
+    - bank_number
+    - birth_date
+    - department_id
+    - email
+    - gender
+    - id
+    - join_date
+    - name
+    - phone
+    - plan_type_id
+    - position
     type: object
   model.UpdateLimitationTypeRequest:
     properties:
@@ -713,6 +835,159 @@ paths:
       summary: Update a department
       tags:
       - Departments
+  /api/v1/employees:
+    get:
+      consumes:
+      - application/json
+      description: Find employees by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.EmployeeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find employees
+      tags:
+      - Employees
+    post:
+      consumes:
+      - application/json
+      description: Create a new employee with the provided details.
+      parameters:
+      - description: Create Employee Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.EmployeeRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.EmployeeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new employee
+      tags:
+      - Employees
+  /api/v1/employees/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an employee with the provided details.
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.EmployeeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete an employee
+      tags:
+      - Employees
+    get:
+      consumes:
+      - application/json
+      description: Get an employee by its ID.
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.EmployeeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get an employee by ID
+      tags:
+      - Employees
+    put:
+      consumes:
+      - application/json
+      description: Update an employee with the provided details.
+      parameters:
+      - description: Update Employee Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateEmployeeRequest'
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.EmployeeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update an employee
+      tags:
+      - Employees
   /api/v1/limitation-types:
     get:
       consumes:

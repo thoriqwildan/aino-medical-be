@@ -26,6 +26,7 @@ func (rc *RouteConfig) Setup() {
 	rc.LimitationTypeRoutes()
 	rc.BenefitRoutes()
 	rc.DepartmentRoutes()
+	rc.EmployeeRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -83,4 +84,13 @@ func (rc *RouteConfig) DepartmentRoutes() {
 	department.Get("/", rc.DepartmentController.GetAll)
 	department.Put("/:id", rc.DepartmentController.Update)
 	department.Delete("/:id", rc.DepartmentController.Delete)
+}
+
+func (rc *RouteConfig) EmployeeRoutes() {
+	employee := rc.App.Group("/api/v1/employees", rc.JWT.JWTProtected())
+	employee.Post("/", rc.EmployeeController.Create)
+	employee.Get("/:id", rc.EmployeeController.GetByID)
+	employee.Get("/", rc.EmployeeController.GetAll)
+	employee.Put("/:id", rc.EmployeeController.Update)
+	employee.Delete("/:id", rc.EmployeeController.Delete)
 }
