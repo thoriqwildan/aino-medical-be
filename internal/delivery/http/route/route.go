@@ -22,6 +22,7 @@ func (rc *RouteConfig) Setup() {
 	rc.TransactionTypeRotes()
 	rc.PlanTypeRoutes()
 	rc.LimitationTypeRoutes()
+	rc.BenefitRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -61,4 +62,13 @@ func (rc *RouteConfig) LimitationTypeRoutes() {
 	limitationType.Get("/", rc.LimitationTypeController.GetAll)
 	limitationType.Put("/:id", rc.LimitationTypeController.Update)
 	limitationType.Delete("/:id", rc.LimitationTypeController.Delete)
+}
+
+func (rc *RouteConfig) BenefitRoutes() {
+	benefit := rc.App.Group("/api/v1/benefits", rc.JWT.JWTProtected())
+	benefit.Post("/", rc.BenefitController.Create)
+	benefit.Get("/:id", rc.BenefitController.GetById)
+	benefit.Get("/", rc.BenefitController.GetAll)
+	benefit.Put("/:id", rc.BenefitController.Update)
+	benefit.Delete("/:id", rc.BenefitController.Delete)
 }

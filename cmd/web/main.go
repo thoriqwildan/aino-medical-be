@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/thoriqwildan/aino-medical-be/db/seed"
 	"github.com/thoriqwildan/aino-medical-be/internal/config"
 	"github.com/thoriqwildan/aino-medical-be/internal/delivery/middleware"
@@ -13,6 +14,12 @@ func main() {
 	db := config.NewDatabase(viperConfig, log)
 	validator := config.NewValidator(viperConfig)
 	jwtMiddleware := middleware.NewMiddlewareConfig(viperConfig, app)
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "*",
+		AllowMethods:     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+	}))
 
 	config.Bootstrap(&config.BootstrapConfig{
 		DB: db,
