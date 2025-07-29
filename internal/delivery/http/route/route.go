@@ -13,6 +13,7 @@ type RouteConfig struct {
 	TransactionTypeController *http.TransactionTypeController
 	PlanTypeController *http.PlanTypeController
 	LimitationTypeController *http.LimitationTypeController
+	BenefitController *http.BenefitController
 }
 
 func (rc *RouteConfig) Setup() {

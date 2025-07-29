@@ -27,16 +27,19 @@ func Bootstrap(config *BootstrapConfig) {
 	transactionTypeRepository := repository.NewTransactionTypeRepository(config.Log)
 	planTypeRepository := repository.NewPlanTypeRepository(config.Log)
 	limitationTypeRepository := repository.NewLimitationTypeRepository(config.Log)
+	benefitRepository := repository.NewBenefitRepository(config.Log)
 
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, config.Validate)
 	transactionTypeUseCase := usecase.NewTransactionTypeUseCase(config.DB, config.Log, transactionTypeRepository, config.Validate)
 	planTypeUseCase := usecase.NewPlanTypeUseCase(config.DB, config.Log, planTypeRepository, config.Validate)
 	limitationTypeUseCase := usecase.NewLimitationTypeUseCase(limitationTypeRepository, config.DB, config.Log, config.Validate)
+	benefitUseCase := usecase.NewBenefitUseCase(benefitRepository, config.DB, config.Log, config.Validate)
 
 	userController := http.NewUserController(userUseCase, config.Log, config.Config)
 	transactionTypeController := http.NewTransactionTypeController(transactionTypeUseCase, config.Log, config.Config)
 	planTypeController := http.NewPlanTypeController(planTypeUseCase, config.Log, config.Config)
 	limitationTypeController := http.NewLimitationTypeController(limitationTypeUseCase, config.Log, config.Config)
+	benefitController := http.NewBenefitController(benefitUseCase, config.Log)
 
 	routeConfig := route.RouteConfig{
 		App: config.App,
@@ -45,6 +48,7 @@ func Bootstrap(config *BootstrapConfig) {
 		TransactionTypeController: transactionTypeController,
 		PlanTypeController: planTypeController,
 		LimitationTypeController: limitationTypeController,
+		BenefitController: benefitController,
 	}
 
 	routeConfig.Setup()
