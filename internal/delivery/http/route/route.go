@@ -24,6 +24,7 @@ func (rc *RouteConfig) Setup() {
 	rc.PlanTypeRoutes()
 	rc.LimitationTypeRoutes()
 	rc.BenefitRoutes()
+	rc.DepartmentRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -72,4 +73,13 @@ func (rc *RouteConfig) BenefitRoutes() {
 	benefit.Get("/", rc.BenefitController.GetAll)
 	benefit.Put("/:id", rc.BenefitController.Update)
 	benefit.Delete("/:id", rc.BenefitController.Delete)
+}
+
+func (rc *RouteConfig) DepartmentRoutes() {
+	department := rc.App.Group("/api/v1/departments", rc.JWT.JWTProtected())
+	department.Post("/", rc.DepartmentController.Create)
+	department.Get("/:id", rc.DepartmentController.GetById)
+	department.Get("/", rc.DepartmentController.GetAll)
+	department.Put("/:id", rc.DepartmentController.Update)
+	department.Delete("/:id", rc.DepartmentController.Delete)
 }

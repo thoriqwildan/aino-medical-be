@@ -23,3 +23,7 @@ type LimitationTypeResponseWrapper struct {
 type BenefitResponseWrapper struct {
 	WebResponse[BenefitResponse]
 }
+
+type DepartmentResponseWrapper struct {
+	WebResponse[DepartmentResponse]
+}

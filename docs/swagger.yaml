@@ -60,6 +60,38 @@ definitions:
     - name
     - plan_type_id
     type: object
+  model.DepartmentRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  model.DepartmentResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.DepartmentResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.DepartmentResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
   model.ErrorWrapper:
     properties:
       access_token:
@@ -237,6 +269,16 @@ definitions:
     - limitation_type_id
     - name
     - plan_type_id
+    type: object
+  model.UpdateDepartmentRequest:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - id
+    - name
     type: object
   model.UpdateLimitationTypeRequest:
     properties:
@@ -518,6 +560,159 @@ paths:
       summary: Update a benefit type
       tags:
       - Benefit Types
+  /api/v1/departments:
+    get:
+      consumes:
+      - application/json
+      description: Find departments by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DepartmentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find departments
+      tags:
+      - Departments
+    post:
+      consumes:
+      - application/json
+      description: Create a new department with the provided details.
+      parameters:
+      - description: Create Department Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.DepartmentRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DepartmentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new department
+      tags:
+      - Departments
+  /api/v1/departments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a department with the provided details.
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DepartmentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete a department
+      tags:
+      - Departments
+    get:
+      consumes:
+      - application/json
+      description: Get a department by its ID.
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DepartmentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get a department by ID
+      tags:
+      - Departments
+    put:
+      consumes:
+      - application/json
+      description: Update a department with the provided details.
+      parameters:
+      - description: Update Department Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateDepartmentRequest'
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DepartmentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update a department
+      tags:
+      - Departments
   /api/v1/limitation-types:
     get:
       consumes:

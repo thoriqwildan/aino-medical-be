@@ -1,6 +1,10 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type PlanType struct {
 	ID          uint   `gorm:"primaryKey;autoIncrement"`
@@ -28,7 +32,7 @@ type Department struct {
 	Name      string    `gorm:"unique;not null"`
 	CreatedAt time.Time `gorm:"not null;autoCreateTime"`
 	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
-	DeletedAt *time.Time `gorm:"index"`
+	DeletedAt *gorm.DeletedAt `gorm:"index"`
 	Employees []Employee `gorm:"foreignKey:DepartmentID"`
 }
 
@@ -129,7 +133,7 @@ type Claim struct {
 	TransactionStatus   TransactionStatus `gorm:"type:enum('Successful','Pending','Failed');not null"`
 	CreatedAt           time.Time       `gorm:"not null;autoCreateTime"`
 	UpdatedAt           *time.Time       `gorm:"autoUpdateTime"`
-	DeletedAt           *time.Time       `gorm:"index"`
+	DeletedAt           *gorm.DeletedAt       `gorm:"index"`
 
 	Patient         Patient         `gorm:"foreignKey:PatientID"`
 	Employee        Employee        `gorm:"foreignKey:EmployeeID"`
