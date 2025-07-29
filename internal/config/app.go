@@ -29,6 +29,7 @@ func Bootstrap(config *BootstrapConfig) {
 	limitationTypeRepository := repository.NewLimitationTypeRepository(config.Log)
 	benefitRepository := repository.NewBenefitRepository(config.Log)
 	departmentRepository := repository.NewDepartmentRepository(config.Log)
+	employeeRepository := repository.NewEmployeeRepository(config.Log)
 
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, config.Validate)
 	transactionTypeUseCase := usecase.NewTransactionTypeUseCase(config.DB, config.Log, transactionTypeRepository, config.Validate)
@@ -36,6 +37,7 @@ func Bootstrap(config *BootstrapConfig) {
 	limitationTypeUseCase := usecase.NewLimitationTypeUseCase(limitationTypeRepository, config.DB, config.Log, config.Validate)
 	benefitUseCase := usecase.NewBenefitUseCase(benefitRepository, config.DB, config.Log, config.Validate)
 	departmentUseCase := usecase.NewDepartmentUseCase(departmentRepository, config.DB, config.Log, config.Validate)
+	employeeUseCase := usecase.NewEmployeeUseCase(config.DB, config.Log, employeeRepository, config.Validate)
 
 	userController := http.NewUserController(userUseCase, config.Log, config.Config)
 	transactionTypeController := http.NewTransactionTypeController(transactionTypeUseCase, config.Log, config.Config)
@@ -43,6 +45,7 @@ func Bootstrap(config *BootstrapConfig) {
 	limitationTypeController := http.NewLimitationTypeController(limitationTypeUseCase, config.Log, config.Config)
 	benefitController := http.NewBenefitController(benefitUseCase, config.Log)
 	departmentController := http.NewDepartmentController(departmentUseCase, config.Log)
+	employeeController := http.NewEmployeeController(employeeUseCase, config.Log)
 
 	routeConfig := route.RouteConfig{
 		App: config.App,
@@ -53,6 +56,7 @@ func Bootstrap(config *BootstrapConfig) {
 		LimitationTypeController: limitationTypeController,
 		BenefitController: benefitController,
 		DepartmentController: departmentController,
+		EmployeeController: employeeController,
 	}
 
 	routeConfig.Setup()
