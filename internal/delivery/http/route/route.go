@@ -14,6 +14,7 @@ type RouteConfig struct {
 	PlanTypeController *http.PlanTypeController
 	LimitationTypeController *http.LimitationTypeController
 	BenefitController *http.BenefitController
+	DepartmentController *http.DepartmentController
 }
 
 func (rc *RouteConfig) Setup() {
