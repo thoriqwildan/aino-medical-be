@@ -17,6 +17,7 @@ type RouteConfig struct {
 	DepartmentController *http.DepartmentController
 	EmployeeController *http.EmployeeController
 	FamilyMemberController *http.FamilyMemberController
+	ClaimController *http.ClaimController
 }
 
 func (rc *RouteConfig) Setup() {

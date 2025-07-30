@@ -31,6 +31,7 @@ func Bootstrap(config *BootstrapConfig) {
 	departmentRepository := repository.NewDepartmentRepository(config.Log)
 	employeeRepository := repository.NewEmployeeRepository(config.Log)
 	familyMemberRepository := repository.NewFamilyMemberRepository(config.Log)
+	claimRepository := repository.NewClaimRepository(config.Log)
 
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, config.Validate)
 	transactionTypeUseCase := usecase.NewTransactionTypeUseCase(config.DB, config.Log, transactionTypeRepository, config.Validate)
@@ -40,6 +41,7 @@ func Bootstrap(config *BootstrapConfig) {
 	departmentUseCase := usecase.NewDepartmentUseCase(departmentRepository, config.DB, config.Log, config.Validate)
 	employeeUseCase := usecase.NewEmployeeUseCase(config.DB, config.Log, employeeRepository, config.Validate)
 	familyMemberUseCase := usecase.NewFamilyMemberUseCase(familyMemberRepository, config.DB, config.Validate, config.Log)
+	claimUseCase := usecase.NewClaimUseCase(claimRepository, config.DB, config.Validate, config.Log)
 
 	userController := http.NewUserController(userUseCase, config.Log, config.Config)
 	transactionTypeController := http.NewTransactionTypeController(transactionTypeUseCase, config.Log, config.Config)
@@ -49,6 +51,7 @@ func Bootstrap(config *BootstrapConfig) {
 	departmentController := http.NewDepartmentController(departmentUseCase, config.Log)
 	employeeController := http.NewEmployeeController(employeeUseCase, config.Log)
 	familyMemberController := http.NewFamilyMemberController(familyMemberUseCase, config.Log, config.Config)
+	claimController := http.NewClaimController(claimUseCase, config.Log)
 
 	routeConfig := route.RouteConfig{
 		App: config.App,
@@ -61,6 +64,7 @@ func Bootstrap(config *BootstrapConfig) {
 		DepartmentController: departmentController,
 		EmployeeController: employeeController,
 		FamilyMemberController: familyMemberController,
+		ClaimController: claimController,
 	}
 
 	routeConfig.Setup()
