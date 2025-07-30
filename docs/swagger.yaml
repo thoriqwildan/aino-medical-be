@@ -69,13 +69,9 @@ definitions:
     type: object
   model.DepartmentResponse:
     properties:
-      created_at:
-        type: string
       id:
         type: integer
       name:
-        type: string
-      updated_at:
         type: string
     type: object
   model.DepartmentResponseWrapper:
@@ -179,6 +175,63 @@ definitions:
       code:
         type: integer
       data: {}
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.FamilyMemberRequest:
+    properties:
+      birth_date:
+        type: string
+      employee_id:
+        type: integer
+      gender:
+        enum:
+        - male
+        - female
+        type: string
+      name:
+        type: string
+    required:
+    - birth_date
+    - employee_id
+    - gender
+    - name
+    type: object
+  model.FamilyMemberResponse:
+    properties:
+      birth_date:
+        type: string
+      employee:
+        $ref: '#/definitions/model.EmployeeResponse'
+      gender:
+        enum:
+        - male
+        - female
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      plan_type:
+        $ref: '#/definitions/model.PlanTypeResponse'
+    required:
+    - birth_date
+    - employee
+    - gender
+    - name
+    - plan_type
+    type: object
+  model.FamilyMemberResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.FamilyMemberResponse'
       errors: {}
       message:
         type: string
@@ -402,6 +455,25 @@ definitions:
     - plan_type_id
     - position
     type: object
+  model.UpdateFamilyMemberRequest:
+    properties:
+      birth_date:
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - birth_date
+    - gender
+    - id
+    - name
+    type: object
   model.UpdateLimitationTypeRequest:
     properties:
       id:
@@ -466,7 +538,7 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
-host: localhost:3000
+host: 192.168.74.32:3000
 info:
   contact: {}
   description: Enter your API Key as X-API-Key header value
@@ -988,6 +1060,159 @@ paths:
       summary: Update an employee
       tags:
       - Employees
+  /api/v1/family-members:
+    get:
+      consumes:
+      - application/json
+      description: Find family members by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FamilyMemberResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find family members
+      tags:
+      - Family Members
+    post:
+      consumes:
+      - application/json
+      description: Create a new family member with the provided details.
+      parameters:
+      - description: Create Family Member Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.FamilyMemberRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FamilyMemberResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new family member
+      tags:
+      - Family Members
+  /api/v1/family-members/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a family member with the provided details.
+      parameters:
+      - description: Family Member ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FamilyMemberResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete a family member
+      tags:
+      - Family Members
+    get:
+      consumes:
+      - application/json
+      description: Get a family member by its ID.
+      parameters:
+      - description: Family Member ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FamilyMemberResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get a family member by ID
+      tags:
+      - Family Members
+    put:
+      consumes:
+      - application/json
+      description: Update a family member with the provided details.
+      parameters:
+      - description: Update Family Member Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateFamilyMemberRequest'
+      - description: Family Member ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FamilyMemberResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update a family member
+      tags:
+      - Family Members
   /api/v1/limitation-types:
     get:
       consumes:

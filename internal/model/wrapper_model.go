@@ -31,3 +31,7 @@ type DepartmentResponseWrapper struct {
 type EmployeeResponseWrapper struct {
 	WebResponse[EmployeeResponse]
 }
+
+type FamilyMemberResponseWrapper struct {
+	WebResponse[FamilyMemberResponse]
+}

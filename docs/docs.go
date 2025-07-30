@@ -824,6 +824,247 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/family-members": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Find family members by their attributes.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Family Members"
+                ],
+                "summary": "Find family members",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FamilyMemberResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Create a new family member with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Family Members"
+                ],
+                "summary": "Create a new family member",
+                "parameters": [
+                    {
+                        "description": "Create Family Member Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FamilyMemberRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FamilyMemberResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/family-members/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Get a family member by its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Family Members"
+                ],
+                "summary": "Get a family member by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Family Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FamilyMemberResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Update a family member with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Family Members"
+                ],
+                "summary": "Update a family member",
+                "parameters": [
+                    {
+                        "description": "Update Family Member Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateFamilyMemberRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Family Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FamilyMemberResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Delete a family member with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Family Members"
+                ],
+                "summary": "Delete a family member",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Family Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FamilyMemberResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/limitation-types": {
             "get": {
                 "security": [
@@ -1650,16 +1891,10 @@ const docTemplate = `{
         "model.DepartmentResponse": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }
@@ -1811,6 +2046,88 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "data": {},
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationPage"
+                }
+            }
+        },
+        "model.FamilyMemberRequest": {
+            "type": "object",
+            "required": [
+                "birth_date",
+                "employee_id",
+                "gender",
+                "name"
+            ],
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "employee_id": {
+                    "type": "integer"
+                },
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FamilyMemberResponse": {
+            "type": "object",
+            "required": [
+                "birth_date",
+                "employee",
+                "gender",
+                "name",
+                "plan_type"
+            ],
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "employee": {
+                    "$ref": "#/definitions/model.EmployeeResponse"
+                },
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female"
+                    ]
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "plan_type": {
+                    "$ref": "#/definitions/model.PlanTypeResponse"
+                }
+            }
+        },
+        "model.FamilyMemberResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/model.FamilyMemberResponse"
+                },
                 "errors": {},
                 "message": {
                     "type": "string"
@@ -2132,6 +2449,33 @@ const docTemplate = `{
                 }
             }
         },
+        "model.UpdateFamilyMemberRequest": {
+            "type": "object",
+            "required": [
+                "birth_date",
+                "gender",
+                "id",
+                "name"
+            ],
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female"
+                    ]
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.UpdateLimitationTypeRequest": {
             "type": "object",
             "required": [
@@ -2239,7 +2583,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000",
+	Host:             "192.168.74.32:3000",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Aino Medical API",

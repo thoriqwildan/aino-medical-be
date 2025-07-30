@@ -28,6 +28,7 @@ func (rc *RouteConfig) Setup() {
 	rc.BenefitRoutes()
 	rc.DepartmentRoutes()
 	rc.EmployeeRoutes()
+	rc.FamilyMemberRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -94,4 +95,13 @@ func (rc *RouteConfig) EmployeeRoutes() {
 	employee.Get("/", rc.EmployeeController.GetAll)
 	employee.Put("/:id", rc.EmployeeController.Update)
 	employee.Delete("/:id", rc.EmployeeController.Delete)
+}
+
+func (rc *RouteConfig) FamilyMemberRoutes() {
+	familyMember := rc.App.Group("/api/v1/family-members", rc.JWT.JWTProtected())
+	familyMember.Post("/", rc.FamilyMemberController.Create)
+	familyMember.Get("/:id", rc.FamilyMemberController.GetById)
+	familyMember.Get("/", rc.FamilyMemberController.GetAll)
+	familyMember.Put("/:id", rc.FamilyMemberController.Update)
+	familyMember.Delete("/:id", rc.FamilyMemberController.Delete)
 }

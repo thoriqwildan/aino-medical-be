@@ -9,7 +9,5 @@ func DepartmentToResponse(department *entity.Department) *model.DepartmentRespon
 	return &model.DepartmentResponse{
 		ID:  department.ID,
 		Name: department.Name,
-		CreatedAt: department.CreatedAt.Format("2006-01-02 15:04:05"),
-		UpdatedAt: department.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }
