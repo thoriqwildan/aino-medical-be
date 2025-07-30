@@ -31,6 +31,7 @@ type EmployeeResponse struct {
 	JoinDate	 		helper.CustomDate `json:"join_date"`
 	PlanType	 		PlanTypeResponse   `json:"plan_type"`
 	Department   	DepartmentResponse   `json:"department"`
+	FamilyMembers []FamilyMemberResponse `json:"family_members,omitempty"`
 }
 
 type UpdateEmployeeRequest struct {

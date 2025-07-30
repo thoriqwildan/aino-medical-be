@@ -14,8 +14,8 @@ type FamilyMemberResponse struct {
 	Name 		 string `json:"name" validate:"required"`
 	BirthDate   helper.CustomDate `json:"birth_date" validate:"required"`
 	Gender 	 string `json:"gender" validate:"required,oneof=male female"`
-	PlanType   PlanTypeResponse `json:"plan_type" validate:"required"`
-	Employee   EmployeeResponse `json:"employee" validate:"required"`
+	PlanType   PlanTypeResponse `json:"plan_type,omitempty" validate:"required"`
+	Employee   EmployeeResponse `json:"employee,omitempty" validate:"required"`
 }
 
 type UpdateFamilyMemberRequest struct {

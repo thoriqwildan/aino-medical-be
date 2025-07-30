@@ -18,8 +18,8 @@ func FamilyMemberToResponse(familyMember *entity.FamilyMember) *model.FamilyMemb
 		result.PlanType = *PlanTypeToResponse(&familyMember.PlanType)
 	}
 
-	if familyMember.Employee.ID != 0 || familyMember.Employee.Name != "" {
-		result.Employee = *EmployeeToResponse(&familyMember.Employee)
+	if familyMember.Employee != nil {
+		result.Employee = *EmployeeToResponse(familyMember.Employee)
 	}
 
 	return result

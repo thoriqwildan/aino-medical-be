@@ -77,7 +77,7 @@ type FamilyMember struct {
 	BirthDate   time.Time `gorm:"type:date;not null"`
 	Gender      Genders   `gorm:"type:enum('male','female');not null"`
 	Patient     Patient   `gorm:"foreignKey:FamilyMemberID"`
-	Employee    Employee  `gorm:"foreignKey:EmployeeID"`
+	Employee    *Employee  `gorm:"foreignKey:EmployeeID"`
 	PlanType    PlanType  `gorm:"foreignKey:PlanTypeID"`
 }
 

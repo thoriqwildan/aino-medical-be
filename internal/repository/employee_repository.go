@@ -27,7 +27,12 @@ func (er *EmployeeRepository) GetDepartmentByID(db *gorm.DB, id uint) error {
 }
 
 func (er *EmployeeRepository) FindById(db *gorm.DB, id uint, employee *entity.Employee) error {
-	return db.Where("id = ?", id).Preload("Department").Preload("PlanType").First(employee).Error
+	return db.Where("id = ?", id).
+				Preload("Department").
+				Preload("PlanType").
+				Preload("FamilyMembers").
+				Preload("FamilyMembers.PlanType").
+				First(employee).Error
 }
 
 func (er *EmployeeRepository) SearchEmployees(db *gorm.DB, request *model.PagingQuery) ([]entity.Employee, int64, error) {
@@ -45,6 +50,8 @@ func (er *EmployeeRepository) SearchEmployees(db *gorm.DB, request *model.Paging
 		Limit(request.Limit).
 		Preload("Department").
 		Preload("PlanType").
+		Preload("FamilyMembers").
+		Preload("FamilyMembers.PlanType").
 		Find(&employees).Error
 	if err != nil {
 		return nil, 0, err

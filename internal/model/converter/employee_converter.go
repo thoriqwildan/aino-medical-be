@@ -27,5 +27,13 @@ func EmployeeToResponse(employee *entity.Employee) *model.EmployeeResponse {
 	if employee.Department.ID != 0 || employee.Department.Name != "" {
 		response.Department = *DepartmentToResponse(&employee.Department)
 	}
+
+	if len(employee.FamilyMembers) > 0 {
+		response.FamilyMembers = make([]model.FamilyMemberResponse, len(employee.FamilyMembers))
+		for i, familyMember := range employee.FamilyMembers {
+			response.FamilyMembers[i] = *FamilyMemberToResponse(&familyMember)
+		}
+	}
+	
 	return response
 }
