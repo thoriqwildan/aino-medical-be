@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS claims;
+DROP TABLE IF EXISTS benefits;
+DROP TABLE IF EXISTS family_members;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS departments;
+DROP TABLE IF EXISTS limitation_types;
+DROP TABLE IF EXISTS transaction_types;
+DROP TABLE IF EXISTS plan_types;

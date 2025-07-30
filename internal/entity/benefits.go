@@ -37,20 +37,21 @@ type Department struct {
 }
 
 type Patient struct {
-	ID          uint      `gorm:"primaryKey;autoIncrement"`
-	Name        string    `gorm:"not null"`
-	BirthDate   time.Time `gorm:"type:date;not null"`
-	Gender      Genders   `gorm:"type:enum('male','female');not null"`
-	Employee    *Employee `gorm:"foreignKey:PatientID"`
-	FamilyMember *FamilyMember `gorm:"foreignKey:PatientID"`
-	Claims      []Claim   `gorm:"foreignKey:PatientID"`
+	ID            uint           `gorm:"primaryKey;autoIncrement"`
+	Name          string         `gorm:"not null"`
+	BirthDate     time.Time      `gorm:"type:date;not null"`
+	Gender        Genders        `gorm:"type:enum('male','female');not null"`
+	EmployeeID    *uint          `gorm:"uniqueIndex"` 
+	FamilyMemberID *uint         `gorm:"uniqueIndex"`
+	Employee      *Employee      `gorm:"foreignKey:EmployeeID"`
+	FamilyMember  *FamilyMember  `gorm:"foreignKey:FamilyMemberID"`
+	Claims        []Claim          `gorm:"foreignKey:PatientID"`
 	PatientBenefits []PatientBenefit `gorm:"foreignKey:PatientID"`
 }
 
 type Employee struct {
 	ID            uint      `gorm:"primaryKey;autoIncrement"`
 	Name          string    `gorm:"not null"`
-	PatientID     uint      `gorm:"unique;not null"`
 	DepartmentID  uint      `gorm:"not null"`
 	Position      string    `gorm:"not null"`
 	Email         string    `gorm:"unique;not null"`
@@ -61,7 +62,7 @@ type Employee struct {
 	Dependence    *string
 	BankNumber    string    `gorm:"not null"`
 	JoinDate      time.Time `gorm:"type:date;not null"`
-	Patient       Patient   `gorm:"foreignKey:PatientID"`
+	Patient       Patient   `gorm:"foreignKey:EmployeeID"`
 	Department    Department `gorm:"foreignKey:DepartmentID"`
 	PlanType      PlanType  `gorm:"foreignKey:PlanTypeID"`
 	FamilyMembers []FamilyMember `gorm:"foreignKey:EmployeeID"`
@@ -70,13 +71,12 @@ type Employee struct {
 
 type FamilyMember struct {
 	ID          uint      `gorm:"primaryKey;autoIncrement"`
-	PatientID   uint      `gorm:"unique;not null"`
 	EmployeeID  uint      `gorm:"not null"`
 	Name        string    `gorm:"not null"`
 	PlanTypeID  uint      `gorm:"not null"`
 	BirthDate   time.Time `gorm:"type:date;not null"`
 	Gender      Genders   `gorm:"type:enum('male','female');not null"`
-	Patient     Patient   `gorm:"foreignKey:PatientID"`
+	Patient     Patient   `gorm:"foreignKey:FamilyMemberID"`
 	Employee    Employee  `gorm:"foreignKey:EmployeeID"`
 	PlanType    PlanType  `gorm:"foreignKey:PlanTypeID"`
 }

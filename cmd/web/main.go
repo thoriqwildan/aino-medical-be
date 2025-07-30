@@ -14,7 +14,7 @@ import (
 // @title Aino Medical API
 // @version 1.0
 // @description This is a sample swagger for Fiber
-// @host 192.168.74.32:3000
+// @host 192.168.110.65:3000
 // @BasePath /
 
 // @securitydefinitions.apikey BearerAuth
