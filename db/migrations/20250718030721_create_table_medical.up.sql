@@ -116,15 +116,15 @@ CREATE TABLE benefits (
 -- claims
 CREATE TABLE claims (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    patient_id INT NOT NULL, -- FK ke tabel patients
-    employee_id INT NOT NULL, -- FK ke tabel employees
-    benefit_id INT NOT NULL,
+    -- patient_id INT NOT NULL, -- FK ke tabel patients
+    -- employee_id INT NOT NULL, -- FK ke tabel employees
+    -- benefit_id INT NOT NULL,
     claim_amount DECIMAL(10, 2) NOT NULL,
-    transaction_type_id INT NOT NULL,
-    transaction_date DATE NOT NULL,
-    submission_date DATE NOT NULL,
-    SLA ENUM('meet', 'overdue') NOT NULL,
-    approved_amount DECIMAL(10, 2) NOT NULL,
+    transaction_type_id INT NULL,
+    transaction_date DATE NULL,
+    submission_date DATE NULL,
+    SLA ENUM('meet', 'overdue') NULL,
+    approved_amount DECIMAL(10, 2) NULL,
     claim_status ENUM('On Plafond', 'Over Plafond') NOT NULL,
     medical_facility_name VARCHAR(255),
     city VARCHAR(255),
@@ -134,18 +134,6 @@ CREATE TABLE claims (
     created_at DATETIME NOT NULL,
     updated_at DATETIME NULL,
     deleted_at DATETIME NULL,
-    CONSTRAINT fk_claims_patient
-        FOREIGN KEY (patient_id) REFERENCES patients(id)
-        ON DELETE RESTRICT -- Claims tidak dihapus jika patient dihapus (biasanya data klaim ingin dipertahankan)
-        ON UPDATE CASCADE,
-    CONSTRAINT fk_claims_employee
-        FOREIGN KEY (employee_id) REFERENCES employees(id)
-        ON DELETE RESTRICT -- Claims tidak dihapus jika employee dihapus
-        ON UPDATE CASCADE,
-    CONSTRAINT fk_claims_benefit
-        FOREIGN KEY (benefit_id) REFERENCES benefits(id)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
     CONSTRAINT fk_claims_transaction_type
         FOREIGN KEY (transaction_type_id) REFERENCES transaction_types(id)
         ON DELETE RESTRICT

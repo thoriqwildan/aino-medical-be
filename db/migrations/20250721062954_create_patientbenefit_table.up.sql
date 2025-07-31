@@ -15,6 +15,6 @@ CREATE TABLE patient_benefits (
 );
 
 ALTER TABLE claims
-ADD COLUMN patient_benefit_id INT NOT NULL AFTER benefit_id,
+ADD COLUMN patient_benefit_id INT NOT NULL AFTER id,
 ADD CONSTRAINT fk_claims_patient_benefit
 FOREIGN KEY (patient_benefit_id) REFERENCES patient_benefits(id);

@@ -9,7 +9,7 @@ import (
 
 func SeedDepartments(db *gorm.DB) {
 	departments := []entity.Department{
-		{Name: "Human Resources"},
+		{Name: "Human Resource"},
 		{Name: "Finance"},
 		{Name: "IT Support"},
 		{Name: "Human Capital"},
