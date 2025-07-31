@@ -113,12 +113,27 @@ CREATE TABLE benefits (
         ON UPDATE CASCADE
 );
 
--- claims
+CREATE TABLE patient_benefits (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    patient_id INT NOT NULL,
+    benefit_id INT NOT NULL,
+    remaining_plafond DECIMAL(10, 2) NOT NULL,
+    initial_plafond DECIMAL(10, 2) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE,
+    status ENUM('active', 'exhausted', 'expired') DEFAULT 'active',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES patients(id),
+    FOREIGN KEY (benefit_id) REFERENCES benefits(id),
+    UNIQUE (patient_id, benefit_id)
+);
+
 CREATE TABLE claims (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    -- patient_id INT NOT NULL, -- FK ke tabel patients
-    -- employee_id INT NOT NULL, -- FK ke tabel employees
-    -- benefit_id INT NOT NULL,
+    patient_benefit_id INT NOT NULL,   -- Link ke alokasi benefit spesifik pasien
+    patient_id INT NOT NULL,           -- Direct link ke pasien yang mengajukan klaim
+    employee_id INT NOT NULL,          -- Direct link ke employee yang mengajukan klaim
     claim_amount DECIMAL(10, 2) NOT NULL,
     transaction_type_id INT NULL,
     transaction_date DATE NULL,
@@ -134,6 +149,18 @@ CREATE TABLE claims (
     created_at DATETIME NOT NULL,
     updated_at DATETIME NULL,
     deleted_at DATETIME NULL,
+    CONSTRAINT fk_claims_patient_benefit
+        FOREIGN KEY (patient_benefit_id) REFERENCES patient_benefits(id)
+        ON DELETE RESTRICT -- Klaim penting, biasanya tidak dihapus otomatis
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_claims_patient
+        FOREIGN KEY (patient_id) REFERENCES patients(id)
+        ON DELETE RESTRICT -- Klaim penting, biasanya tidak dihapus otomatis
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_claims_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE RESTRICT -- Klaim penting, biasanya tidak dihapus otomatis
+        ON UPDATE CASCADE,
     CONSTRAINT fk_claims_transaction_type
         FOREIGN KEY (transaction_type_id) REFERENCES transaction_types(id)
         ON DELETE RESTRICT

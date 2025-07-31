@@ -9,7 +9,7 @@ import (
 type PlanType struct {
 	ID          uint   `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"unique;not null"`
-	Description *string
+	Description *string // TEXT bisa diwakili *string
 	Benefits    []Benefit    `gorm:"foreignKey:PlanTypeID"`
 	Employees   []Employee   `gorm:"foreignKey:PlanTypeID"`
 	FamilyMembers []FamilyMember `gorm:"foreignKey:PlanTypeID"`
@@ -31,22 +31,9 @@ type Department struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement"`
 	Name      string    `gorm:"unique;not null"`
 	CreatedAt time.Time `gorm:"not null;autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
+	UpdatedAt *time.Time `gorm:"autoUpdateTime"` // NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 	DeletedAt *gorm.DeletedAt `gorm:"index"`
 	Employees []Employee `gorm:"foreignKey:DepartmentID"`
-}
-
-type Patient struct {
-	ID            uint           `gorm:"primaryKey;autoIncrement"`
-	Name          string         `gorm:"not null"`
-	BirthDate     time.Time      `gorm:"type:date;not null"`
-	Gender        Genders        `gorm:"type:enum('male','female');not null"`
-	EmployeeID    *uint          `gorm:"uniqueIndex"` 
-	FamilyMemberID *uint         `gorm:"uniqueIndex"`
-	Employee      *Employee      `gorm:"foreignKey:EmployeeID"`
-	FamilyMember  *FamilyMember  `gorm:"foreignKey:FamilyMemberID"`
-	Claims        []Claim          `gorm:"foreignKey:PatientID"`
-	PatientBenefits []PatientBenefit `gorm:"foreignKey:PatientID"`
 }
 
 type Employee struct {
@@ -59,7 +46,7 @@ type Employee struct {
 	BirthDate     time.Time `gorm:"type:date;not null"`
 	Gender        Genders   `gorm:"type:enum('male','female');not null"`
 	PlanTypeID    uint      `gorm:"not null"`
-	Dependence    *string
+	Dependence    *string   // VARCHAR bisa *string jika NULLABLE, atau string jika NOT NULL
 	BankNumber    string    `gorm:"not null"`
 	JoinDate      time.Time `gorm:"type:date;not null"`
 	Patient       Patient   `gorm:"foreignKey:EmployeeID"`
@@ -77,8 +64,21 @@ type FamilyMember struct {
 	BirthDate   time.Time `gorm:"type:date;not null"`
 	Gender      Genders   `gorm:"type:enum('male','female');not null"`
 	Patient     Patient   `gorm:"foreignKey:FamilyMemberID"`
-	Employee    *Employee  `gorm:"foreignKey:EmployeeID"`
+	Employee    *Employee `gorm:"foreignKey:EmployeeID"`
 	PlanType    PlanType  `gorm:"foreignKey:PlanTypeID"`
+}
+
+type Patient struct {
+	ID            uint           `gorm:"primaryKey;autoIncrement"`
+	Name          string         `gorm:"not null"`
+	BirthDate     time.Time      `gorm:"type:date;not null"`
+	Gender        Genders        `gorm:"type:enum('male','female');not null"`
+	EmployeeID    *uint          `gorm:"uniqueIndex"`
+	FamilyMemberID *uint         `gorm:"uniqueIndex"`
+	Employee      *Employee      `gorm:"foreignKey:EmployeeID"`
+	FamilyMember  *FamilyMember  `gorm:"foreignKey:FamilyMemberID"`
+	Claims          []Claim          `gorm:"foreignKey:PatientID"`
+	PatientBenefits []PatientBenefit `gorm:"foreignKey:PatientID"`
 }
 
 type Benefit struct {
@@ -92,8 +92,7 @@ type Benefit struct {
 	YearlyMax        int            `gorm:"not null"`
 	PlanType         PlanType       `gorm:"foreignKey:PlanTypeID"`
 	LimitationType   LimitationType `gorm:"foreignKey:LimitationTypeID"`
-	Claims           []Claim        `gorm:"foreignKey:BenefitID"`
-	PatientBenefits  []PatientBenefit `gorm:"foreignKey:BenefitID"`
+	PatientBenefits  []PatientBenefit `gorm:"foreignKey:BenefitID"` // Ini sudah benar
 }
 
 type PatientBenefit struct {
@@ -115,16 +114,15 @@ type PatientBenefit struct {
 
 type Claim struct {
 	ID                  uint            `gorm:"primaryKey;autoIncrement"`
-	PatientID           uint            `gorm:"not null"`
-	EmployeeID          uint            `gorm:"not null"`
-	BenefitID           uint            `gorm:"not null"`
 	PatientBenefitID    uint            `gorm:"not null"`
+	PatientID           uint            `gorm:"not null"`
+	EmployeeID          uint            `gorm:"not null"` 
 	ClaimAmount         float64         `gorm:"type:decimal(10,2);not null"`
-	TransactionTypeID   uint            `gorm:"not null"`
-	TransactionDate     time.Time       `gorm:"type:date;not null"`
-	SubmissionDate      time.Time       `gorm:"type:date;not null"`
-	SLA                 SLA             `gorm:"type:enum('meet','overdue');not null"`
-	ApprovedAmount      float64         `gorm:"type:decimal(10,2);not null"`
+	TransactionTypeID   *uint           `gorm:"null"`
+	TransactionDate     *time.Time      `gorm:"type:date;null"`
+	SubmissionDate      *time.Time      `gorm:"type:date;null"`
+	SLA                 *SLA            `gorm:"type:enum('meet','overdue');null"`
+	ApprovedAmount      *float64        `gorm:"type:decimal(10,2);null"`
 	ClaimStatus         ClaimStatus     `gorm:"type:enum('On Plafond','Over Plafond');not null"`
 	MedicalFacilityName *string
 	City                *string
@@ -137,7 +135,6 @@ type Claim struct {
 
 	Patient         Patient         `gorm:"foreignKey:PatientID"`
 	Employee        Employee        `gorm:"foreignKey:EmployeeID"`
-	Benefit         Benefit         `gorm:"foreignKey:BenefitID"`
 	PatientBenefit  PatientBenefit  `gorm:"foreignKey:PatientBenefitID"`
-	TransactionType TransactionType `gorm:"foreignKey:TransactionTypeID"`
+	TransactionType *TransactionType `gorm:"foreignKey:TransactionTypeID"`
 }
