@@ -62,9 +62,11 @@ func (eu *EmployeeUseCase) Create(ctx context.Context, request *model.EmployeeRe
 		BankNumber: request.BankNumber,
 		JoinDate: time.Time(request.JoinDate),
 		Patient: entity.Patient{
+			PlanTypeID: request.PlanTypeID,
 			Name: request.Name,
 			BirthDate: time.Time(request.BirthDate),
 			Gender: entity.Genders(request.Gender),
+			FamilyMemberID: nil,
 		},
 	}
 

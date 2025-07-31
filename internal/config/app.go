@@ -32,6 +32,7 @@ func Bootstrap(config *BootstrapConfig) {
 	employeeRepository := repository.NewEmployeeRepository(config.Log)
 	familyMemberRepository := repository.NewFamilyMemberRepository(config.Log)
 	claimRepository := repository.NewClaimRepository(config.Log)
+	patientBenefitRepository := repository.NewPatientBenefitRepository(config.Log)
 
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, config.Validate)
 	transactionTypeUseCase := usecase.NewTransactionTypeUseCase(config.DB, config.Log, transactionTypeRepository, config.Validate)
@@ -41,7 +42,7 @@ func Bootstrap(config *BootstrapConfig) {
 	departmentUseCase := usecase.NewDepartmentUseCase(departmentRepository, config.DB, config.Log, config.Validate)
 	employeeUseCase := usecase.NewEmployeeUseCase(config.DB, config.Log, employeeRepository, config.Validate)
 	familyMemberUseCase := usecase.NewFamilyMemberUseCase(familyMemberRepository, config.DB, config.Validate, config.Log)
-	claimUseCase := usecase.NewClaimUseCase(claimRepository, config.DB, config.Validate, config.Log)
+	claimUseCase := usecase.NewClaimUseCase(claimRepository, config.DB, config.Validate, config.Log, patientBenefitRepository)
 
 	userController := http.NewUserController(userUseCase, config.Log, config.Config)
 	transactionTypeController := http.NewTransactionTypeController(transactionTypeUseCase, config.Log, config.Config)

@@ -76,20 +76,21 @@ CREATE TABLE patients (
     name VARCHAR(255) NOT NULL,
     birth_date DATE NOT NULL,
     gender ENUM('male', 'female') NOT NULL,
-    
-    -- Foreign Key ke Employee: NULLABLE karena patient mungkin bukan employee
-    employee_id INT UNIQUE, -- UNIQUE karena 1 employee punya 1 patient (jika ada)
-    -- Foreign Key ke FamilyMember: NULLABLE karena patient mungkin bukan family member
-    family_member_id INT UNIQUE, -- UNIQUE karena 1 family member punya 1 patient (jika ada)
+    employee_id INT UNIQUE, 
+    family_member_id INT UNIQUE, 
+    plan_type_id INT NOT NULL,
 
-    -- Kunci: ON DELETE CASCADE ada di sini
     CONSTRAINT fk_patients_employee_cascade
         FOREIGN KEY (employee_id) REFERENCES employees(id)
-        ON DELETE CASCADE -- Jika employee dihapus, patient juga dihapus
+        ON DELETE CASCADE 
         ON UPDATE CASCADE,
     CONSTRAINT fk_patients_family_member_cascade
         FOREIGN KEY (family_member_id) REFERENCES family_members(id)
-        ON DELETE CASCADE -- Jika family_member dihapus, patient juga dihapus
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_patients_plan_type
+        FOREIGN KEY (plan_type_id) REFERENCES plan_types(id)
+        ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
 

@@ -30,6 +30,7 @@ func (rc *RouteConfig) Setup() {
 	rc.DepartmentRoutes()
 	rc.EmployeeRoutes()
 	rc.FamilyMemberRoutes()
+	rc.ClaimRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -105,4 +106,11 @@ func (rc *RouteConfig) FamilyMemberRoutes() {
 	familyMember.Get("/", rc.FamilyMemberController.GetAll)
 	familyMember.Put("/:id", rc.FamilyMemberController.Update)
 	familyMember.Delete("/:id", rc.FamilyMemberController.Delete)
+}
+
+func (rc *RouteConfig) ClaimRoutes() {
+	claim := rc.App.Group("/api/v1/claims", rc.JWT.JWTProtected())
+	claim.Post("/", rc.ClaimController.CreateClaim)
+	claim.Get("/get-patients", rc.ClaimController.GetAllPatient)
+	claim.Get("/get-benefits/:patientId", rc.ClaimController.GetAllBenefits)
 }

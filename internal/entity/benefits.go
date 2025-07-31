@@ -75,10 +75,12 @@ type Patient struct {
 	Gender        Genders        `gorm:"type:enum('male','female');not null"`
 	EmployeeID    *uint          `gorm:"uniqueIndex"`
 	FamilyMemberID *uint         `gorm:"uniqueIndex"`
+	PlanTypeID    uint           `gorm:"not null"`
 	Employee      *Employee      `gorm:"foreignKey:EmployeeID"`
 	FamilyMember  *FamilyMember  `gorm:"foreignKey:FamilyMemberID"`
 	Claims          []Claim          `gorm:"foreignKey:PatientID"`
 	PatientBenefits []PatientBenefit `gorm:"foreignKey:PatientID"`
+	PlanType     PlanType      `gorm:"foreignKey:PlanTypeID"`
 }
 
 type Benefit struct {

@@ -3,6 +3,8 @@ package helper
 import (
 	"fmt"
 	"time"
+
+	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 )
 
 // CustomDate hanya untuk mem-parsing string "YYYY-MM-DD"
@@ -36,4 +38,15 @@ func (cd *CustomDate) UnmarshalJSON(data []byte) error {
 	}
 	*cd = CustomDate(t)
 	return nil
+}
+
+func DetermineSLAStatus(submissionTime time.Time) entity.SLA {
+	// Membuat objek waktu untuk jam 10 pagi di hari dan lokasi yang sama
+	cutoffTime := time.Date(submissionTime.Year(), submissionTime.Month(), submissionTime.Day(), 10, 0, 0, 0, submissionTime.Location())
+	
+	if submissionTime.Before(cutoffTime) {
+		return entity.SLAMeet
+	} else {
+		return entity.SLAOverdue
+	}
 }

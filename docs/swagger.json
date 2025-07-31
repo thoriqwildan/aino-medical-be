@@ -336,6 +336,165 @@
                 }
             }
         },
+        "/api/v1/claims": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Create a new claim with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Create a new claim",
+                "parameters": [
+                    {
+                        "description": "Create Claim Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ClaimRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ClaimResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/claims/get-benefits/{patientId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Find benefits by their attributes.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Find benefits",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BenefitResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/claims/get-patients": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Find patients by their attributes.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Find patients",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PatientResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/departments": {
             "get": {
                 "security": [
@@ -1834,6 +1993,97 @@
                 }
             }
         },
+        "model.ClaimRequest": {
+            "type": "object",
+            "properties": {
+                "benefit_code": {
+                    "type": "string"
+                },
+                "claim_amount": {
+                    "type": "number"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ClaimResponse": {
+            "type": "object",
+            "properties": {
+                "approved_amount": {
+                    "type": "number"
+                },
+                "benefit": {
+                    "$ref": "#/definitions/model.BenefitResponse"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "claim_amount": {
+                    "type": "number"
+                },
+                "claim_status": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "diagnosis": {
+                    "type": "string"
+                },
+                "doc_link": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "medical_facility": {
+                    "type": "string"
+                },
+                "patient": {
+                    "$ref": "#/definitions/model.PatientResponse"
+                },
+                "sla_status": {
+                    "type": "string"
+                },
+                "submission_date": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "type": "string"
+                },
+                "transaction_type": {
+                    "$ref": "#/definitions/model.TransactionTypeResponse"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ClaimResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/model.ClaimResponse"
+                },
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationPage"
+                }
+            }
+        },
         "model.CreateBenefitRequest": {
             "type": "object",
             "required": [
@@ -1985,6 +2235,12 @@
                 },
                 "email": {
                     "type": "string"
+                },
+                "family_members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.FamilyMemberResponse"
+                    }
                 },
                 "gender": {
                     "type": "string"
@@ -2206,6 +2462,47 @@
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.PatientResponse": {
+            "type": "object",
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "plan_type": {
+                    "$ref": "#/definitions/model.PlanTypeResponse"
+                }
+            }
+        },
+        "model.PatientResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/model.PatientResponse"
+                },
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationPage"
                 }
             }
         },

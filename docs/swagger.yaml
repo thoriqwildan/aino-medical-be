@@ -33,6 +33,66 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
+  model.ClaimRequest:
+    properties:
+      benefit_code:
+        type: string
+      claim_amount:
+        type: number
+      patient_id:
+        type: integer
+    type: object
+  model.ClaimResponse:
+    properties:
+      approved_amount:
+        type: number
+      benefit:
+        $ref: '#/definitions/model.BenefitResponse'
+      city:
+        type: string
+      claim_amount:
+        type: number
+      claim_status:
+        type: string
+      created_at:
+        type: string
+      diagnosis:
+        type: string
+      doc_link:
+        type: string
+      id:
+        type: integer
+      medical_facility:
+        type: string
+      patient:
+        $ref: '#/definitions/model.PatientResponse'
+      sla_status:
+        type: string
+      submission_date:
+        type: string
+      transaction_date:
+        type: string
+      transaction_status:
+        type: string
+      transaction_type:
+        $ref: '#/definitions/model.TransactionTypeResponse'
+      updated_at:
+        type: string
+    type: object
+  model.ClaimResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.ClaimResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
   model.CreateBenefitRequest:
     properties:
       code:
@@ -139,6 +199,10 @@ definitions:
         type: string
       email:
         type: string
+      family_members:
+        items:
+          $ref: '#/definitions/model.FamilyMemberResponse'
+        type: array
       gender:
         type: string
       id:
@@ -290,6 +354,33 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  model.PatientResponse:
+    properties:
+      birth_date:
+        type: string
+      gender:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      plan_type:
+        $ref: '#/definitions/model.PlanTypeResponse'
+    type: object
+  model.PatientResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.PatientResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
     type: object
   model.PlanTypeRequest:
     properties:
@@ -754,6 +845,107 @@ paths:
       summary: Update a benefit type
       tags:
       - Benefit Types
+  /api/v1/claims:
+    post:
+      consumes:
+      - application/json
+      description: Create a new claim with the provided details.
+      parameters:
+      - description: Create Claim Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ClaimRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ClaimResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Create a new claim
+      tags:
+      - Claims
+  /api/v1/claims/get-benefits/{patientId}:
+    get:
+      consumes:
+      - application/json
+      description: Find benefits by their attributes.
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find benefits
+      tags:
+      - Claims
+  /api/v1/claims/get-patients:
+    get:
+      consumes:
+      - application/json
+      description: Find patients by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find patients
+      tags:
+      - Claims
   /api/v1/departments:
     get:
       consumes:

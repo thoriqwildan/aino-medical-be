@@ -52,6 +52,7 @@ func (uc *FamilyMemberUseCase) Create(ctx context.Context, request *model.Family
 		BirthDate: time.Time(request.BirthDate),
 		Gender: entity.Genders(request.Gender),
 		Patient: entity.Patient{
+			PlanTypeID: employee.PlanTypeID,
 			Name: request.Name,
 			BirthDate: time.Time(request.BirthDate),
 			Gender: entity.Genders(request.Gender),
