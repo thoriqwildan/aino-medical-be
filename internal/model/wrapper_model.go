@@ -43,3 +43,7 @@ type ClaimResponseWrapper struct {
 type PatientResponseWrapper struct {
 	WebResponse[PatientResponse]
 }
+
+type ClaimResponseListWrapper struct {
+	WebResponse[[]ClaimResponse]
+}

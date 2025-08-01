@@ -337,6 +337,99 @@
             }
         },
         "/api/v1/claims": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Find claims by their attributes.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Find claims",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of items per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date for filtering in YYYY-MM-DD format",
+                        "name": "date_from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date for filtering in YYYY-MM-DD format",
+                        "name": "date_to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Department name for filtering",
+                        "name": "department",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Transaction type name for filtering",
+                        "name": "transaction_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "SLA status for filtering (e.g., meet, overdue)",
+                        "name": "sla_status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Claim status for filtering (e.g., On Plafond, Over Plafond)",
+                        "name": "claim_status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Transaction status for filtering (e.g., Successful, Pending, Failed)",
+                        "name": "transaction_status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ClaimResponseListWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -496,6 +589,50 @@
             }
         },
         "/api/v1/claims/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Get a claim by its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Get a claim by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Claim ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ClaimResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
             "put": {
                 "security": [
                     {
@@ -520,6 +657,50 @@
                             "$ref": "#/definitions/model.UpdateClaimRequest"
                         }
                     },
+                    {
+                        "type": "string",
+                        "description": "Claim ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ClaimResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Delete a claim with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Delete a claim",
+                "parameters": [
                     {
                         "type": "string",
                         "description": "Claim ID",
@@ -2115,6 +2296,30 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "model.ClaimResponseListWrapper": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ClaimResponse"
+                    }
+                },
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationPage"
                 }
             }
         },

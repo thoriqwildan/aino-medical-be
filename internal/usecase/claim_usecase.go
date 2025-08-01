@@ -163,7 +163,7 @@ func (uc *ClaimUseCase) GetBenefit(ctx context.Context, request *model.PagingQue
 		return nil, 0, err
 	}
 
-	benefits, total, err := uc.Repository.GetBenefits(tx, request, patient.PlanType.ID)
+	benefits, total, err := uc.Repository.GetBenefits(tx, request, patient.PlanTypeID)
 	if err != nil {
 		uc.Log.WithError(err).Error("Failed to get benefits")
 		return nil, 0, err
@@ -258,4 +258,88 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 	}
 
 	return converter.ClaimToResponse(claim), nil
+}
+
+func (uc *ClaimUseCase) GetClaim(ctx context.Context, id uint) (*model.ClaimResponse, error) {
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	claim := &entity.Claim{}
+	if err := uc.Repository.GetByID(tx, claim, id); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			uc.Log.WithField("id", id).Error("Claim not found in GetClaim")
+			return nil, fiber.NewError(fiber.StatusNotFound, "Claim not found")
+		}
+		uc.Log.WithError(err).Error("Failed to get claim by ID in GetClaim")
+		return nil, err
+	}
+
+	response := converter.ClaimToResponse(claim)
+	return response, nil
+}
+
+func (uc *ClaimUseCase) DeleteClaim(ctx context.Context, id uint) error {
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	claim := &entity.Claim{}
+	if err := uc.Repository.GetByID(tx, claim, id); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			uc.Log.WithField("id", id).Error("Claim not found in DeleteClaim")
+			return fiber.NewError(fiber.StatusNotFound, "Claim not found")
+		}
+		uc.Log.WithError(err).Error("Failed to get claim by ID in DeleteClaim")
+		return err
+	}
+
+	patientBenefit := &entity.PatientBenefit{}
+	if err := uc.PatientBenefitRepository.FindById(tx, patientBenefit, claim.PatientBenefitID); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			uc.Log.WithField("patientBenefitId", claim.PatientBenefitID).Error("Patient benefit not found in DeleteClaim")
+			return fiber.NewError(fiber.StatusNotFound, "Patient benefit not found")
+		}
+		uc.Log.WithError(err).Error("Failed to get patient benefit by ID in DeleteClaim")
+		return err
+	}
+	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, -(*claim.ApprovedAmount)); err != nil {
+		uc.Log.WithError(err).Error("Failed to restore patient benefit balance in DeleteClaim")
+		if err == gorm.ErrInvalidData {
+			return fiber.NewError(fiber.StatusBadRequest, "Invalid patient benefit data")
+		}
+		return err
+	}
+
+	if err := uc.Repository.Delete(tx, claim); err != nil {
+		uc.Log.WithError(err).Error("Failed to delete claim")
+		return err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		uc.Log.WithError(err).Error("Failed to commit transaction in DeleteClaim")
+		return err
+	}
+	uc.Log.WithField("id", id).Info("Claim deleted successfully")
+	return nil
+}
+
+func (uc *ClaimUseCase) GetAll(ctx context.Context, request *model.ClaimFilterQuery) ([]model.ClaimResponse, int64, error) {
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	if err := uc.Validate.Struct(request); err != nil {
+		uc.Log.WithError(err).Error("Validation error in GetAllClaims")
+		return nil, 0, err
+	}
+
+	claims, total, err := uc.Repository.FindAllWithQuery(tx, request)
+	if err != nil {
+		uc.Log.WithError(err).Error("Error searching claims")
+		return nil, 0, err
+	}
+
+	responses := make([]model.ClaimResponse, len(claims))
+	for i, c := range claims {
+		responses[i] = *converter.ClaimToResponse(&c)
+	}
+	return responses, total, nil
 }

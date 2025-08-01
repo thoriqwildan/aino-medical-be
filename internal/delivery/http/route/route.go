@@ -114,4 +114,7 @@ func (rc *RouteConfig) ClaimRoutes() {
 	claim.Get("/get-patients", rc.ClaimController.GetAllPatient)
 	claim.Get("/get-benefits/:patientId", rc.ClaimController.GetAllBenefits)
 	claim.Put("/:id", rc.ClaimController.Update)
+	claim.Get("/:id", rc.ClaimController.GetById)
+	claim.Delete("/:id", rc.ClaimController.Delete)
+	claim.Get("/", rc.ClaimController.GetAll)
 }

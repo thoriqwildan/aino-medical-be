@@ -116,11 +116,20 @@ func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
 }
 
 func PatientToResponse(patient *entity.Patient) *model.PatientResponse {
-	return &model.PatientResponse{
+	result := &model.PatientResponse{
 		ID:        patient.ID,
 		Name:      patient.Name,
 		BirthDate: helper.CustomDate(patient.BirthDate),
 		Gender: string(patient.Gender),
 		PlanType: *PlanTypeToResponse(&patient.PlanType),
 	}
+
+	if patient.Employee != nil {
+		result.Employee = EmployeeToResponse(patient.Employee)
+	} else if patient.FamilyMember != nil && patient.FamilyMember.Employee != nil {
+		result.Employee = EmployeeToResponse(patient.FamilyMember.Employee)
+	} else {
+		result.Employee = nil
+	}
+	return result
 }

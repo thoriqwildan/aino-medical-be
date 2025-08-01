@@ -79,6 +79,22 @@ definitions:
       updated_at:
         type: string
     type: object
+  model.ClaimResponseListWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.ClaimResponse'
+        type: array
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
   model.ClaimResponseWrapper:
     properties:
       access_token:
@@ -888,6 +904,68 @@ paths:
       tags:
       - Benefit Types
   /api/v1/claims:
+    get:
+      consumes:
+      - application/json
+      description: Find claims by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Start date for filtering in YYYY-MM-DD format
+        in: query
+        name: date_from
+        type: string
+      - description: End date for filtering in YYYY-MM-DD format
+        in: query
+        name: date_to
+        type: string
+      - description: Department name for filtering
+        in: query
+        name: department
+        type: string
+      - description: Transaction type name for filtering
+        in: query
+        name: transaction_type
+        type: string
+      - description: SLA status for filtering (e.g., meet, overdue)
+        in: query
+        name: sla_status
+        type: string
+      - description: Claim status for filtering (e.g., On Plafond, Over Plafond)
+        in: query
+        name: claim_status
+        type: string
+      - description: Transaction status for filtering (e.g., Successful, Pending,
+          Failed)
+        in: query
+        name: transaction_status
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ClaimResponseListWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Find claims
+      tags:
+      - Claims
     post:
       consumes:
       - application/json
@@ -918,6 +996,62 @@ paths:
       tags:
       - Claims
   /api/v1/claims/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a claim with the provided details.
+      parameters:
+      - description: Claim ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ClaimResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Delete a claim
+      tags:
+      - Claims
+    get:
+      consumes:
+      - application/json
+      description: Get a claim by its ID.
+      parameters:
+      - description: Claim ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ClaimResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Get a claim by ID
+      tags:
+      - Claims
     put:
       consumes:
       - application/json

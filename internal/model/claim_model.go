@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"github.com/thoriqwildan/aino-medical-be/internal/helper"
 )
 
@@ -13,11 +14,12 @@ type ClaimRequest struct {
 }
 
 type PatientResponse struct {
-	ID            uint      `json:"id"`
-	Name					string    `json:"name"`
-	BirthDate		 helper.CustomDate    `json:"birth_date"`
-	Gender       string 	`json:"gender"`
-	PlanType     PlanTypeResponse `json:"plan_type"`
+	ID           uint      `json:"id"`
+	Name        string    `json:"name"`
+	BirthDate   helper.CustomDate    `json:"birth_date"`
+	Gender      string 	`json:"gender"`
+	PlanType    PlanTypeResponse `json:"plan_type"`
+	Employee    *EmployeeResponse `json:"employee,omitempty"`
 }
 
 type ClaimResponse struct {
@@ -53,4 +55,16 @@ type UpdateClaimRequest struct {
 	Diagnosis           *string   `json:"diagnosis"`
 	DocLink             *string   `json:"doc_link"`
 	TransactionStatus   string    `json:"transaction_status" validate:"required,oneof='Successful' 'Pending' 'Failed'"`
+}
+
+type ClaimFilterQuery struct {
+  DateFrom          string                `form:"date_from"`
+  DateTo            string                `form:"date_to"`
+  Department        string                `form:"department"`
+  TransactionType   string                `form:"transaction_type"`
+  SLAStatus         entity.SLA            `form:"sla_status"`
+  ClaimStatus       entity.ClaimStatus    `form:"claim_status"`
+  TransactionStatus entity.TransactionStatus `form:"transaction_status"`
+	Page int `json:"page,omitempty" validate:"omitempty,numeric"`
+	Limit int `json:"limit,omitempty" validate:"omitempty,numeric"`
 }
