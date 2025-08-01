@@ -495,6 +495,61 @@
                 }
             }
         },
+        "/api/v1/claims/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth api_key": []
+                    }
+                ],
+                "description": "Update a claim with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Update a claim",
+                "parameters": [
+                    {
+                        "description": "Update Claim Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateClaimRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Claim ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ClaimResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/departments": {
             "get": {
                 "security": [
@@ -1962,13 +2017,13 @@
                     "type": "string"
                 },
                 "plafond": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "plan_type": {
                     "$ref": "#/definitions/model.PlanTypeResponse"
                 },
                 "yearly_max": {
-                    "type": "integer"
+                    "type": "number"
                 }
             }
         },
@@ -2664,6 +2719,66 @@
                 },
                 "yearly_max": {
                     "type": "number"
+                }
+            }
+        },
+        "model.UpdateClaimRequest": {
+            "type": "object",
+            "required": [
+                "claim_amount",
+                "claim_status",
+                "id",
+                "transaction_status"
+            ],
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "claim_amount": {
+                    "type": "number"
+                },
+                "claim_status": {
+                    "type": "string",
+                    "enum": [
+                        "On Plafond",
+                        "Over Plafond"
+                    ]
+                },
+                "diagnosis": {
+                    "type": "string"
+                },
+                "doc_link": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "medical_facility": {
+                    "type": "string"
+                },
+                "sla": {
+                    "type": "string",
+                    "enum": [
+                        "meet",
+                        "overdue"
+                    ]
+                },
+                "submission_date": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "type": "string",
+                    "enum": [
+                        "Successful",
+                        "Pending",
+                        "Failed"
+                    ]
+                },
+                "transaction_type_id": {
+                    "type": "integer"
                 }
             }
         },

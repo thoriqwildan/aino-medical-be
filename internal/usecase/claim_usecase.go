@@ -18,18 +18,20 @@ import (
 type ClaimUseCase struct {
 	Repository *repository.ClaimRepository
 	PatientBenefitRepository *repository.PatientBenefitRepository
+	BenefitRepository *repository.BenefitRepository
 	Log *logrus.Logger
 	DB *gorm.DB
 	Validate *validator.Validate
 }
 
-func NewClaimUseCase(repo *repository.ClaimRepository, db *gorm.DB, validate *validator.Validate, log *logrus.Logger, patientBenefitRepository *repository.PatientBenefitRepository) *ClaimUseCase {
+func NewClaimUseCase(repo *repository.ClaimRepository, db *gorm.DB, validate *validator.Validate, log *logrus.Logger, patientBenefitRepository *repository.PatientBenefitRepository, benefitRepository *repository.BenefitRepository) *ClaimUseCase {
 	return &ClaimUseCase{
 		Repository: repo,
 		DB: db,
 		Validate: validate,
 		Log: log,
 		PatientBenefitRepository: patientBenefitRepository,
+		BenefitRepository: benefitRepository,
 	}
 }
 
@@ -172,4 +174,88 @@ func (uc *ClaimUseCase) GetBenefit(ctx context.Context, request *model.PagingQue
 		responses[i] = *converter.BenefitToResponse(&b)
 	}
 	return responses, total, nil
+}
+
+func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateClaimRequest) (*model.ClaimResponse, error) {
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	if err := uc.Validate.Struct(request); err != nil {
+		uc.Log.WithError(err).Error("Validation error in UpdateClaimRequest")
+		return nil, err
+	}
+
+	now := time.Now()
+	SLA := helper.DetermineSLAStatus(now)
+	startDateOfCurrentYear := time.Date(now.Year(), time.January, 1, 0, 0, 0, 0, now.Location())
+
+	claim := &entity.Claim{}
+	if err := uc.Repository.GetByID(tx, claim, request.ID); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			uc.Log.WithField("id", request.ID).Error("Claim not found in UpdateClaim")
+			return nil, fiber.NewError(fiber.StatusNotFound, "Claim not found")
+		}
+		uc.Log.WithError(err).Error("Failed to get claim by ID in UpdateClaim")
+		return nil, err
+	}
+
+	benefit := &entity.Benefit{}
+	if err := uc.BenefitRepository.GetById(tx, claim.PatientBenefit.BenefitID, benefit); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			uc.Log.WithField("benefitId", claim.PatientBenefit.BenefitID).Error("Benefit not found in UpdateClaim")
+			return nil, fiber.NewError(fiber.StatusNotFound, "Benefit not found")
+		}
+		uc.Log.WithError(err).Error("Failed to get benefit by ID in UpdateClaim")
+		return nil, err
+	}
+
+	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, claim.PatientID, benefit.ID, float64(benefit.Plafond), startDateOfCurrentYear)
+	if err != nil {
+		uc.Log.WithError(err).Error("Failed to find or create patient benefit in UpdateClaim")
+		return nil, err
+	}
+
+	patientBenefit.RemainingPlafond += *claim.ApprovedAmount
+	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, request.ClaimAmount); err != nil {
+		uc.Log.WithError(err).Error("Failed to reduce patient benefit balance in UpdateClaim")
+		if err == gorm.ErrInvalidData {
+			return nil, fiber.NewError(fiber.StatusBadRequest, "Insufficient benefit balance")
+		}
+		return nil, err
+	}
+
+	claim.ClaimAmount = request.ClaimAmount
+	claim.SLA = &SLA
+	claim.TransactionTypeID = request.TransactionTypeID
+	claim.TransactionStatus = entity.TransactionStatus(request.TransactionStatus)
+	if patientBenefit.RemainingPlafond < request.ClaimAmount {
+		claim.ClaimStatus = entity.ClaimStatusOverPlafond
+		claim.ApprovedAmount = &patientBenefit.RemainingPlafond
+	} else {
+		claim.ClaimStatus = entity.ClaimStatusOnPlafond
+		claim.ApprovedAmount = &request.ClaimAmount
+	}
+	claim.SubmissionDate = (*time.Time)(request.SubmissionDate)
+	claim.City = request.City
+	claim.Diagnosis = request.Diagnosis
+	claim.MedicalFacilityName = request.MedicalFacility
+	claim.DocLink = request.DocLink
+	claim.TransactionDate = (*time.Time)(request.TransactionDate)
+
+	if err := uc.Repository.Update(tx, claim); err != nil {
+		uc.Log.WithError(err).Error("Failed to update claim")
+		return nil, err
+	}
+
+	if err := uc.Repository.GetByID(tx, claim, claim.ID); err != nil {
+		uc.Log.WithError(err).Error("Failed to retrieve claim by ID after update")
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		uc.Log.WithError(err).Error("Failed to commit transaction in UpdateClaim")
+		return nil, err
+	}
+
+	return converter.ClaimToResponse(claim), nil
 }

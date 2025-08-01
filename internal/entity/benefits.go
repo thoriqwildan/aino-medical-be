@@ -90,8 +90,8 @@ type Benefit struct {
 	Detail           *string
 	Code             string         `gorm:"unique;not null"`
 	LimitationTypeID uint           `gorm:"not null"`
-	Plafond          int            `gorm:"not null"`
-	YearlyMax        int            `gorm:"not null"`
+	Plafond          float64        `gorm:"not null"`
+	YearlyMax        float64        `gorm:"not null"`
 	PlanType         PlanType       `gorm:"foreignKey:PlanTypeID"`
 	LimitationType   LimitationType `gorm:"foreignKey:LimitationTypeID"`
 	PatientBenefits  []PatientBenefit `gorm:"foreignKey:BenefitID"` // Ini sudah benar

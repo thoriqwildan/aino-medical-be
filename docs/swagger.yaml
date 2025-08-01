@@ -13,11 +13,11 @@ definitions:
       name:
         type: string
       plafond:
-        type: integer
+        type: number
       plan_type:
         $ref: '#/definitions/model.PlanTypeResponse'
       yearly_max:
-        type: integer
+        type: number
     type: object
   model.BenefitResponseWrapper:
     properties:
@@ -494,6 +494,48 @@ definitions:
     - name
     - plan_type_id
     type: object
+  model.UpdateClaimRequest:
+    properties:
+      city:
+        type: string
+      claim_amount:
+        type: number
+      claim_status:
+        enum:
+        - On Plafond
+        - Over Plafond
+        type: string
+      diagnosis:
+        type: string
+      doc_link:
+        type: string
+      id:
+        type: integer
+      medical_facility:
+        type: string
+      sla:
+        enum:
+        - meet
+        - overdue
+        type: string
+      submission_date:
+        type: string
+      transaction_date:
+        type: string
+      transaction_status:
+        enum:
+        - Successful
+        - Pending
+        - Failed
+        type: string
+      transaction_type_id:
+        type: integer
+    required:
+    - claim_amount
+    - claim_status
+    - id
+    - transaction_status
+    type: object
   model.UpdateDepartmentRequest:
     properties:
       id:
@@ -873,6 +915,41 @@ paths:
       security:
       - BearerAuth api_key: []
       summary: Create a new claim
+      tags:
+      - Claims
+  /api/v1/claims/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a claim with the provided details.
+      parameters:
+      - description: Update Claim Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateClaimRequest'
+      - description: Claim ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ClaimResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth api_key: []
+      summary: Update a claim
       tags:
       - Claims
   /api/v1/claims/get-benefits/{patientId}:

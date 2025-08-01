@@ -102,8 +102,8 @@ CREATE TABLE benefits (
     detail TEXT,
     code VARCHAR(255) UNIQUE NOT NULL,
     limitation_type_id INT NOT NULL,
-    plafond INT NOT NULL,
-    yearly_max INT NOT NULL,
+    plafond DECIMAL(18, 2) NOT NULL,
+    yearly_max DECIMAL(18, 2) NOT NULL,
     CONSTRAINT fk_benefits_plan_type
         FOREIGN KEY (plan_type_id) REFERENCES plan_types(id)
         ON DELETE RESTRICT
@@ -118,8 +118,8 @@ CREATE TABLE patient_benefits (
     id INT PRIMARY KEY AUTO_INCREMENT,
     patient_id INT NOT NULL,
     benefit_id INT NOT NULL,
-    remaining_plafond DECIMAL(10, 2) NOT NULL,
-    initial_plafond DECIMAL(10, 2) NOT NULL,
+    remaining_plafond DECIMAL(18, 2) NOT NULL,
+    initial_plafond DECIMAL(18, 2) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE,
     status ENUM('active', 'exhausted', 'expired') DEFAULT 'active',

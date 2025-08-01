@@ -136,3 +136,43 @@ func (c *ClaimController) GetAllBenefits(ctx *fiber.Ctx) error {
 		Meta: paging,
 	})
 }
+
+// @Router /api/v1/claims/{id} [put]
+// @Param  request body model.UpdateClaimRequest true "Update Claim Request"
+// @Param id path string true "Claim ID"
+// @Success 200 {object} model.ClaimResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Claims
+// @Security    BearerAuth api_key
+// @Summary Update a claim
+// @Description Update a claim with the provided details.
+// @Accept json
+func (c *ClaimController) Update(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	if id == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "ID is required")
+	}
+
+	request := new(model.UpdateClaimRequest)
+	ctx.BodyParser(&request)
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		c.Log.WithError(err).Error("Invalid ID format for update")
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid ID format")
+	}
+	request.ID = uint(idInt)
+
+	response, err := c.UseCase.UpdateClaim(ctx.Context(), request)
+	if err != nil {
+		c.Log.WithError(err).Error("Error updating claim")
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.ClaimResponse]{
+		Code: fiber.StatusOK,
+		Message: "Claim updated successfully",
+		Data: response,
+	})
+}

@@ -42,13 +42,11 @@ type ClaimResponse struct {
 
 type UpdateClaimRequest struct {
 	ID                  uint      `json:"id" validate:"required"`
-	PatientID           uint      `json:"patient_id" validate:"required"`
 	ClaimAmount         float64   `json:"claim_amount" validate:"required"`
 	TransactionTypeID   *uint     `json:"transaction_type_id"`
 	TransactionDate     *helper.CustomDate `json:"transaction_date"`
 	SubmissionDate      *helper.CustomDate `json:"submission_date"`
 	SLA                 *string   `json:"sla" validate:"omitempty,oneof='meet' 'overdue'"`
-	ApprovedAmount      *float64  `json:"approved_amount"`
 	ClaimStatus         string    `json:"claim_status" validate:"required,oneof='On Plafond' 'Over Plafond'"`
 	MedicalFacility     *string   `json:"medical_facility"`
 	City                *string   `json:"city"`
