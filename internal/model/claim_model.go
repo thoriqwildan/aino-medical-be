@@ -40,6 +40,7 @@ type ClaimResponse struct {
 	TransactionType TransactionTypeResponse `json:"transaction_type"`
 	Patient PatientResponse `json:"patient"`
 	Benefit BenefitResponse `json:"benefit"`
+	Employee *EmployeeResponse `json:"employee,omitempty"`
 }
 
 type UpdateClaimRequest struct {

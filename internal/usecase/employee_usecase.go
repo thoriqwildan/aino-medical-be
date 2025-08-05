@@ -151,6 +151,8 @@ func (eu *EmployeeUseCase) Update(ctx context.Context, request *model.UpdateEmpl
 		return nil, fiber.NewError(fiber.StatusNotFound, "Department not found")
 	}
 
+	eu.Log.Info("Plan Type ID:", request.PlanTypeID)
+
 	// Update fields
 	employee.Name = request.Name
 	employee.Position = request.Position

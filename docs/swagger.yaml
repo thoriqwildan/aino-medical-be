@@ -60,6 +60,8 @@ definitions:
         type: string
       doc_link:
         type: string
+      employee:
+        $ref: '#/definitions/model.EmployeeResponse'
       id:
         type: integer
       medical_facility:
@@ -375,6 +377,8 @@ definitions:
     properties:
       birth_date:
         type: string
+      employee:
+        $ref: '#/definitions/model.EmployeeResponse'
       gender:
         type: string
       id:
@@ -687,7 +691,7 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
-host: 192.168.110.65:3000
+host: 192.168.74.32:3000
 info:
   contact: {}
   description: Enter your API Key as X-API-Key header value

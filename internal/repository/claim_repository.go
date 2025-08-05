@@ -30,6 +30,7 @@ func(r *ClaimRepository) GetBenefitByCode(db *gorm.DB, benefit *entity.Benefit, 
 func (r *ClaimRepository) GetByID(db *gorm.DB, claim *entity.Claim, id any) error {
 	return db.Where("id = ?", id).
 				Preload("Patient").
+				Preload("Employee").
 				Preload("PatientBenefit.Benefit").
 				Preload("PatientBenefit.Benefit.PlanType").
 				Preload("PatientBenefit.Benefit.LimitationType").

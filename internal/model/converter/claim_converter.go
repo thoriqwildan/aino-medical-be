@@ -9,7 +9,6 @@ import (
 )
 
 func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
-	// Inisialisasi variabel untuk menampung nilai yang sudah di-cek nil
 	var transactionDate helper.CustomDate
 	var submissionDate helper.CustomDate
 	var slaStatus string
@@ -18,14 +17,12 @@ func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
 	var city string
 	var diagnosis string
 	var docLink string
-	var updatedAt *time.Time // UpdatedAt di entity adalah *time.Time, jadi di response bisa juga pointer atau nil
+	var updatedAt *time.Time
 
-	// Lakukan pengecekan nil untuk setiap pointer
 	if claim.TransactionDate != nil {
 		transactionDate = helper.CustomDate(*claim.TransactionDate)
 	} else {
-		// Jika nil, berikan nilai default atau kosong
-		transactionDate = helper.CustomDate(time.Time{}) // Atau sesuaikan default yang Anda inginkan
+		transactionDate = helper.CustomDate(time.Time{})
 	}
 
 	if claim.SubmissionDate != nil {
@@ -37,19 +34,19 @@ func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
 	if claim.SLA != nil {
 		slaStatus = string(*claim.SLA)
 	} else {
-		slaStatus = "" // Atau nilai default lainnya untuk SLAStatus
+		slaStatus = ""
 	}
 
 	if claim.ApprovedAmount != nil {
 		approvedAmount = *claim.ApprovedAmount
 	} else {
-		approvedAmount = 0.0 // Atau nilai default lainnya untuk ApprovedAmount
+		approvedAmount = 0.0
 	}
 
 	if claim.MedicalFacilityName != nil {
 		medicalFacility = *claim.MedicalFacilityName
 	} else {
-		medicalFacility = "" // String kosong jika nil
+		medicalFacility = ""
 	}
 
 	if claim.City != nil {
@@ -71,9 +68,9 @@ func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
 	}
 
 	if claim.UpdatedAt != nil {
-		updatedAt = claim.UpdatedAt // Cukup assign langsung karena sudah *time.Time
+		updatedAt = claim.UpdatedAt
 	} else {
-		updatedAt = nil // Tetap nil jika dari DB nil
+		updatedAt = nil
 	}
 
 
@@ -84,28 +81,31 @@ func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
 		SubmissionDate:    submissionDate,
 		SLAStatus:         slaStatus,
 		ApprovedAmount:    approvedAmount,
-		ClaimStatus:       string(claim.ClaimStatus),       // ClaimStatus bukan pointer, aman
+		ClaimStatus:       string(claim.ClaimStatus),
 		MedicalFacility:   medicalFacility,
 		City:              city,
 		Diagnosis:         diagnosis,
 		DocLink:           docLink,
-		TransactionStatus: string(claim.TransactionStatus), // TransactionStatus bukan pointer, aman
-		CreatedAt:         claim.CreatedAt,                 // CreatedAt bukan pointer, aman
-		UpdatedAt:         updatedAt,                       // Menggunakan variabel yang sudah di-cek nil
+		TransactionStatus: string(claim.TransactionStatus),
+		CreatedAt:         claim.CreatedAt,  
+		UpdatedAt:         updatedAt,                       
 	}
 
-	// Bagian ini sudah cukup aman karena ada nil check-nya
 	if claim.TransactionType != nil {
 		result.TransactionType = *TransactionTypeToResponse(claim.TransactionType)
 	}
 
-	if claim.Patient.ID != 0 { // Patient bukan pointer, cek ID 0 adalah cara aman untuk struct
+	if claim.Patient.ID != 0 {
 		result.Patient = model.PatientResponse{
 			ID:        claim.Patient.ID,
 			Name:      claim.Patient.Name,
 			BirthDate: helper.CustomDate(claim.Patient.BirthDate),
 			Gender:    string(claim.Patient.Gender),
 		}
+	}
+
+	if claim.Employee.ID != 0 {
+		result.Employee = EmployeeToResponse(&claim.Employee)
 	}
 
 	if claim.PatientBenefit.BenefitID != 0 { // PatientBenefit bukan pointer, cek BenefitID 0 adalah cara aman
