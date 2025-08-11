@@ -17,6 +17,7 @@ type BenefitResponse struct {
 	Code string `json:"code"`
 	Plafond *float64 `json:"plafond,omitempty"`
 	YearlyMax *float64 `json:"yearly_max,omitempty"`
+	RemainingPlafond *float64 `json:"remaining_plafond,omitempty"`
 	PlanType PlanTypeResponse `json:"plan_type"`
 	LimitationType LimitationTypeResponse `json:"limitation_type"`
 }

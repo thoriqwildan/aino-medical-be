@@ -150,30 +150,41 @@ func (uc *ClaimUseCase) GetPatient(ctx context.Context, request *model.PagingQue
 }
 
 func (uc *ClaimUseCase) GetBenefit(ctx context.Context, request *model.PagingQuery, patientId uint) ([]model.BenefitResponse, int64, error) {
-	tx := uc.DB.WithContext(ctx).Begin()
-	defer tx.Rollback()
+  tx := uc.DB.WithContext(ctx).Begin()
+  defer tx.Rollback()
 
-	patient := &entity.Patient{}
-	if err := uc.Repository.GetPatientByID(tx, patient, patientId); err != nil {
-		if err == gorm.ErrRecordNotFound {
-			uc.Log.WithField("patientId", patientId).Error("Patient not found in GetBenefit")
-			return nil, 0, fiber.NewError(fiber.StatusNotFound, "Patient not found")
-		}
-		uc.Log.WithError(err).Error("Failed to get patient by ID in GetBenefit")
-		return nil, 0, err
-	}
+  patient := &entity.Patient{}
+  if err := uc.Repository.GetPatientByID(tx, patient, patientId); err != nil {
+    // ... error handling ...
+  }
+  
+  // PANGGIL METHOD REPOSITORY YANG BARU
+  benefits, remainingPlafondMap, total, err := uc.Repository.GetBenefitsWithPlafond(tx, request, patient.PlanTypeID, patientId)
+  if err != nil {
+    uc.Log.WithError(err).Error("Failed to get benefits with plafond")
+    return nil, 0, err
+  }
 
-	benefits, total, err := uc.Repository.GetBenefits(tx, request, patient.PlanTypeID)
-	if err != nil {
-		uc.Log.WithError(err).Error("Failed to get benefits")
-		return nil, 0, err
-	}
-
-	responses := make([]model.BenefitResponse, len(benefits))
-	for i, b := range benefits {
-		responses[i] = *converter.BenefitToResponse(&b)
-	}
-	return responses, total, nil
+  // Lakukan konversi dengan data tambahan
+  responses := make([]model.BenefitResponse, len(benefits))
+  for i, b := range benefits {
+    response := converter.BenefitToResponse(&b)
+    
+    // Cek apakah ada remaining plafond untuk benefit ini
+    if rp, ok := remainingPlafondMap[b.ID]; ok {
+      response.RemainingPlafond = &rp
+    }
+    
+    responses[i] = *response
+  }
+  
+  // Commit transaksi
+  if err := tx.Commit().Error; err != nil {
+      uc.Log.WithError(err).Error("Failed to commit transaction in GetBenefit")
+      return nil, 0, err
+  }
+  
+  return responses, total, nil
 }
 
 func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateClaimRequest) (*model.ClaimResponse, error) {

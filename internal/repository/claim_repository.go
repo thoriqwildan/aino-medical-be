@@ -94,6 +94,48 @@ func (r *ClaimRepository) GetBenefits(db *gorm.DB, request *model.PagingQuery, p
 	return benefits, total, nil
 }
 
+func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.PagingQuery, planTypeID uint, patientID uint) ([]entity.Benefit, map[uint]float64, int64, error) {
+    var benefits []entity.Benefit
+    var total int64
+
+    // 1. Ambil semua benefit berdasarkan plan_type_id
+    baseQuery := db.Model(&entity.Benefit{}).Where("plan_type_id = ?", planTypeID)
+    
+    // Hitung total data
+    if err := baseQuery.Count(&total).Error; err != nil {
+      return nil, nil, 0, err
+    }
+    
+    // Terapkan pagination dan preload
+    err := baseQuery.
+      Offset((request.Page - 1) * request.Limit).
+      Limit(request.Limit).
+      Preload("LimitationType").
+      Preload("PlanType").
+      Find(&benefits).Error
+    
+    if err != nil {
+      return nil, nil, 0, err
+    }
+    
+    // 2. Ambil semua patient_benefit untuk pasien tersebut
+    var patientBenefits []entity.PatientBenefit
+    benefitIDs := make([]uint, len(benefits))
+    for i, b := range benefits {
+        benefitIDs[i] = b.ID
+    }
+    
+    db.Where("patient_id = ? AND benefit_id IN ?", patientID, benefitIDs).Find(&patientBenefits)
+
+    // 3. Buat map untuk memudahkan pencarian remaining_plafond
+    remainingPlafondMap := make(map[uint]float64)
+    for _, pb := range patientBenefits {
+        remainingPlafondMap[pb.BenefitID] = pb.RemainingPlafond
+    }
+    
+    return benefits, remainingPlafondMap, total, nil
+}
+
 func (r *ClaimRepository) FindAllWithQuery(db *gorm.DB, query *model.ClaimFilterQuery) ([]entity.Claim, int64, error) {
     var claims []entity.Claim
     var total int64
@@ -110,8 +152,13 @@ func (r *ClaimRepository) FindAllWithQuery(db *gorm.DB, query *model.ClaimFilter
     // Terapkan Preload yang Anda butuhkan
     queryDB = queryDB.
         Preload("Patient").
+        Preload("Patient.PlanType").
         Preload("Employee").
+        Preload("Employee.PlanType").
+        Preload("Employee.Department").
         Preload("PatientBenefit.Benefit").
+        Preload("PatientBenefit.Benefit.PlanType").
+        Preload("PatientBenefit.Benefit.LimitationType").
         Preload("TransactionType")
 
     // Terapkan pagination

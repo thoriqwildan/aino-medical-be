@@ -16,6 +16,8 @@ definitions:
         type: number
       plan_type:
         $ref: '#/definitions/model.PlanTypeResponse'
+      remaining_plafond:
+        type: number
       yearly_max:
         type: number
     type: object
@@ -691,7 +693,7 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
-host: 192.168.74.32:3000
+host: 192.168.110.65:3000
 info:
   contact: {}
   description: Enter your API Key as X-API-Key header value

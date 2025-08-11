@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "192.168.74.32:3000",
+    "host": "192.168.110.65:3000",
     "basePath": "/",
     "paths": {
         "/api/v1/auth/login": {
@@ -2202,6 +2202,9 @@
                 },
                 "plan_type": {
                     "$ref": "#/definitions/model.PlanTypeResponse"
+                },
+                "remaining_plafond": {
+                    "type": "number"
                 },
                 "yearly_max": {
                     "type": "number"

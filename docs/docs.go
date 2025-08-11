@@ -2209,6 +2209,9 @@ const docTemplate = `{
                 "plan_type": {
                     "$ref": "#/definitions/model.PlanTypeResponse"
                 },
+                "remaining_plafond": {
+                    "type": "number"
+                },
                 "yearly_max": {
                     "type": "number"
                 }
@@ -3206,7 +3209,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "192.168.74.32:3000",
+	Host:             "192.168.110.65:3000",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Aino Medical API",
