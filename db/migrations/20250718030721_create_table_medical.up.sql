@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS family_members (
         name VARCHAR(255) NOT NULL,
         plan_type_id INT NOT NULL,
         birth_date DATE NOT NULL,
-        relationship_type VARCHAR(255) NOT NULL,
+        relationship_type ENUM('wife', 'husband', 'father', 'mother', 'child') NOT NULL,
         gender ENUM('male', 'female') NOT NULL,
         CONSTRAINT fk_family_members_employee
         FOREIGN KEY (employee_id) REFERENCES employees(id)
