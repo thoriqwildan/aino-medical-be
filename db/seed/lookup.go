@@ -1,7 +1,9 @@
 package seed
 
 import (
+	"errors"
 	"log"
+	"time"
 
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"gorm.io/gorm"
@@ -80,6 +82,81 @@ func SeedPlanTypes(db *gorm.DB) {
 			}
 		} else {
 			log.Printf("Plan type %s already exists, skipping.\n", existingPt.Name)
+		}
+	}
+}
+
+func SeedFamilyMemberAndEmployee(db *gorm.DB) {
+	var department entity.Department
+	if db.Where("name = ?", "IT Support").First(&department).Error != nil {
+		log.Fatalf("Department IT Support not found")
+	}
+	var planType entity.PlanType
+	if db.Where("name = ?", "A").First(&planType).Error != nil {
+		log.Fatalf("PlanType 'A' not found")
+	}
+	birthDate, errParse := time.Parse("2006-01-02", "2006-08-17")
+	if errParse != nil {
+		log.Fatalf("Error parsing birth date: %v", errParse)
+	}
+	dependence := "One Child, One Wife"
+	employees := []entity.Employee{
+		{
+			Name:         "John Doe",
+			DepartmentID: department.ID,
+			Position:     department.Name,
+			Email:        "johndoe@gmail.com",
+			Phone:        "+1 2887 2982 2394",
+			BirthDate:    birthDate,
+			Gender:       "male",
+			PlanTypeID:   planType.ID,
+			Dependence:   &dependence,
+			BankNumber:   "1234-456-789",
+		},
+		{
+			Name:         "Mary Jane",
+			DepartmentID: department.ID,
+			Position:     department.Name,
+			Email:        "maryjane@gmail.com",
+			Phone:        "+1 2878 2982 2394",
+			BirthDate:    birthDate,
+			Gender:       "female",
+			PlanTypeID:   planType.ID,
+			Dependence:   &dependence,
+			BankNumber:   "1243-456-789",
+		},
+	}
+
+	for _, employee := range employees {
+		var existingEmpl entity.Employee
+		if err := db.Where("name = ?", employee.Name).First(&existingEmpl).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				if err := db.Create(&employee).Error; err != nil {
+					log.Printf("Error seeding employee %s: %v\n", employee.Name, err)
+				} else {
+					if db.Create(&entity.FamilyMember{
+						EmployeeID: employee.ID,
+						Name:       employee.Name,
+						RelationshipType: func(gender entity.Genders) entity.RelationshipTypes {
+							if gender == entity.GenderMale {
+								return "husband"
+							} else {
+								return "wife"
+							}
+						}(employee.Gender),
+						PlanTypeID: employee.PlanTypeID,
+						BirthDate:  employee.BirthDate,
+						Gender:     employee.Gender,
+					}).Error != nil {
+						log.Printf("Error seeding employee %s: %v\n", employee.Name, err)
+					}
+					log.Printf("Employee %s seeded successfully.\n", employee.Name)
+				}
+			} else {
+				log.Printf("Error checking employee %s: %v\n", employee.Name, err)
+			}
+		} else {
+			log.Printf("Employee %s already exists, skipping.\n", existingEmpl.Name)
 		}
 	}
 }
