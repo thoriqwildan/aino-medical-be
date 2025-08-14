@@ -13,6 +13,6 @@ func RunAllSeeders(db *gorm.DB) {
 	SeedPlanTypes(db)
 	SeedTransactionTypes(db)
 	SeedDepartments(db)
-
+	SeedFamilyMemberAndEmployee(db)
 	log.Println("Database seeding completed successfully.")
 }
