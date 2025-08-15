@@ -15,6 +15,9 @@ services:
       - app-net
 
   app:
+    depends_on:
+      mysql:
+          condition: service_started
     container_name: app-aino-medical
     build:
       context: .
