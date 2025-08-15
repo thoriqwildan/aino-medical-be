@@ -157,6 +157,7 @@ func (r *ClaimRepository) FindAllWithQuery(db *gorm.DB, query *model.ClaimFilter
 		Preload("Employee.PlanType").
 		Preload("Employee.Department").
 		Preload("Employee.FamilyMembers").
+		Preload("Employee.FamilyMembers.Employee").
 		Preload("PatientBenefit.Benefit").
 		Preload("PatientBenefit.Benefit.PlanType").
 		Preload("PatientBenefit.Benefit.LimitationType").
