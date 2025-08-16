@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mariadb:latest
+    container_name: mysql-aino-medical
+    env_file:
+      - .env.mysql
+    ports:
+      - 3308:3306
+  app:
+    container_name: app-aino-medical
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env.local
+    ports:
+      - 3200:3000
+
+
+networks:
+  app-net:
+      name: app-net
