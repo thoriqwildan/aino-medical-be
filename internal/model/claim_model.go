@@ -49,7 +49,7 @@ type UpdateClaimRequest struct {
 	TransactionTypeID *uint              `json:"transaction_type_id" validate:"required"`
 	TransactionDate   *helper.CustomDate `json:"transaction_date" validate:"required"`
 	SubmissionDate    *helper.CustomDate `json:"submission_date" validate:"required"`
-	SLA               *string            `json:"sla" validate:"omitempty,oneof='meet' 'overdue'"`
+	SLA               *string            `json:"sla" validate:"required,oneof='meet' 'overdue'"`
 	ClaimStatus       string             `json:"claim_status" validate:"required,oneof='On Plafond' 'Over Plafond'"`
 	MedicalFacility   *string            `json:"medical_facility" validate:"required"`
 	City              *string            `json:"city" validate:"required"`
@@ -60,6 +60,7 @@ type UpdateClaimRequest struct {
 
 type ClaimFilterQuery struct {
 	SearchValue       string                   `query:"search_value" form:"search_value"`
+	BenefitID         string                   `query:"benefit_id" form:"benefit_id"`
 	RelationshipType  string                   `query:"relationship_type" form:"relationship_type" validate:"omitempty,oneof=wife husband father mother child"`
 	DateFrom          string                   `form:"date_from" query:"date_from"`
 	DateTo            string                   `form:"date_to" query:"date_to"`
