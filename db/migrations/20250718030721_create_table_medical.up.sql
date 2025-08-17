@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS employees (
         plan_type_id INT NOT NULL,
         dependence VARCHAR(255),
         bank_number VARCHAR(255) NOT NULL,
+        pro_rate DECIMAL(5,2) UNSIGNED NOT NULL,
         join_date DATE NOT NULL,
         CONSTRAINT fk_employees_department
         FOREIGN KEY (department_id) REFERENCES departments(id)
@@ -92,8 +93,8 @@ CREATE TABLE IF NOT EXISTS benefits (
         detail TEXT,
         code VARCHAR(255) UNIQUE NOT NULL,
         limitation_type_id INT NOT NULL,
-        plafond DECIMAL(18, 2) NOT NULL,
-        yearly_max DECIMAL(18, 2) NOT NULL,
+        plafond DECIMAL(18, 2) NULL,
+        yearly_max DECIMAL(18, 2) NULL,
         CONSTRAINT fk_benefits_plan_type
         FOREIGN KEY (plan_type_id) REFERENCES plan_types(id)
         ON DELETE RESTRICT
