@@ -105,7 +105,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find benefit types by their attributes.",
@@ -155,7 +155,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new benefit type with the provided details.",
@@ -203,7 +203,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a benefit type by its ID.",
@@ -247,7 +247,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a benefit type with the provided details.",
@@ -300,7 +300,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a benefit type with the provided details.",
@@ -346,7 +346,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find claims by their attributes.",
@@ -439,7 +439,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new claim with the provided details.",
@@ -487,7 +487,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find benefits by their attributes.",
@@ -546,7 +546,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find patients by their attributes.",
@@ -598,7 +598,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a claim by its ID.",
@@ -642,7 +642,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a claim with the provided details.",
@@ -695,7 +695,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a claim with the provided details.",
@@ -741,7 +741,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find departments by their attributes.",
@@ -791,7 +791,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new department with the provided details.",
@@ -839,7 +839,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a department by its ID.",
@@ -883,7 +883,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a department with the provided details.",
@@ -936,7 +936,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a department with the provided details.",
@@ -982,7 +982,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find employees by their attributes.",
@@ -1032,7 +1032,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new employee with the provided details.",
@@ -1080,7 +1080,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get an employee by its ID.",
@@ -1124,7 +1124,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update an employee with the provided details.",
@@ -1177,7 +1177,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete an employee with the provided details.",
@@ -1223,7 +1223,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find family members by their attributes.",
@@ -1273,7 +1273,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new family member with the provided details.",
@@ -1321,7 +1321,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a family member by its ID.",
@@ -1365,7 +1365,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a family member with the provided details.",
@@ -1418,7 +1418,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a family member with the provided details.",
@@ -1464,7 +1464,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find limitation types by their attributes.",
@@ -1514,7 +1514,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new limitation type with the provided details.",
@@ -1562,7 +1562,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a limitation type by its ID.",
@@ -1606,7 +1606,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a limitation type with the provided details.",
@@ -1659,7 +1659,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a limitation type with the provided details.",
@@ -1705,7 +1705,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find plan types by their attributes.",
@@ -1755,7 +1755,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new plan type with the provided details.",
@@ -1803,7 +1803,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a plan type by its ID.",
@@ -1847,7 +1847,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a plan type with the provided details.",
@@ -1900,7 +1900,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a plan type with the provided details.",
@@ -1946,7 +1946,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find transaction types by their attributes.",
@@ -1996,7 +1996,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new transaction type with the provided details.",
@@ -2044,7 +2044,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a transaction type by its ID.",
@@ -2088,7 +2088,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a transaction type with the provided details.",
@@ -2141,7 +2141,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a transaction type with the provided details.",
@@ -2583,7 +2583,8 @@ const docTemplate = `{
                 "birth_date",
                 "employee_id",
                 "gender",
-                "name"
+                "name",
+                "relationship_type"
             ],
             "properties": {
                 "birth_date": {
@@ -2601,6 +2602,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "relationship_type": {
+                    "type": "string"
                 }
             }
         },
@@ -2611,7 +2615,8 @@ const docTemplate = `{
                 "employee",
                 "gender",
                 "name",
-                "plan_type"
+                "plan_type",
+                "relationship_type"
             ],
             "properties": {
                 "birth_date": {
@@ -2635,6 +2640,9 @@ const docTemplate = `{
                 },
                 "plan_type": {
                     "$ref": "#/definitions/model.PlanTypeResponse"
+                },
+                "relationship_type": {
+                    "type": "string"
                 }
             }
         },
@@ -3209,11 +3217,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "192.168.110.65:3000",
+	Host:             "localhost:3000",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Aino Medical API",
-	Description:      "Enter your API Key as X-API-Key header value",
+	Description:      "This is a sample swagger for Fiber",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
