@@ -284,6 +284,8 @@ func (c *ClaimController) GetAll(ctx *fiber.Ctx) error {
 		TransactionType:   ctx.Query("transaction_type"),
 		SLAStatus:         entity.SLA(ctx.Query("sla_status")),
 		ClaimStatus:       entity.ClaimStatus(ctx.Query("claim_status")),
+		SearchValue:       ctx.Query("search_value"),
+		RelationshipType:  ctx.Query("relationship_type"),
 	}
 
 	responses, total, err := c.UseCase.GetAll(ctx.Context(), query)
