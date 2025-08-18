@@ -97,9 +97,10 @@ func (ec *EmployeeController) GetByID(ctx *fiber.Ctx) error {
 // @Param   limit query    int               false       "Number of items per page" default
 // @Accept json
 func (ec *EmployeeController) GetAll(ctx *fiber.Ctx) error {
-	query := &model.PagingQuery{
-		Page:  ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
+	query := &model.SearchPagingQuery{
+		SearchValue: ctx.Query("search_value"),
+		Page:        ctx.QueryInt("page", 1),
+		Limit:       ctx.QueryInt("limit", 10),
 	}
 
 	responses, total, err := ec.UseCase.GetAll(ctx.Context(), query)
