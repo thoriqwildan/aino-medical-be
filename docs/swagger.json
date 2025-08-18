@@ -1,12 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Enter your API Key as X-API-Key header value",
+        "description": "This is a sample swagger for Fiber",
         "title": "Aino Medical API",
         "contact": {},
         "version": "1.0"
     },
-    "host": "192.168.110.65:3000",
+    "host": "localhost:3000",
     "basePath": "/",
     "paths": {
         "/api/v1/auth/login": {
@@ -99,7 +99,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find benefit types by their attributes.",
@@ -149,7 +149,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new benefit type with the provided details.",
@@ -197,7 +197,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a benefit type by its ID.",
@@ -241,7 +241,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a benefit type with the provided details.",
@@ -294,7 +294,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a benefit type with the provided details.",
@@ -340,7 +340,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find claims by their attributes.",
@@ -433,7 +433,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new claim with the provided details.",
@@ -481,7 +481,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find benefits by their attributes.",
@@ -540,7 +540,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find patients by their attributes.",
@@ -592,7 +592,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a claim by its ID.",
@@ -636,7 +636,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a claim with the provided details.",
@@ -689,7 +689,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a claim with the provided details.",
@@ -735,7 +735,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find departments by their attributes.",
@@ -785,7 +785,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new department with the provided details.",
@@ -833,7 +833,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a department by its ID.",
@@ -877,7 +877,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a department with the provided details.",
@@ -930,7 +930,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a department with the provided details.",
@@ -976,7 +976,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find employees by their attributes.",
@@ -1026,7 +1026,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new employee with the provided details.",
@@ -1074,7 +1074,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get an employee by its ID.",
@@ -1118,7 +1118,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update an employee with the provided details.",
@@ -1171,7 +1171,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete an employee with the provided details.",
@@ -1217,7 +1217,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find family members by their attributes.",
@@ -1267,7 +1267,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new family member with the provided details.",
@@ -1315,7 +1315,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a family member by its ID.",
@@ -1359,7 +1359,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a family member with the provided details.",
@@ -1412,7 +1412,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a family member with the provided details.",
@@ -1458,7 +1458,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find limitation types by their attributes.",
@@ -1508,7 +1508,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new limitation type with the provided details.",
@@ -1556,7 +1556,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a limitation type by its ID.",
@@ -1600,7 +1600,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a limitation type with the provided details.",
@@ -1653,7 +1653,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a limitation type with the provided details.",
@@ -1699,7 +1699,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find plan types by their attributes.",
@@ -1749,7 +1749,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new plan type with the provided details.",
@@ -1797,7 +1797,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a plan type by its ID.",
@@ -1841,7 +1841,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a plan type with the provided details.",
@@ -1894,7 +1894,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a plan type with the provided details.",
@@ -1940,7 +1940,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Find transaction types by their attributes.",
@@ -1990,7 +1990,7 @@
             "post": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Create a new transaction type with the provided details.",
@@ -2038,7 +2038,7 @@
             "get": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Get a transaction type by its ID.",
@@ -2082,7 +2082,7 @@
             "put": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Update a transaction type with the provided details.",
@@ -2135,7 +2135,7 @@
             "delete": {
                 "security": [
                     {
-                        "BearerAuth api_key": []
+                        "BearerAuth bearer": []
                     }
                 ],
                 "description": "Delete a transaction type with the provided details.",
@@ -2577,7 +2577,8 @@
                 "birth_date",
                 "employee_id",
                 "gender",
-                "name"
+                "name",
+                "relationship_type"
             ],
             "properties": {
                 "birth_date": {
@@ -2595,6 +2596,9 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "relationship_type": {
+                    "type": "string"
                 }
             }
         },
@@ -2605,7 +2609,8 @@
                 "employee",
                 "gender",
                 "name",
-                "plan_type"
+                "plan_type",
+                "relationship_type"
             ],
             "properties": {
                 "birth_date": {
@@ -2629,6 +2634,9 @@
                 },
                 "plan_type": {
                     "$ref": "#/definitions/model.PlanTypeResponse"
+                },
+                "relationship_type": {
+                    "type": "string"
                 }
             }
         },
