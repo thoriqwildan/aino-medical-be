@@ -62,6 +62,7 @@ func (r *ClaimRepository) GetPatients(db *gorm.DB, request *model.PagingQuery) (
 		Preload("PlanType").
 		Preload("Employee").
 		Preload("FamilyMember").
+		Preload("FamilyMember.Employee").
 		Find(&patients).Error
 	if err != nil {
 		return nil, 0, err
@@ -206,6 +207,11 @@ func (r *ClaimRepository) applyFilters(db *gorm.DB, query *model.ClaimFilterQuer
 	if query.RelationshipType != "" {
 		db = db.Joins("LEFT JOIN family_members ON Patient.family_member_id = family_members.id").
 			Where("family_members.relationship_type = ?", query.RelationshipType)
+	}
+
+	if query.BenefitID != "" {
+		db = db.Joins("LEFT JOIN patient_benefits ON patient_benefit_id = patient_benefits.id ").
+			Where("patient_benefits.benefit_id = ?", query.BenefitID)
 	}
 
 	if query.TransactionStatus != "" {
