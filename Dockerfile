@@ -38,8 +38,6 @@ USER root
 # Copy application files with correct ownership
 COPY --chown=${username}:${username} --from=builder /app/build/main .
 
-VOLUME /app/.log
-
 # Expose the necessary port
 EXPOSE ${PORT}
 
