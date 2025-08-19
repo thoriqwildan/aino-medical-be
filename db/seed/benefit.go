@@ -437,10 +437,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RM-4", Name: "Melahirkan", Detail: ptrString("Biaya Komplikasi Kehamilan dan Komplikasi Pasca Melahirkan"), Limitation: "Per Year",
 			YearlyMax: map[string]*float64{
-				"GRADE A": nil,
-				"GRADE B": nil,
-				"GRADE C": nil,
-				"GRADE D": nil,
+				"GRADE A": ptrFloat64(0),
+				"GRADE B": ptrFloat64(0),
+				"GRADE C": ptrFloat64(0),
+				"GRADE D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"GRADE A": ptrFloat64(8500000),
@@ -451,10 +451,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RM-5", Name: "Melahirkan", Detail: ptrString("Biaya Perawatan Sebelum dan 40 Hari Setelah Melahirkan"), Limitation: "Per Year",
 			YearlyMax: map[string]*float64{
-				"GRADE A": nil,
-				"GRADE B": nil,
-				"GRADE C": nil,
-				"GRADE D": nil,
+				"GRADE A": ptrFloat64(0),
+				"GRADE B": ptrFloat64(0),
+				"GRADE C": ptrFloat64(0),
+				"GRADE D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"GRADE A": ptrFloat64(7500000),
@@ -465,10 +465,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RK-1", Name: "Kacamata", Detail: ptrString("Biaya Bingkai Kacamata"), Limitation: "Per Year",
 			YearlyMax: map[string]*float64{
-				"GRADE A": nil,
-				"GRADE B": nil,
-				"GRADE C": nil,
-				"GRADE D": nil,
+				"GRADE A": ptrFloat64(0),
+				"GRADE B": ptrFloat64(0),
+				"GRADE C": ptrFloat64(0),
+				"GRADE D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"GRADE A": ptrFloat64(1250000),
@@ -479,10 +479,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RK-2", Name: "Kacamata", Detail: ptrString("Biaya Lensa Kacamata atau Lensa Kontak"), Limitation: "Per Year",
 			YearlyMax: map[string]*float64{
-				"GRADE A": nil,
-				"GRADE B": nil,
-				"GRADE C": nil,
-				"GRADE D": nil,
+				"GRADE A": ptrFloat64(0),
+				"GRADE B": ptrFloat64(0),
+				"GRADE C": ptrFloat64(0),
+				"GRADE D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"GRADE A": ptrFloat64(1250000),
@@ -493,10 +493,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RK-3", Name: "Kacamata", Detail: ptrString("Biaya Refraksi Mata / Konsultasi Dokter Mata"), Limitation: "Per Year",
 			YearlyMax: map[string]*float64{
-				"GRADE A": nil,
-				"GRADE B": nil,
-				"GRADE C": nil,
-				"GRADE D": nil,
+				"GRADE A": ptrFloat64(0),
+				"GRADE B": ptrFloat64(0),
+				"GRADE C": ptrFloat64(0),
+				"GRADE D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"GRADE A": ptrFloat64(250000),
