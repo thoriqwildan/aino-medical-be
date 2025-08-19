@@ -278,11 +278,14 @@ definitions:
         type: string
       name:
         type: string
+      relationship_type:
+        type: string
     required:
     - birth_date
     - employee_id
     - gender
     - name
+    - relationship_type
     type: object
   model.FamilyMemberResponse:
     properties:
@@ -301,12 +304,15 @@ definitions:
         type: string
       plan_type:
         $ref: '#/definitions/model.PlanTypeResponse'
+      relationship_type:
+        type: string
     required:
     - birth_date
     - employee
     - gender
     - name
     - plan_type
+    - relationship_type
     type: object
   model.FamilyMemberResponseWrapper:
     properties:
@@ -693,10 +699,10 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
-host: 192.168.110.65:3000
+host: localhost:3000
 info:
   contact: {}
-  description: Enter your API Key as X-API-Key header value
+  description: This is a sample swagger for Fiber
   title: Aino Medical API
   version: "1.0"
 paths:
@@ -785,7 +791,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find benefit types
       tags:
       - Benefit Types
@@ -814,7 +820,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new benefit type
       tags:
       - Benefit Types
@@ -843,7 +849,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete a benefit type
       tags:
       - Benefit Types
@@ -871,7 +877,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get a benefit type by ID
       tags:
       - Benefit Types
@@ -905,7 +911,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update a benefit type
       tags:
       - Benefit Types
@@ -968,7 +974,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find claims
       tags:
       - Claims
@@ -997,7 +1003,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new claim
       tags:
       - Claims
@@ -1026,7 +1032,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete a claim
       tags:
       - Claims
@@ -1054,7 +1060,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get a claim by ID
       tags:
       - Claims
@@ -1088,7 +1094,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update a claim
       tags:
       - Claims
@@ -1126,7 +1132,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find benefits
       tags:
       - Claims
@@ -1159,7 +1165,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find patients
       tags:
       - Claims
@@ -1192,7 +1198,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find departments
       tags:
       - Departments
@@ -1221,7 +1227,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new department
       tags:
       - Departments
@@ -1250,7 +1256,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete a department
       tags:
       - Departments
@@ -1278,7 +1284,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get a department by ID
       tags:
       - Departments
@@ -1312,7 +1318,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update a department
       tags:
       - Departments
@@ -1345,7 +1351,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find employees
       tags:
       - Employees
@@ -1374,7 +1380,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new employee
       tags:
       - Employees
@@ -1403,7 +1409,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete an employee
       tags:
       - Employees
@@ -1431,7 +1437,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get an employee by ID
       tags:
       - Employees
@@ -1465,7 +1471,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update an employee
       tags:
       - Employees
@@ -1498,7 +1504,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find family members
       tags:
       - Family Members
@@ -1527,7 +1533,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new family member
       tags:
       - Family Members
@@ -1556,7 +1562,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete a family member
       tags:
       - Family Members
@@ -1584,7 +1590,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get a family member by ID
       tags:
       - Family Members
@@ -1618,7 +1624,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update a family member
       tags:
       - Family Members
@@ -1651,7 +1657,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find limitation types
       tags:
       - Limitation Types
@@ -1680,7 +1686,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new limitation type
       tags:
       - Plan Types
@@ -1709,7 +1715,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete a limitation type
       tags:
       - Limitation Types
@@ -1737,7 +1743,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get a limitation type by ID
       tags:
       - Limitation Types
@@ -1771,7 +1777,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update a limitation type
       tags:
       - Limitation Types
@@ -1804,7 +1810,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find plan types
       tags:
       - Plan Types
@@ -1833,7 +1839,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new plan type
       tags:
       - Plan Types
@@ -1862,7 +1868,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete a plan type
       tags:
       - Plan Types
@@ -1890,7 +1896,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get a plan type by ID
       tags:
       - Plan Types
@@ -1924,7 +1930,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update a plan type
       tags:
       - Plan Types
@@ -1957,7 +1963,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Find transaction types
       tags:
       - Transaction Types
@@ -1986,7 +1992,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Create a new transaction type
       tags:
       - Transaction Types
@@ -2015,7 +2021,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Delete a transaction type
       tags:
       - Transaction Types
@@ -2043,7 +2049,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Get a transaction type by ID
       tags:
       - Transaction Types
@@ -2077,7 +2083,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorWrapper'
       security:
-      - BearerAuth api_key: []
+      - BearerAuth bearer: []
       summary: Update a transaction type
       tags:
       - Transaction Types
