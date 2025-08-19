@@ -40,6 +40,9 @@ func SeedLimitationTypes(db *gorm.DB) {
 		{Name: "Annual"},
 		{Name: "Per Incident"},
 		{Name: "Per Pregnancy"},
+		{Name: "Per Day"},
+		{Name: "Per Month"},
+		{Name: "Per Year"},
 	}
 
 	for _, lt := range limitationTypes {
@@ -60,40 +63,14 @@ func SeedLimitationTypes(db *gorm.DB) {
 	}
 }
 
-func SeedPlanTypes(db *gorm.DB) {
-	planTypes := []entity.PlanType{
-		{Name: "A"},
-		{Name: "B"},
-		{Name: "C"},
-		{Name: "D"},
-	}
-
-	for _, pt := range planTypes {
-		var existingPt entity.PlanType
-		if err := db.Where("name = ?", pt.Name).First(&existingPt).Error; err != nil {
-			if err == gorm.ErrRecordNotFound {
-				if err := db.Create(&pt).Error; err != nil {
-					log.Printf("Error seeding plan type %s: %v\n", pt.Name, err)
-				} else {
-					log.Printf("Plan type %s seeded successfully.\n", pt.Name)
-				}
-			} else {
-				log.Printf("Error checking plan type %s: %v\n", pt.Name, err)
-			}
-		} else {
-			log.Printf("Plan type %s already exists, skipping.\n", existingPt.Name)
-		}
-	}
-}
-
 func SeedFamilyMemberAndEmployee(db *gorm.DB) {
 	var department entity.Department
 	if db.Where("name = ?", "IT Support").First(&department).Error != nil {
 		log.Fatalf("Department IT Support not found")
 	}
 	var planType entity.PlanType
-	if db.Where("name = ?", "A").First(&planType).Error != nil {
-		log.Fatalf("PlanType 'A' not found")
+	if db.Where("name = ?", "GRADE A").First(&planType).Error != nil {
+		log.Fatalf("PlanType 'GRADE A' not found")
 	}
 	birthDate, errParse := time.Parse("2006-01-02", "2006-08-17")
 	if errParse != nil {
@@ -112,6 +89,7 @@ func SeedFamilyMemberAndEmployee(db *gorm.DB) {
 			PlanTypeID:   planType.ID,
 			Dependence:   &dependence,
 			BankNumber:   "1234-456-789",
+			ProRate:      70.00,
 		},
 		{
 			Name:         "Mary Jane",
@@ -124,6 +102,7 @@ func SeedFamilyMemberAndEmployee(db *gorm.DB) {
 			PlanTypeID:   planType.ID,
 			Dependence:   &dependence,
 			BankNumber:   "1243-456-789",
+			ProRate:      70.00,
 		},
 	}
 
