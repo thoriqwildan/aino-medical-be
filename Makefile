@@ -28,6 +28,15 @@ run@build.prod: ## Running Build Application to Binary File ( Production )
 run@build.dev: ## Running Build Application to Binary File ( Development )
 	go build -o build/main cmd/web/main.go
 
+
+# ------------------ CRON Golang Command -----------------------------
+cron@app: ## Running Cron Golang App
+	go run cmd/cron/main.go
+cron@build.prod: ## Running Build Application to Binary File ( Production )
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o build/cron cmd/cron/main.go
+cron@build.dev: ## Running Build Application to Binary File ( Development )
+	go build -o build/cron cmd/cron/main.go
+
 # ---------- Generation Any Tools or Documentation ----------
 gen@doc: ## Generate wire for app
 	swag init -g cmd/web/main.go
