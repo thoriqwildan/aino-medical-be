@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"gorm.io/gorm"
@@ -12,6 +13,8 @@ import (
 
 func ptrFloat64(v float64) *float64 { return &v }
 func ptrString(s string) *string    { return &s }
+
+func ptrDate(date time.Time) *time.Time { return &date }
 
 // SeedBenefits populates the database with benefit data based on predefined plans.
 func SeedBenefits(db *gorm.DB) {
