@@ -10,9 +10,9 @@ func RunAllSeeders(db *gorm.DB) {
 	log.Println("Running all seeders...")
 
 	SeedLimitationTypes(db)
-	SeedPlanTypes(db)
 	SeedTransactionTypes(db)
 	SeedDepartments(db)
+	SeedBenefits(db)
 	SeedFamilyMemberAndEmployee(db)
 	log.Println("Database seeding completed successfully.")
 }
