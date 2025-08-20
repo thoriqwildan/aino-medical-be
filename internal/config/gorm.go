@@ -24,19 +24,20 @@ func NewDatabase(viper *viper.Viper, log *logrus.Logger) *gorm.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, database)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		TranslateError: true,
 		Logger: logger.New(&logrusWriter{Logger: log}, logger.Config{
-			SlowThreshold: time.Second * 5,
-			Colorful: true,
+			SlowThreshold:             time.Second * 5,
+			Colorful:                  true,
 			IgnoreRecordNotFoundError: true,
-			ParameterizedQueries: true,
-			LogLevel: logger.Warn,
+			ParameterizedQueries:      true,
+			LogLevel:                  logger.Warn,
 		}),
 	})
 
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	
+
 	connection, err := db.DB()
 	if err != nil {
 		log.Fatalf("Failed to get database connection: %v", err)
