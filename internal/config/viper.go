@@ -1,6 +1,10 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
 
 func NewViper() *viper.Viper {
 	config := viper.New()
@@ -9,11 +13,14 @@ func NewViper() *viper.Viper {
 	config.SetConfigType("env")
 	config.AddConfigPath("./../")
 	config.AddConfigPath("./")
-	err := config.ReadInConfig()
 
+	err := config.ReadInConfig()
 	if err != nil {
-		panic("Error reading config file: " + err.Error())
+		fmt.Println("⚠️  Config file not found, falling back to environment variables:", err)
+		config.AutomaticEnv()
+	} else {
+		fmt.Println("✅ Config loaded from file:", config.ConfigFileUsed())
 	}
-	
+
 	return config
 }
