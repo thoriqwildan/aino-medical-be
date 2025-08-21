@@ -57,16 +57,16 @@ type Employee struct {
 }
 
 type FamilyMember struct {
-	ID               uint      `gorm:"primaryKey;autoIncrement"`
-	EmployeeID       uint      `gorm:"not null"`
-	Name             string    `gorm:"not null"`
-	RelationshipType string    `gorm:"not null"`
-	PlanTypeID       uint      `gorm:"not null"`
-	BirthDate        time.Time `gorm:"type:date;not null"`
-	Gender           Genders   `gorm:"type:enum('male','female');not null"`
-	Patient          Patient   `gorm:"foreignKey:FamilyMemberID"`
-	Employee         *Employee `gorm:"foreignKey:EmployeeID"`
-	PlanType         PlanType  `gorm:"foreignKey:PlanTypeID"`
+	ID               uint              `gorm:"primaryKey;autoIncrement"`
+	EmployeeID       uint              `gorm:"not null"`
+	Name             string            `gorm:"not null"`
+	RelationshipType RelationshipTypes `gorm:"type:enum('father', 'mother', 'wife', 'husband', 'child');not null"`
+	PlanTypeID       uint              `gorm:"not null"`
+	BirthDate        time.Time         `gorm:"type:date;not null"`
+	Gender           Genders           `gorm:"type:enum('male','female');not null"`
+	Patient          Patient           `gorm:"foreignKey:FamilyMemberID"`
+	Employee         *Employee         `gorm:"foreignKey:EmployeeID"`
+	PlanType         PlanType          `gorm:"foreignKey:PlanTypeID"`
 }
 
 type Patient struct {
