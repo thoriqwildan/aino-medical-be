@@ -7,6 +7,16 @@ const (
 	GenderFemale Genders = "female"
 )
 
+type RelationshipTypes string
+
+const (
+	Father  RelationshipTypes = "father"
+	Mother  RelationshipTypes = "mother"
+	Wife    RelationshipTypes = "wife"
+	Husband RelationshipTypes = "husband"
+	Child   RelationshipTypes = "child"
+)
+
 type SLA string
 
 const (
