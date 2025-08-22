@@ -12,13 +12,13 @@ import (
 
 type BenefitController struct {
 	UseCase *usecase.BenefitUseCase
-	Log *logrus.Logger
+	Log     *logrus.Logger
 }
 
 func NewBenefitController(useCase *usecase.BenefitUseCase, log *logrus.Logger) *BenefitController {
 	return &BenefitController{
 		UseCase: useCase,
-		Log: log,
+		Log:     log,
 	}
 }
 
@@ -28,7 +28,7 @@ func NewBenefitController(useCase *usecase.BenefitUseCase, log *logrus.Logger) *
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Benefit Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Create a new benefit type
 // @Description Create a new benefit type with the provided details.
 // @Accept json
@@ -44,9 +44,9 @@ func (c *BenefitController) Create(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse[model.BenefitResponse]{
-		Code: fiber.StatusCreated,
+		Code:    fiber.StatusCreated,
 		Message: "Benefit created successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -56,7 +56,7 @@ func (c *BenefitController) Create(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Benefit Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Get a benefit type by ID
 // @Description Get a benefit type by its ID.
 // @Accept json
@@ -79,9 +79,9 @@ func (c *BenefitController) GetById(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.BenefitResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Benefit retrieved successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -90,7 +90,7 @@ func (c *BenefitController) GetById(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Benefit Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find benefit types
 // @Description Find benefit types by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -98,7 +98,7 @@ func (c *BenefitController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *BenefitController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -109,16 +109,16 @@ func (c *BenefitController) GetAll(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.BenefitResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Benefits fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -129,7 +129,7 @@ func (c *BenefitController) GetAll(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Benefit Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Update a benefit type
 // @Description Update a benefit type with the provided details.
 // @Accept json
@@ -156,9 +156,9 @@ func (c *BenefitController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.BenefitResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Benefit updated successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -168,7 +168,7 @@ func (c *BenefitController) Update(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Benefit Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Delete a benefit type
 // @Description Delete a benefit type with the provided details.
 // @Accept json
@@ -190,9 +190,9 @@ func (c *BenefitController) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusNoContent).JSON(model.WebResponse[any]{
-		Code: fiber.StatusNoContent,
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
 		Message: "Benefit deleted successfully",
-		Data: nil,
+		Data:    nil,
 	})
 }
