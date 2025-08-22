@@ -14,5 +14,6 @@ func RunAllSeeders(db *gorm.DB) {
 	SeedDepartments(db)
 	SeedBenefits(db)
 	SeedFamilyMemberAndEmployee(db)
+	SeedClaimsAndPatients(db)
 	log.Println("Database seeding completed successfully.")
 }
