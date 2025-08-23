@@ -48,6 +48,7 @@ type Employee struct {
 	PlanTypeID    uint           `gorm:"not null"`
 	Dependence    *string        // VARCHAR bisa *string jika NULLABLE, atau string jika NOT NULL
 	BankNumber    string         `gorm:"not null"`
+	ProRate       float64        `gorm:"not null"`
 	JoinDate      time.Time      `gorm:"type:date;not null"`
 	Patient       Patient        `gorm:"foreignKey:EmployeeID"`
 	Department    Department     `gorm:"foreignKey:DepartmentID"`
@@ -85,14 +86,14 @@ type Patient struct {
 }
 
 type Benefit struct {
-	ID               uint   `gorm:"primaryKey;autoIncrement"`
-	Name             string `gorm:"not null"`
-	PlanTypeID       uint   `gorm:"not null"`
-	Detail           *string
+	ID               uint             `gorm:"primaryKey;autoIncrement"`
+	Name             string           `gorm:"not null"`
+	PlanTypeID       uint             `gorm:"not null"`
+	Detail           *string          `gorm:"column:detail"`
 	Code             string           `gorm:"unique;not null"`
 	LimitationTypeID uint             `gorm:"not null"`
-	Plafond          float64          `gorm:"not null"`
-	YearlyMax        float64          `gorm:"not null"`
+	Plafond          *float64         `gorm:"not null"`
+	YearlyMax        *float64         `gorm:"column:yearly_max"`
 	PlanType         PlanType         `gorm:"foreignKey:PlanTypeID"`
 	LimitationType   LimitationType   `gorm:"foreignKey:LimitationTypeID"`
 	PatientBenefits  []PatientBenefit `gorm:"foreignKey:BenefitID"` // Ini sudah benar
