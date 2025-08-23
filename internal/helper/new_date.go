@@ -40,11 +40,8 @@ func (cd *CustomDate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func DetermineSLAStatus(submissionTime time.Time) entity.SLA {
-	// Membuat objek waktu untuk jam 10 pagi di hari dan lokasi yang sama
-	cutoffTime := time.Date(submissionTime.Year(), submissionTime.Month(), submissionTime.Day(), 10, 0, 0, 0, submissionTime.Location())
-	
-	if submissionTime.Before(cutoffTime) {
+func DetermineSLAStatus(slaStatus string) entity.SLA {
+	if slaStatus == "meet" {
 		return entity.SLAMeet
 	} else {
 		return entity.SLAOverdue
