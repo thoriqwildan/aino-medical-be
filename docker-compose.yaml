@@ -29,6 +29,20 @@ services:
     networks:
       - app-net
 
+  cron:
+    depends_on:
+      mysql:
+        condition: service_started
+    container_name: cron-aino-medical
+    build:
+      context: .
+      dockerfile: ./cron.Dockerfile
+    env_file:
+      - .env.local
+    networks:
+      - app-net
+
+
 networks:
   app-net:
     name: app-net
