@@ -13,13 +13,13 @@ import (
 
 type ClaimController struct {
 	UseCase *usecase.ClaimUseCase
-	Log *logrus.Logger
+	Log     *logrus.Logger
 }
 
 func NewClaimController(useCase *usecase.ClaimUseCase, log *logrus.Logger) *ClaimController {
 	return &ClaimController{
 		UseCase: useCase,
-		Log: log,
+		Log:     log,
 	}
 }
 
@@ -29,7 +29,7 @@ func NewClaimController(useCase *usecase.ClaimUseCase, log *logrus.Logger) *Clai
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Create a new claim
 // @Description Create a new claim with the provided details.
 // @Accept json
@@ -46,9 +46,9 @@ func (c *ClaimController) CreateClaim(ctx *fiber.Ctx) error {
 		return err
 	}
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse[model.ClaimResponse]{
-		Code: 	fiber.StatusCreated,
+		Code:    fiber.StatusCreated,
 		Message: "Claim created successfully",
-		Data: 	response,
+		Data:    response,
 	})
 }
 
@@ -57,7 +57,7 @@ func (c *ClaimController) CreateClaim(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find patients
 // @Description Find patients by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -65,7 +65,7 @@ func (c *ClaimController) CreateClaim(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *ClaimController) GetAllPatient(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -76,16 +76,16 @@ func (c *ClaimController) GetAllPatient(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.PatientResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Patients fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -95,7 +95,7 @@ func (c *ClaimController) GetAllPatient(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find benefits
 // @Description Find benefits by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -109,7 +109,7 @@ func (c *ClaimController) GetAllBenefits(ctx *fiber.Ctx) error {
 	}
 
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -126,16 +126,16 @@ func (c *ClaimController) GetAllBenefits(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.BenefitResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Benefits fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -146,7 +146,7 @@ func (c *ClaimController) GetAllBenefits(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Update a claim
 // @Description Update a claim with the provided details.
 // @Accept json
@@ -173,9 +173,9 @@ func (c *ClaimController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.ClaimResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Claim updated successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -185,7 +185,7 @@ func (c *ClaimController) Update(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Get a claim by ID
 // @Description Get a claim by its ID.
 // @Accept json
@@ -209,9 +209,9 @@ func (c *ClaimController) GetById(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.ClaimResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Department retrieved successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -221,7 +221,7 @@ func (c *ClaimController) GetById(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Delete a claim
 // @Description Delete a claim with the provided details.
 // @Accept json
@@ -243,8 +243,8 @@ func (c *ClaimController) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusNoContent).JSON(model.WebResponse[any]{
-		Code: fiber.StatusNoContent,
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
 		Message: "Claim deleted successfully",
 	})
 }
@@ -254,7 +254,7 @@ func (c *ClaimController) Delete(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find claims
 // @Description Find claims by their attributes.
 // @Param page query int false "Page number" default(1)
@@ -275,15 +275,15 @@ func (c *ClaimController) GetAll(ctx *fiber.Ctx) error {
 	}
 
 	query := &model.ClaimFilterQuery{
-		Page: ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
-		DateFrom: ctx.Query("date_from"),
-		DateTo: ctx.Query("date_to"),
+		Page:              ctx.QueryInt("page", 1),
+		Limit:             ctx.QueryInt("limit", 10),
+		DateFrom:          ctx.Query("date_from"),
+		DateTo:            ctx.Query("date_to"),
 		TransactionStatus: transactionStatus,
-		Department: ctx.Query("department"),
-		TransactionType: ctx.Query("transaction_type"),
-		SLAStatus: entity.SLA(ctx.Query("sla_status")),
-		ClaimStatus: entity.ClaimStatus(ctx.Query("claim_status")),
+		Department:        ctx.Query("department"),
+		TransactionType:   ctx.Query("transaction_type"),
+		SLAStatus:         entity.SLA(ctx.Query("sla_status")),
+		ClaimStatus:       entity.ClaimStatus(ctx.Query("claim_status")),
 	}
 
 	responses, total, err := c.UseCase.GetAll(ctx.Context(), query)
@@ -293,15 +293,15 @@ func (c *ClaimController) GetAll(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.ClaimResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Claims fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
