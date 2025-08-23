@@ -13,8 +13,19 @@ func main() {
 	viperConfig := config.NewViper()
 	logger := config.NewLogger(viperConfig)
 	db := config.NewDatabase(viperConfig, logger)
-	c := cron.New()
+	location, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		log.Fatalf("load tz: %v", err)
+	}
+	c := cron.New(
+		cron.WithLocation(location),
+		cron.WithChain(
+			cron.SkipIfStillRunning(cron.DefaultLogger),
+			cron.Recover(cron.DefaultLogger),
+		),
+	)
 	logger.Info("Starting cron job")
+
 	c.AddFunc("0 0 * * *", func() {
 		logger.Info("Do Cron Job Check Employee Pro Rate")
 		var employees []*entity.Employee
