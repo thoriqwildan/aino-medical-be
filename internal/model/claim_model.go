@@ -59,13 +59,15 @@ type UpdateClaimRequest struct {
 }
 
 type ClaimFilterQuery struct {
-	DateFrom          string                   `form:"date_from"`
-	DateTo            string                   `form:"date_to"`
-	Department        string                   `form:"department"`
-	TransactionType   string                   `form:"transaction_type"`
-	SLAStatus         entity.SLA               `form:"sla_status"`
-	ClaimStatus       entity.ClaimStatus       `form:"claim_status"`
-	TransactionStatus entity.TransactionStatus `form:"transaction_status"`
-	Page              int                      `json:"page,omitempty" validate:"omitempty,numeric"`
-	Limit             int                      `json:"limit,omitempty" validate:"omitempty,numeric"`
+	SearchValue       string                   `query:"search_value" form:"search_value"`
+	RelationshipType  string                   `query:"relationship_type" form:"relationship_type" validate:"omitempty,oneof=wife husband father mother child"`
+	DateFrom          string                   `form:"date_from" query:"date_from"`
+	DateTo            string                   `form:"date_to" query:"date_to"`
+	Department        string                   `form:"department" query:"department"`
+	TransactionType   string                   `form:"transaction_type" query:"transaction_type"`
+	SLAStatus         entity.SLA               `form:"sla_status" query:"sla_status"`
+	ClaimStatus       entity.ClaimStatus       `form:"claim_status" query:"claim_status"`
+	TransactionStatus entity.TransactionStatus `form:"transaction_status" query:"transaction_status"`
+	Page              int                      `json:"page,omitempty" query:"page,omitempty"  validate:"omitempty,numeric"`
+	Limit             int                      `json:"limit,omitempty" query:"limit,omitempty" validate:"omitempty,numeric"`
 }
