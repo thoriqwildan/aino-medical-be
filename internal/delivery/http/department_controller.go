@@ -12,13 +12,13 @@ import (
 
 type DepartmentController struct {
 	DepartmentUseCase *usecase.DepartmentUseCase
-	Log *logrus.Logger
+	Log               *logrus.Logger
 }
 
 func NewDepartmentController(usecase *usecase.DepartmentUseCase, log *logrus.Logger) *DepartmentController {
 	return &DepartmentController{
 		DepartmentUseCase: usecase,
-		Log: log,
+		Log:               log,
 	}
 }
 
@@ -28,7 +28,7 @@ func NewDepartmentController(usecase *usecase.DepartmentUseCase, log *logrus.Log
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Departments
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Create a new department
 // @Description Create a new department with the provided details.
 // @Accept json
@@ -43,9 +43,9 @@ func (dc *DepartmentController) Create(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse[model.DepartmentResponse]{
-		Code: fiber.StatusCreated,
+		Code:    fiber.StatusCreated,
 		Message: "Department created successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -55,7 +55,7 @@ func (dc *DepartmentController) Create(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Departments
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Get a department by ID
 // @Description Get a department by its ID.
 // @Accept json
@@ -79,9 +79,9 @@ func (dc *DepartmentController) GetById(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.DepartmentResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Department retrieved successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -90,7 +90,7 @@ func (dc *DepartmentController) GetById(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Departments
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find departments
 // @Description Find departments by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -98,7 +98,7 @@ func (dc *DepartmentController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (dc *DepartmentController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -109,16 +109,16 @@ func (dc *DepartmentController) GetAll(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.DepartmentResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Department types fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -129,7 +129,7 @@ func (dc *DepartmentController) GetAll(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Departments
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Update a department
 // @Description Update a department with the provided details.
 // @Accept json
@@ -156,9 +156,9 @@ func (dc *DepartmentController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.DepartmentResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Department updated successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -168,7 +168,7 @@ func (dc *DepartmentController) Update(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Departments
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Delete a department
 // @Description Delete a department with the provided details.
 // @Accept json
@@ -190,8 +190,8 @@ func (dc *DepartmentController) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusNoContent).JSON(model.WebResponse[any]{
-		Code: fiber.StatusNoContent,
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
 		Message: "Department deleted successfully",
 	})
 }
