@@ -103,8 +103,8 @@ type PatientBenefit struct {
 	ID               uint                 `gorm:"primaryKey;autoIncrement"`
 	PatientID        uint                 `gorm:"not null"`
 	BenefitID        uint                 `gorm:"not null"`
-	RemainingPlafond float64              `gorm:"type:decimal(10,2);not null"`
-	InitialPlafond   float64              `gorm:"type:decimal(10,2);not null"`
+	RemainingPlafond *float64             `gorm:"type:decimal(10,2);"`
+	InitialPlafond   *float64             `gorm:"type:decimal(10,2);"`
 	StartDate        time.Time            `gorm:"type:date;not null"`
 	EndDate          *time.Time           `gorm:"type:date"`
 	Status           PatientBenefitStatus `gorm:"type:enum('active','exhausted','expired');default:'active'"`
