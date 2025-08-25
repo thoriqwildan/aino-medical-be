@@ -11,13 +11,13 @@ import (
 
 type EmployeeController struct {
 	UseCase *usecase.EmployeeUseCase
-	Log *logrus.Logger
+	Log     *logrus.Logger
 }
 
 func NewEmployeeController(useCase *usecase.EmployeeUseCase, log *logrus.Logger) *EmployeeController {
 	return &EmployeeController{
 		UseCase: useCase,
-		Log: log,
+		Log:     log,
 	}
 }
 
@@ -27,7 +27,7 @@ func NewEmployeeController(useCase *usecase.EmployeeUseCase, log *logrus.Logger)
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Employees
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Create a new employee
 // @Description Create a new employee with the provided details.
 // @Accept json
@@ -44,9 +44,9 @@ func (ec *EmployeeController) Create(ctx *fiber.Ctx) error {
 		return err
 	}
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse[model.EmployeeResponse]{
-		Code: fiber.StatusCreated,
+		Code:    fiber.StatusCreated,
 		Message: "Employee created successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -56,7 +56,7 @@ func (ec *EmployeeController) Create(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Employees
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Get an employee by ID
 // @Description Get an employee by its ID.
 // @Accept json
@@ -79,9 +79,9 @@ func (ec *EmployeeController) GetByID(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.EmployeeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Employee fetched successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -90,7 +90,7 @@ func (ec *EmployeeController) GetByID(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Employees
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find employees
 // @Description Find employees by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -98,7 +98,7 @@ func (ec *EmployeeController) GetByID(ctx *fiber.Ctx) error {
 // @Accept json
 func (ec *EmployeeController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -109,16 +109,16 @@ func (ec *EmployeeController) GetAll(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.EmployeeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Employees fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -129,7 +129,7 @@ func (ec *EmployeeController) GetAll(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Employees
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Update an employee
 // @Description Update an employee with the provided details.
 // @Accept json
@@ -156,9 +156,9 @@ func (c *EmployeeController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.EmployeeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Employee updated successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -168,7 +168,7 @@ func (c *EmployeeController) Update(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Employees
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Delete an employee
 // @Description Delete an employee with the provided details.
 // @Accept json
@@ -189,8 +189,8 @@ func (c *EmployeeController) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusNoContent).JSON(model.WebResponse[any]{
-		Code: fiber.StatusNoContent,
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
 		Message: "Employee deleted successfully",
 	})
 }
