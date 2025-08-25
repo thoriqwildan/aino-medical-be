@@ -8,16 +8,22 @@ import (
 
 func EmployeeToResponse(employee *entity.Employee) *model.EmployeeResponse {
 	response := &model.EmployeeResponse{
-		ID:        employee.ID,
-		Name:      employee.Name,
-		Email:     employee.Email,
-		Phone:     employee.Phone,
-		Position: employee.Position,
-		BirthDate: helper.CustomDate(employee.BirthDate),
-		Gender: string(employee.Gender),
+		ID:          employee.ID,
+		Name:        employee.Name,
+		Email:       employee.Email,
+		Phone:       employee.Phone,
+		Position:    employee.Position,
+		BirthDate:   helper.CustomDate(employee.BirthDate),
+		Gender:      string(employee.Gender),
 		Dependences: *employee.Dependence,
-		BankNumber: employee.BankNumber,
-		JoinDate: helper.CustomDate(employee.JoinDate),
+		BankNumber:  employee.BankNumber,
+		JoinDate:    helper.CustomDate(employee.JoinDate),
+	}
+
+	if len(employee.FamilyMembers) > 0 {
+		for _, familyMember := range employee.FamilyMembers {
+			response.FamilyMembers = append(response.FamilyMembers, *FamilyMemberToResponse(&familyMember))
+		}
 	}
 
 	if employee.PlanType.ID != 0 || employee.PlanType.Name != "" {
@@ -34,6 +40,6 @@ func EmployeeToResponse(employee *entity.Employee) *model.EmployeeResponse {
 			response.FamilyMembers[i] = *FamilyMemberToResponse(&familyMember)
 		}
 	}
-	
+
 	return response
 }
