@@ -115,7 +115,9 @@ func SeedFamilyMemberAndEmployee(db *gorm.DB) {
 }
 
 func SeedClaimsAndPatients(db *gorm.DB) {
+
 	for i := 0; i < 100; i++ {
+
 		genders := []string{"male", "female"}
 		relationshipTypes := []string{"husband", "wife", "child", "father", "mother"}
 		benefits := make([]entity.Benefit, 10)
@@ -195,6 +197,8 @@ func SeedClaimsAndPatients(db *gorm.DB) {
 		}
 		sla := []entity.SLA{entity.SLAOverdue, entity.SLAMeet}[helper.RandomInt(0, 1)]
 		claimStatus := []entity.TransactionStatus{entity.TransactionStatusSuccessful, entity.TransactionStatusFailed, entity.TransactionStatusPending}[helper.RandomInt(0, 2)]
+		startRandom := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
+		endRandom := time.Now()
 		db.Create(&entity.Claim{
 			PatientBenefitID: patientBenefit.ID,
 			PatientID:        patient.ID,
@@ -206,8 +210,8 @@ func SeedClaimsAndPatients(db *gorm.DB) {
 				return float64(helper.RandomInt(1000000, 10000000))
 			}(),
 			TransactionTypeID: &transactionTypes[randomTransactionType].ID,
-			TransactionDate:   ptrDate(time.Now()),
-			SubmissionDate:    ptrDate(time.Now()),
+			TransactionDate:   ptrDate(helper.RandomDate(startRandom, endRandom)),
+			SubmissionDate:    ptrDate(helper.RandomDate(startRandom, endRandom)),
 			SLA:               &sla,
 			ApprovedAmount: func() *float64 {
 				if benefits[randomBenefit].Plafond != nil {
