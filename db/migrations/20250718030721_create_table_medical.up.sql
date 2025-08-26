@@ -9,10 +9,7 @@ CREATE TABLE IF NOT EXISTS transaction_types (
          name VARCHAR(255) UNIQUE NOT NULL
     );
 
-CREATE TABLE IF NOT EXISTS limitation_types (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        name VARCHAR(255) UNIQUE NOT NULL
-    );
+
 
 CREATE TABLE IF NOT EXISTS departments (
         id INT PRIMARY KEY AUTO_INCREMENT,
@@ -86,21 +83,31 @@ CREATE TABLE IF NOT EXISTS patients (
         ON UPDATE CASCADE
     );
 
+
+CREATE TABLE IF NOT EXISTS yearly_benefit_claims (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    code VARCHAR(255) UNIQUE,
+    yearly_claim DECIMAL(18, 2) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL
+    );
+
 CREATE TABLE IF NOT EXISTS benefits (
         id INT PRIMARY KEY AUTO_INCREMENT,
         name VARCHAR(255) NOT NULL,
         plan_type_id INT NOT NULL,
+        yearly_benefit_claim_id INT NULL,
         detail TEXT,
         code VARCHAR(255) UNIQUE NOT NULL,
-        limitation_type_id INT NOT NULL,
+        limitation_type ENUM('Per Day', 'Per Month', 'Per Year', 'Per Pregnancy', 'Per Incident') NOT NULL,
         plafond DECIMAL(18, 2) NULL,
         yearly_max DECIMAL(18, 2) NULL,
         CONSTRAINT fk_benefits_plan_type
         FOREIGN KEY (plan_type_id) REFERENCES plan_types(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
-        CONSTRAINT fk_benefits_limitation_type
-        FOREIGN KEY (limitation_type_id) REFERENCES limitation_types(id)
+        CONSTRAINT fk_yearly_benefit_claims
+        FOREIGN KEY (yearly_benefit_claim_id) REFERENCES yearly_benefit_claims(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
     );
@@ -109,6 +116,7 @@ CREATE TABLE IF NOT EXISTS patient_benefits (
         id INT PRIMARY KEY AUTO_INCREMENT,
         patient_id INT NOT NULL,
         benefit_id INT NOT NULL,
+        yearly_max DECIMAL(18, 2) NULL,
         remaining_plafond DECIMAL(18, 2),
         initial_plafond DECIMAL(18, 2),
         start_date DATE NOT NULL,
