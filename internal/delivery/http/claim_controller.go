@@ -68,7 +68,6 @@ func (c *ClaimController) GetAllPatient(ctx *fiber.Ctx) error {
 		Page:  ctx.QueryInt("page", 0),
 		Limit: ctx.QueryInt("limit", 0),
 	}
-
 	responses, total, err := c.UseCase.GetPatient(ctx.Context(), query)
 	if err != nil {
 		c.Log.WithError(err).Error("Error fetching patients")
@@ -109,10 +108,9 @@ func (c *ClaimController) GetAllBenefits(ctx *fiber.Ctx) error {
 	}
 
 	query := &model.PagingQuery{
-		Page:  ctx.QueryInt("page", 0),
-		Limit: ctx.QueryInt("limit", 0),
+		Page:  ctx.QueryInt("page"),
+		Limit: ctx.QueryInt("limit"),
 	}
-
 	patientId, err := strconv.Atoi(id)
 	if err != nil {
 		c.Log.WithError(err).Error("Invalid patient ID format")
@@ -275,8 +273,8 @@ func (c *ClaimController) GetAll(ctx *fiber.Ctx) error {
 	}
 
 	query := &model.ClaimFilterQuery{
-		Page:              ctx.QueryInt("page", 1),
-		Limit:             ctx.QueryInt("limit", 10),
+		Page:              ctx.QueryInt("page"),
+		Limit:             ctx.QueryInt("limit"),
 		DateFrom:          ctx.Query("date_from"),
 		DateTo:            ctx.Query("date_to"),
 		TransactionStatus: transactionStatus,
