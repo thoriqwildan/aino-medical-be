@@ -8,10 +8,11 @@ import (
 
 func FamilyMemberToResponse(familyMember *entity.FamilyMember) *model.FamilyMemberResponse {
 	result := &model.FamilyMemberResponse{
-		ID: 				familyMember.ID,
-		Name: 			familyMember.Name,
-		BirthDate: helper.CustomDate(familyMember.BirthDate),
-		Gender: string(familyMember.Gender),
+		ID:               familyMember.ID,
+		Name:             familyMember.Name,
+		BirthDate:        helper.CustomDate(familyMember.BirthDate),
+		Gender:           string(familyMember.Gender),
+		RelationshipType: string(familyMember.RelationshipType),
 	}
 
 	if familyMember.PlanType.ID != 0 || familyMember.PlanType.Name != "" {
