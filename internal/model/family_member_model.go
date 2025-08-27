@@ -6,14 +6,14 @@ type FamilyMemberRequest struct {
 	Name             string            `json:"name" validate:"required"`
 	EmployeeID       uint              `json:"employee_id" validate:"required"`
 	BirthDate        helper.CustomDate `json:"birth_date" validate:"required"`
-	RelationshipType string            `json:"relationship_type" validate:"required"`
+	RelationshipType string            `json:"relationship_type" validate:"required,oneof=wife husband father mother child"`
 	Gender           string            `json:"gender" validate:"required,oneof=male female"`
 }
 
 type FamilyMemberResponse struct {
 	ID               uint              `json:"id"`
 	Name             string            `json:"name" validate:"required"`
-	RelationshipType string            `json:"relationship_type" validate:"required"`
+	RelationshipType string            `json:"relationship_type" validate:"required,oneof=wife husband father mother child"`
 	BirthDate        helper.CustomDate `json:"birth_date" validate:"required"`
 	Gender           string            `json:"gender" validate:"required,oneof=male female"`
 	PlanType         PlanTypeResponse  `json:"plan_type,omitempty" validate:"required"`
@@ -21,8 +21,9 @@ type FamilyMemberResponse struct {
 }
 
 type UpdateFamilyMemberRequest struct {
-	ID        *uint             `json:"id,omitempty" validate:"required,omitempty"`
-	Name      string            `json:"name" validate:"required"`
-	BirthDate helper.CustomDate `json:"birth_date" validate:"required"`
-	Gender    string            `json:"gender" validate:"required,oneof=male female"`
+	ID               *uint             `json:"id,omitempty" validate:"required,omitempty"`
+	Name             string            `json:"name" validate:"required"`
+	RelationshipType string            `json:"relationship_type" validate:"required,oneof=wife husband father mother child"`
+	BirthDate        helper.CustomDate `json:"birth_date" validate:"required"`
+	Gender           string            `json:"gender" validate:"required,oneof=male female"`
 }
