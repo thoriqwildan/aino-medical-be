@@ -13,15 +13,15 @@ import (
 
 type LimitationTypeController struct {
 	UseCase *usecase.LimitationTypeUseCase
-	Log *logrus.Logger
-	Config *viper.Viper
+	Log     *logrus.Logger
+	Config  *viper.Viper
 }
 
 func NewLimitationTypeController(useCase *usecase.LimitationTypeUseCase, log *logrus.Logger, config *viper.Viper) *LimitationTypeController {
 	return &LimitationTypeController{
 		UseCase: useCase,
-		Log: log,
-		Config: config,
+		Log:     log,
+		Config:  config,
 	}
 }
 
@@ -31,7 +31,7 @@ func NewLimitationTypeController(useCase *usecase.LimitationTypeUseCase, log *lo
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Plan Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Create a new limitation type
 // @Description Create a new limitation type with the provided details.
 // @Accept json
@@ -47,9 +47,9 @@ func (c *LimitationTypeController) Create(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse[model.LimitationTypeResponse]{
-		Code: fiber.StatusCreated,
+		Code:    fiber.StatusCreated,
 		Message: "Limitation type created successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -59,7 +59,7 @@ func (c *LimitationTypeController) Create(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Limitation Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Get a limitation type by ID
 // @Description Get a limitation type by its ID.
 // @Accept json
@@ -83,9 +83,9 @@ func (c *LimitationTypeController) GetById(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.LimitationTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Limitation type retrieved successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -94,7 +94,7 @@ func (c *LimitationTypeController) GetById(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Limitation Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find limitation types
 // @Description Find limitation types by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -102,7 +102,7 @@ func (c *LimitationTypeController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *LimitationTypeController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -113,16 +113,16 @@ func (c *LimitationTypeController) GetAll(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.LimitationTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Limitation types fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -133,7 +133,7 @@ func (c *LimitationTypeController) GetAll(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Limitation Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Update a limitation type
 // @Description Update a limitation type with the provided details.
 // @Accept json
@@ -160,9 +160,9 @@ func (c *LimitationTypeController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.LimitationTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Limitation type updated successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -172,7 +172,7 @@ func (c *LimitationTypeController) Update(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Limitation Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Delete a limitation type
 // @Description Delete a limitation type with the provided details.
 // @Accept json
@@ -193,8 +193,8 @@ func (c *LimitationTypeController) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusNoContent).JSON(model.WebResponse[any]{
-		Code: fiber.StatusNoContent,
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
 		Message: "Limitation type deleted successfully",
 	})
 }
