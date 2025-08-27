@@ -118,10 +118,10 @@ func SeedBenefits(db *gorm.DB) {
 	rows := []row{
 		{Code: "RI-1", Name: "Rawat Inap", Detail: ptrString("Biaya Kamar dan Makan (Maks. 365 hari per kasus)"), Limitation: entity.LimitationTypePerDay,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -138,10 +138,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-2", Name: "Rawat Inap", Detail: ptrString("Biaya Perawatan di Rumah Sakit"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			}, YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
 				"PLAN B": ptrString("RI-PLANB"),
@@ -157,10 +157,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-3", Name: "Rawat Inap", Detail: ptrString("Biaya Kamar Semi ICU dan ICU (Maks. 365 hari per kasus)"), Limitation: entity.LimitationTypePerDay,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -177,10 +177,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-4", Name: "Rawat Inap", Detail: ptrString("Operasi Kompleks: Biaya Operasi (Termasuk Dokter Bedah, Kamar Operasi dan Anestesi)"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -197,10 +197,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-5", Name: "Rawat Inap", Detail: ptrString("Operasi Besar: Biaya Operasi (Termasuk Dokter Bedah, Kamar Operasi dan Anestesi)"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -217,10 +217,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-6", Name: "Rawat Inap", Detail: ptrString("Operasi Sedang: Biaya Operasi (Termasuk Dokter Bedah, Kamar Operasi dan Anestesi)"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -237,10 +237,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-7", Name: "Rawat Inap", Detail: ptrString("Operasi Kecil: Biaya Operasi (Termasuk Dokter Bedah, Kamar Operasi dan Anestesi)"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -257,10 +257,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-8", Name: "Rawat Inap", Detail: ptrString("Biaya Kunjungan Dokter (Maks. 365 hari per kasus)"), Limitation: entity.LimitationTypePerDay,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -277,10 +277,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-9", Name: "Rawat Inap", Detail: ptrString("Biaya Konsultasi dengan Dokter Spesialis"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -297,10 +297,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RI-10", Name: "Rawat Inap", Detail: ptrString("Biaya Ambulan"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": nil,
@@ -317,10 +317,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RJ-1", Name: "Rawat Jalan", Detail: ptrString("Biaya Konsultasi Dokter Umum"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": ptrString("RJ-PLANA"),
@@ -337,10 +337,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RJ-2", Name: "Rawat Jalan", Detail: ptrString("Biaya Konsultasi Dokter Spesialis (Tanpa Surat Pengantar)"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": ptrString("RJ-PLANA"),
@@ -357,10 +357,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RJ-3", Name: "Rawat Jalan", Detail: ptrString("Biaya Konsultasi Dokter dan Obat-obatan"), Limitation: entity.LimitationTypePerIncident,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			YearlyBenefitsClaim: map[string]*string{
 				"PLAN A": ptrString("RJ-PLANA"),
@@ -577,10 +577,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RM-1", Name: "Melahirkan", Detail: ptrString("Biaya Melahirkan Normal"), Limitation: entity.LimitationTypePerPregnancy,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"PLAN A": ptrFloat64(10000000),
@@ -591,10 +591,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RM-2", Name: "Melahirkan", Detail: ptrString("Biaya Melahirkan dengan Pembedahan (Caesar)"), Limitation: entity.LimitationTypePerPregnancy,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"PLAN A": ptrFloat64(15000000),
@@ -605,10 +605,10 @@ func SeedBenefits(db *gorm.DB) {
 		},
 		{Code: "RM-3", Name: "Melahirkan", Detail: ptrString("Biaya Pengguguran Kehamilan (Aborsi) Atas Pertimbangan Medis"), Limitation: entity.LimitationTypePerPregnancy,
 			YearlyMax: map[string]*float64{
-				"PLAN A": nil,
-				"PLAN B": nil,
-				"PLAN C": nil,
-				"PLAN D": nil,
+				"PLAN A": ptrFloat64(0),
+				"PLAN B": ptrFloat64(0),
+				"PLAN C": ptrFloat64(0),
+				"PLAN D": ptrFloat64(0),
 			},
 			Plafond: map[string]*float64{
 				"PLAN A": ptrFloat64(8500000),
