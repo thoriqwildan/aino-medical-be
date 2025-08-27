@@ -2252,8 +2252,7 @@ const docTemplate = `{
             "required": [
                 "benefit_code",
                 "claim_amount",
-                "patient_id",
-                "sla"
+                "patient_id"
             ],
             "properties": {
                 "benefit_code": {
@@ -2264,13 +2263,6 @@ const docTemplate = `{
                 },
                 "patient_id": {
                     "type": "integer"
-                },
-                "sla": {
-                    "type": "string",
-                    "enum": [
-                        "meet",
-                        "overdue"
-                    ]
                 }
             }
         },
@@ -2967,6 +2959,7 @@ const docTemplate = `{
         "model.UpdateClaimRequest": {
             "type": "object",
             "required": [
+                "approve_amount",
                 "city",
                 "claim_amount",
                 "claim_status",
@@ -2981,6 +2974,9 @@ const docTemplate = `{
                 "transaction_type_id"
             ],
             "properties": {
+                "approve_amount": {
+                    "type": "number"
+                },
                 "city": {
                     "type": "string"
                 },

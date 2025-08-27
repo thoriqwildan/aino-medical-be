@@ -2246,8 +2246,7 @@
             "required": [
                 "benefit_code",
                 "claim_amount",
-                "patient_id",
-                "sla"
+                "patient_id"
             ],
             "properties": {
                 "benefit_code": {
@@ -2258,13 +2257,6 @@
                 },
                 "patient_id": {
                     "type": "integer"
-                },
-                "sla": {
-                    "type": "string",
-                    "enum": [
-                        "meet",
-                        "overdue"
-                    ]
                 }
             }
         },
@@ -2961,6 +2953,7 @@
         "model.UpdateClaimRequest": {
             "type": "object",
             "required": [
+                "approve_amount",
                 "city",
                 "claim_amount",
                 "claim_status",
@@ -2975,6 +2968,9 @@
                 "transaction_type_id"
             ],
             "properties": {
+                "approve_amount": {
+                    "type": "number"
+                },
                 "city": {
                     "type": "string"
                 },
