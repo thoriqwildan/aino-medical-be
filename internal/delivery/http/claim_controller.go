@@ -65,8 +65,8 @@ func (c *ClaimController) CreateClaim(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *ClaimController) GetAllPatient(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page:  ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
+		Page:  ctx.QueryInt("page", 0),
+		Limit: ctx.QueryInt("limit", 0),
 	}
 
 	responses, total, err := c.UseCase.GetPatient(ctx.Context(), query)
@@ -109,8 +109,8 @@ func (c *ClaimController) GetAllBenefits(ctx *fiber.Ctx) error {
 	}
 
 	query := &model.PagingQuery{
-		Page:  ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
+		Page:  ctx.QueryInt("page", 0),
+		Limit: ctx.QueryInt("limit", 0),
 	}
 
 	patientId, err := strconv.Atoi(id)
