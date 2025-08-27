@@ -101,7 +101,7 @@ type Benefit struct {
 	Detail               *string             `gorm:"column:detail"`
 	Code                 string              `gorm:"unique;not null"`
 	LimitationType       LimitationType      `gorm:"enum('Per Day', 'Per Month', 'Per Year', 'Per Incident', 'Per Pregnancy');not null"`
-	Plafond              *float64            `gorm:"not null"`
+	Plafond              *float64            `gorm:"column:plafond"`
 	YearlyMax            *float64            `gorm:"column:yearly_max"`
 	PlanType             PlanType            `gorm:"foreignKey:PlanTypeID"`
 	PatientBenefits      []PatientBenefit    `gorm:"foreignKey:BenefitID"` // Ini sudah benar
