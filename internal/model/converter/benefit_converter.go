@@ -1,8 +1,6 @@
 package converter
 
 import (
-	"fmt"
-
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"github.com/thoriqwildan/aino-medical-be/internal/model"
 )
@@ -32,6 +30,5 @@ func BenefitToResponse(benefit *entity.Benefit) *model.BenefitResponse {
 	if benefit.LimitationType.ID != 0 {
 		response.LimitationType = *LimitationTypeToResponse(&benefit.LimitationType)
 	}
-	fmt.Println(response)
 	return response
 }
