@@ -98,8 +98,8 @@ func (dc *DepartmentController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (dc *DepartmentController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page:  ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
+		Page:  ctx.QueryInt("page"),
+		Limit: ctx.QueryInt("limit"),
 	}
 
 	responses, total, err := dc.DepartmentUseCase.GetAll(ctx.Context(), query)
