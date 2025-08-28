@@ -131,7 +131,11 @@ func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.Pag
 	// 3. Buat map untuk memudahkan pencarian remaining_plafond
 	remainingPlafondMap := make(map[uint]float64)
 	for _, pb := range patientBenefits {
-		remainingPlafondMap[pb.BenefitID] = pb.RemainingPlafond
+		if pb.RemainingPlafond != nil {
+			remainingPlafondMap[pb.BenefitID] = *pb.RemainingPlafond
+		} else {
+			remainingPlafondMap[pb.BenefitID] = 0
+		}
 	}
 
 	return benefits, remainingPlafondMap, total, nil
