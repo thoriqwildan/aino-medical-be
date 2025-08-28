@@ -13,15 +13,15 @@ import (
 
 type PlanTypeController struct {
 	UseCase *usecase.PlanTypeUseCase
-	Log *logrus.Logger
-	Config *viper.Viper
+	Log     *logrus.Logger
+	Config  *viper.Viper
 }
 
 func NewPlanTypeController(useCase *usecase.PlanTypeUseCase, log *logrus.Logger, config *viper.Viper) *PlanTypeController {
 	return &PlanTypeController{
 		UseCase: useCase,
-		Log: log,
-		Config: config,
+		Log:     log,
+		Config:  config,
 	}
 }
 
@@ -31,7 +31,7 @@ func NewPlanTypeController(useCase *usecase.PlanTypeUseCase, log *logrus.Logger,
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Plan Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Create a new plan type
 // @Description Create a new plan type with the provided details.
 // @Accept json
@@ -47,9 +47,9 @@ func (c *PlanTypeController) Create(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse[model.PlanTypeResponse]{
-		Code: fiber.StatusCreated,
+		Code:    fiber.StatusCreated,
 		Message: "Plan type created successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -59,7 +59,7 @@ func (c *PlanTypeController) Create(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Plan Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Get a plan type by ID
 // @Description Get a plan type by its ID.
 // @Accept json
@@ -83,9 +83,9 @@ func (c *PlanTypeController) GetById(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.PlanTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Plan type retrieved successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -94,7 +94,7 @@ func (c *PlanTypeController) GetById(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Plan Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find plan types
 // @Description Find plan types by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -102,7 +102,7 @@ func (c *PlanTypeController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *PlanTypeController) Get(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -113,16 +113,16 @@ func (c *PlanTypeController) Get(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.PlanTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Plan types fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -133,7 +133,7 @@ func (c *PlanTypeController) Get(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Plan Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Update a plan type
 // @Description Update a plan type with the provided details.
 // @Accept json
@@ -160,9 +160,9 @@ func (c *PlanTypeController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.PlanTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Plan type updated successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -172,7 +172,7 @@ func (c *PlanTypeController) Update(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Plan Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Delete a plan type
 // @Description Delete a plan type with the provided details.
 // @Accept json
@@ -181,7 +181,7 @@ func (c *PlanTypeController) Delete(ctx *fiber.Ctx) error {
 	if id == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "ID is required")
 	}
-	
+
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
 		c.Log.WithError(err).Error("Invalid ID format for deletion")
@@ -193,8 +193,8 @@ func (c *PlanTypeController) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusNoContent).JSON(model.WebResponse[any]{
-		Code: fiber.StatusNoContent,
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
 		Message: "Plan type deleted successfully",
 	})
 }
