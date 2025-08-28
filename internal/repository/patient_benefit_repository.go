@@ -25,7 +25,7 @@ func (r *PatientBenefitRepository) FindOrCreate(
 	db *gorm.DB,
 	patient *entity.Patient,
 	benefit *entity.Benefit,
-	initialPlafond float64,
+	initialPlafond *float64,
 	startDate time.Time,
 	prorate float64,
 ) (*entity.PatientBenefit, error) {
@@ -44,8 +44,8 @@ func (r *PatientBenefitRepository) FindOrCreate(
 		newPatientBenefit := entity.PatientBenefit{
 			PatientID:        patient.ID,
 			BenefitID:        benefit.ID,
-			InitialPlafond:   &initialPlafond,
-			RemainingPlafond: &initialPlafond,
+			InitialPlafond:   initialPlafond,
+			RemainingPlafond: initialPlafond,
 			StartDate:        startDate,
 		}
 
