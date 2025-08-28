@@ -1,6 +1,7 @@
 package seed
 
 import (
+	"errors"
 	"log"
 
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
@@ -18,7 +19,7 @@ func SeedDepartments(db *gorm.DB) {
 	for _, dept := range departments {
 		var existingDept entity.Department
 		if err := db.Where("name = ?", dept.Name).First(&existingDept).Error; err != nil {
-			if err == gorm.ErrRecordNotFound {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				if err := db.Create(&dept).Error; err != nil {
 					log.Printf("Error seeding department %s: %v\n", dept.Name, err)
 				} else {
