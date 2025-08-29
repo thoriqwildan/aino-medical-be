@@ -18,6 +18,7 @@ func EmployeeToResponse(employee *entity.Employee) *model.EmployeeResponse {
 		Dependences: *employee.Dependence,
 		BankNumber:  employee.BankNumber,
 		JoinDate:    helper.CustomDate(employee.JoinDate),
+		ProRate:     employee.ProRate,
 	}
 
 	if len(employee.FamilyMembers) > 0 {
