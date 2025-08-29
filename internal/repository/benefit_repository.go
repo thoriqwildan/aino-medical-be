@@ -30,11 +30,15 @@ func (br *BenefitRepository) GetById(db *gorm.DB, id uint, benefit *entity.Benef
 	return db.Where("id = ?", id).Preload("PlanType").Preload("LimitationType").First(benefit).Error
 }
 
-func (br *BenefitRepository) SearchBenefits(db *gorm.DB, request *model.PagingQuery) ([]entity.Benefit, int64, error) {
+func (br *BenefitRepository) SearchBenefits(db *gorm.DB, request *model.SearchPagingQuery) ([]entity.Benefit, int64, error) {
 	var benefits []entity.Benefit
 	var total int64
 
 	baseQuery := db.Model(&entity.Benefit{})
+
+	if request.SearchValue != "" {
+		baseQuery.Where("name LIKE ?", "%"+request.SearchValue+"%")
+	}
 
 	if err := baseQuery.Count(&total).Error; err != nil {
 		return nil, 0, err
