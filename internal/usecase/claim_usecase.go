@@ -73,11 +73,18 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Patient's plan type does not match benefit's plan type")
 	}
 
-	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, patient, benefit, *benefit.Plafond, startDateOfCurrentYear, patient.Employee.ProRate)
+	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, patient, benefit, benefit.Plafond, startDateOfCurrentYear, patient.Employee.ProRate)
 	if err != nil {
 		uc.Log.WithError(err).Error("Failed to find or create patient benefit")
 		return nil, err
 	}
+	//var yearlyBenefitClaim *entity.YearlyBenefitClaim
+	//if err := tx.Model(entity.YearlyBenefitClaim{}).Where("id = ?", benefit.YearlyBenefitClaimID).Preload("Benefits").Take(&yearlyBenefitClaim).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	//	uc.Log.WithError(err).Error("Failed to find yearly benefit claim when creating claim")
+	//	return nil, fiber.NewError(fiber.StatusInternalServerError, "failed to find yearly benefit claim when creating claim")
+	//} else {
+	//
+	//}
 
 	claim := &entity.Claim{
 		PatientID:         request.PatientID,
@@ -89,10 +96,10 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 	if patientBenefit.RemainingPlafond != nil {
 		if *patientBenefit.RemainingPlafond < request.ClaimAmount {
 			claim.ClaimStatus = entity.ClaimStatusOverPlafond
-			claim.ApprovedAmount = patientBenefit.RemainingPlafond
+			//claim.ApprovedAmount = patientBenefit.RemainingPlafond
 		} else {
 			claim.ClaimStatus = entity.ClaimStatusOnPlafond
-			claim.ApprovedAmount = &request.ClaimAmount
+			//claim.ApprovedAmount = &request.ClaimAmount
 		}
 	}
 
@@ -220,7 +227,7 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 		return nil, err
 	}
 
-	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, &claim.Patient, benefit, *benefit.Plafond, startDateOfCurrentYear, claim.Employee.ProRate)
+	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, &claim.Patient, benefit, benefit.Plafond, startDateOfCurrentYear, claim.Employee.ProRate)
 	if err != nil {
 		uc.Log.WithError(err).Error("Failed to find or create patient benefit in UpdateClaim")
 		return nil, err
