@@ -12,15 +12,15 @@ import (
 
 type TransactionTypeController struct {
 	UseCase *usecase.TransactionTypeUseCase
-	Log *logrus.Logger
-	Config *viper.Viper
+	Log     *logrus.Logger
+	Config  *viper.Viper
 }
 
 func NewTransactionTypeController(useCase *usecase.TransactionTypeUseCase, log *logrus.Logger, config *viper.Viper) *TransactionTypeController {
 	return &TransactionTypeController{
 		UseCase: useCase,
-		Log: log,
-		Config: config,
+		Log:     log,
+		Config:  config,
 	}
 }
 
@@ -30,7 +30,7 @@ func NewTransactionTypeController(useCase *usecase.TransactionTypeUseCase, log *
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Transaction Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Create a new transaction type
 // @Description Create a new transaction type with the provided details.
 // @Accept json
@@ -46,9 +46,9 @@ func (c *TransactionTypeController) Create(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(model.WebResponse[model.TransactionTypeResponse]{
-		Code: fiber.StatusCreated,
+		Code:    fiber.StatusCreated,
 		Message: "Transaction type created successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -58,7 +58,7 @@ func (c *TransactionTypeController) Create(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Transaction Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Get a transaction type by ID
 // @Description Get a transaction type by its ID.
 // @Accept json
@@ -86,9 +86,9 @@ func (c *TransactionTypeController) GetById(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.TransactionTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Transaction type fetched successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -97,7 +97,7 @@ func (c *TransactionTypeController) GetById(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Transaction Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Find transaction types
 // @Description Find transaction types by their attributes.
 // @Param   page query     int               false       "Page number" default(1)
@@ -105,7 +105,7 @@ func (c *TransactionTypeController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *TransactionTypeController) Get(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page: ctx.QueryInt("page", 1),
+		Page:  ctx.QueryInt("page", 1),
 		Limit: ctx.QueryInt("limit", 10),
 	}
 
@@ -116,16 +116,16 @@ func (c *TransactionTypeController) Get(ctx *fiber.Ctx) error {
 	}
 
 	paging := &model.PaginationPage{
-		Page: query.Page,
+		Page:  query.Page,
 		Limit: query.Limit,
 		Total: int(total),
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[[]model.TransactionTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Transaction types fetched successfully",
-		Data: &responses,
-		Meta: paging,
+		Data:    &responses,
+		Meta:    paging,
 	})
 }
 
@@ -136,7 +136,7 @@ func (c *TransactionTypeController) Get(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Transaction Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Update a transaction type
 // @Description Update a transaction type with the provided details.
 // @Accept json
@@ -167,9 +167,9 @@ func (c *TransactionTypeController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.TransactionTypeResponse]{
-		Code: fiber.StatusOK,
+		Code:    fiber.StatusOK,
 		Message: "Transaction type updated successfully",
-		Data: response,
+		Data:    response,
 	})
 }
 
@@ -179,7 +179,7 @@ func (c *TransactionTypeController) Update(ctx *fiber.Ctx) error {
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Transaction Types
-// @Security    BearerAuth api_key
+// @Security    BearerAuth bearer
 // @Summary Delete a transaction type
 // @Description Delete a transaction type with the provided details.
 // @Accept json
@@ -204,10 +204,9 @@ func (c *TransactionTypeController) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(fiber.StatusNoContent).JSON(model.WebResponse[any]{
-		Code: fiber.StatusNoContent,
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
 		Message: "Transaction type deleted successfully",
-		Data: nil,
+		Data:    nil,
 	})
 }
-
