@@ -42,8 +42,8 @@ func (r *PatientBenefitRepository) FindOrCreate(
 		newPatientBenefit := entity.PatientBenefit{
 			PatientID:        patientID,
 			BenefitID:        benefitID,
-			InitialPlafond:   initialPlafond,
-			RemainingPlafond: initialPlafond,
+			InitialPlafond:   &initialPlafond,
+			RemainingPlafond: &initialPlafond,
 			StartDate:        startDate,
 		}
 
@@ -62,10 +62,14 @@ func (r *PatientBenefitRepository) FindOrCreate(
 }
 
 func (r *PatientBenefitRepository) BalanceReduction(db *gorm.DB, patientBenefit *entity.PatientBenefit, amount float64) error {
-	patientBenefit.RemainingPlafond -= amount
-	if patientBenefit.RemainingPlafond < 0 {
-		return gorm.ErrInvalidData
-	}
 
+	if patientBenefit.RemainingPlafond != nil {
+		*patientBenefit.RemainingPlafond -= amount
+		if *patientBenefit.RemainingPlafond < 0 {
+			return gorm.ErrInvalidData
+		}
+	} else {
+		return errors.New("error cannot reductio remaining plafond because of nil plafond value")
+	}
 	return db.Save(patientBenefit).Error
 }
