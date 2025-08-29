@@ -99,8 +99,8 @@ func (ec *EmployeeController) GetByID(ctx *fiber.Ctx) error {
 func (ec *EmployeeController) GetAll(ctx *fiber.Ctx) error {
 	query := &model.SearchPagingQuery{
 		SearchValue: ctx.Query("search_value"),
-		Page:        ctx.QueryInt("page", 1),
-		Limit:       ctx.QueryInt("limit", 10),
+		Page:        ctx.QueryInt("page"),
+		Limit:       ctx.QueryInt("limit"),
 	}
 
 	responses, total, err := ec.UseCase.GetAll(ctx.Context(), query)
