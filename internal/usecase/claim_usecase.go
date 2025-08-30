@@ -88,12 +88,14 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 		TransactionStatus: entity.TransactionStatusPending,
 	}
 
-	if patientBenefit.RemainingPlafond < request.ClaimAmount {
-		claim.ClaimStatus = entity.ClaimStatusOverPlafond
-		claim.ApprovedAmount = &patientBenefit.RemainingPlafond
-	} else {
-		claim.ClaimStatus = entity.ClaimStatusOnPlafond
-		claim.ApprovedAmount = &request.ClaimAmount
+	if patientBenefit.RemainingPlafond != nil {
+		if *patientBenefit.RemainingPlafond < request.ClaimAmount {
+			claim.ClaimStatus = entity.ClaimStatusOverPlafond
+			claim.ApprovedAmount = patientBenefit.RemainingPlafond
+		} else {
+			claim.ClaimStatus = entity.ClaimStatusOnPlafond
+			claim.ApprovedAmount = &request.ClaimAmount
+		}
 	}
 
 	if patient.FamilyMemberID != nil {
@@ -226,7 +228,7 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 		return nil, err
 	}
 
-	patientBenefit.RemainingPlafond += *claim.ApprovedAmount
+	*patientBenefit.RemainingPlafond += *claim.ApprovedAmount
 	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, request.ClaimAmount); err != nil {
 		uc.Log.WithError(err).Error("Failed to reduce patient benefit balance in UpdateClaim")
 		if errors.Is(err, gorm.ErrInvalidData) {
@@ -246,12 +248,14 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 	}(request)
 	claim.TransactionTypeID = request.TransactionTypeID
 	claim.TransactionStatus = entity.TransactionStatus(request.TransactionStatus)
-	if patientBenefit.RemainingPlafond < request.ClaimAmount {
-		claim.ClaimStatus = entity.ClaimStatusOverPlafond
-		claim.ApprovedAmount = &patientBenefit.RemainingPlafond
-	} else {
-		claim.ClaimStatus = entity.ClaimStatusOnPlafond
-		claim.ApprovedAmount = &request.ClaimAmount
+	if patientBenefit.RemainingPlafond != nil {
+		if *patientBenefit.RemainingPlafond < request.ClaimAmount {
+			claim.ClaimStatus = entity.ClaimStatusOverPlafond
+			claim.ApprovedAmount = patientBenefit.RemainingPlafond
+		} else {
+			claim.ClaimStatus = entity.ClaimStatusOnPlafond
+			claim.ApprovedAmount = &request.ClaimAmount
+		}
 	}
 	claim.SubmissionDate = (*time.Time)(request.SubmissionDate)
 	claim.City = request.City
