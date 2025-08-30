@@ -1,5 +1,18 @@
 basePath: /
 definitions:
+  model.BaseResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data: {}
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
   model.BenefitResponse:
     properties:
       code:
@@ -379,6 +392,79 @@ definitions:
       total:
         type: integer
     type: object
+  model.PatientBenefitListResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.PatientBenefitResponse'
+        type: array
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.PatientBenefitParams:
+    properties:
+      benefitID:
+        type: integer
+      patientID:
+        type: integer
+    required:
+    - benefitID
+    - patientID
+    type: object
+  model.PatientBenefitResponse:
+    properties:
+      benefit:
+        $ref: '#/definitions/model.BenefitResponse'
+      benefit_id:
+        type: integer
+      claims:
+        items:
+          $ref: '#/definitions/model.ClaimResponse'
+        type: array
+      created_at:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      initial_plafond:
+        type: number
+      patient:
+        $ref: '#/definitions/model.PatientResponse'
+      patient_id:
+        type: integer
+      remaining_plafond:
+        type: number
+      start_date:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      yearly_max:
+        type: number
+    type: object
+  model.PatientBenefitResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.PatientBenefitResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
   model.PatientResponse:
     properties:
       birth_date:
@@ -660,6 +746,32 @@ definitions:
     - id
     - name
     - relationship_type
+    type: object
+  model.UpdatePatientBenefitRequest:
+    properties:
+      end_date:
+        type: string
+      initial_plafond:
+        minimum: 0
+        type: number
+      remaining_plafond:
+        minimum: 0
+        type: number
+      start_date:
+        type: string
+      status:
+        enum:
+        - active
+        - exhausted
+        - expired
+        type: string
+      yearly_max:
+        minimum: 0
+        type: number
+    required:
+    - end_date
+    - start_date
+    - status
     type: object
   model.UpdatePlanTypeRequest:
     properties:
@@ -1691,6 +1803,238 @@ paths:
       summary: Update a family member
       tags:
       - Family Members
+  /api/v1/patient-benefits:
+    get:
+      consumes:
+      - application/json
+      description: Returns paginated patient benefits for the current filters.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientBenefitListResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: List patient benefits (paged)
+      tags:
+      - Patient Benefits
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Patient Benefit
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.PatientBenefitParams'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Create patient benefit (find or create for current year)
+      tags:
+      - Patient Benefits
+  /api/v1/patient-benefits/patients/{patientId}/benefits/{benefitId}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Benefit ID
+        in: path
+        name: benefitId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Delete patient benefit
+      tags:
+      - Patient Benefits
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Benefit ID
+        in: path
+        name: benefitId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Get patient benefit by patientId & benefitId
+      tags:
+      - Patient Benefits
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Benefit ID
+        in: path
+        name: benefitId
+        required: true
+        type: integer
+      - description: Update Patient Benefit
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdatePatientBenefitRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Update patient benefit
+      tags:
+      - Patient Benefits
+  /api/v1/patient-benefits/patients/{patientId}/benefits/{benefitId}/reset-remaining:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Benefit ID
+        in: path
+        name: benefitId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Reset remaining plafond for a specific patient benefit
+      tags:
+      - Patient Benefits
+  /api/v1/patient-benefits/reset-all:
+    post:
+      consumes:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponseWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Reset all remaining plafonds (batch)
+      tags:
+      - Patient Benefits
   /api/v1/plan-types:
     get:
       consumes:
