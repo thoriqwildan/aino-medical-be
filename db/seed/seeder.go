@@ -9,7 +9,6 @@ import (
 func RunAllSeeders(db *gorm.DB) {
 	log.Println("Running all seeders...")
 
-	SeedLimitationTypes(db)
 	SeedTransactionTypes(db)
 	SeedDepartments(db)
 	SeedBenefits(db)
