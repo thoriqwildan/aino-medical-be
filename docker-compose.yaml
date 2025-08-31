@@ -7,17 +7,18 @@ services:
     ports:
       - 3308:3306
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
     networks:
       - app-net
 
   app:
     depends_on:
       mysql:
-          condition: service_started
+          condition: service_healthy
     container_name: app-aino-medical
     build:
       context: .
@@ -32,7 +33,7 @@ services:
   cron:
     depends_on:
       mysql:
-        condition: service_started
+        condition: service_healthy
     container_name: cron-aino-medical
     build:
       context: .
