@@ -43,6 +43,7 @@ func Bootstrap(config *BootstrapConfig) {
 	familyMemberUseCase := usecase.NewFamilyMemberUseCase(familyMemberRepository, config.DB, config.Validate, config.Log)
 	claimUseCase := usecase.NewClaimUseCase(claimRepository, config.DB, config.Validate, config.Log, patientBenefitRepository, benefitRepository)
 	yearlyBenefitClaimUsecase := usecase.NewYearlyBenefitClaimUsecase(yearlyBenefitClaimRepository, config.Validate, config.DB, config.Log)
+	patientBenefitUsecase := usecase.NewPatientBenefitUsecase(patientBenefitRepository, config.Log, config.DB, config.Validate)
 
 	userController := http.NewUserController(userUseCase, config.Log, config.Config)
 	transactionTypeController := http.NewTransactionTypeController(transactionTypeUseCase, config.Log, config.Config)
@@ -53,6 +54,7 @@ func Bootstrap(config *BootstrapConfig) {
 	familyMemberController := http.NewFamilyMemberController(familyMemberUseCase, config.Log, config.Config)
 	claimController := http.NewClaimController(claimUseCase, config.Log)
 	yearlyBenefitClaimController := http.NewYearlyBenefitClaimController(yearlyBenefitClaimUsecase, config.Log)
+	patientBenefitController := http.NewPatientBenefitController(patientBenefitUsecase, config.Log)
 
 	routeConfig := route.RouteConfig{
 		App:                          config.App,
@@ -66,6 +68,7 @@ func Bootstrap(config *BootstrapConfig) {
 		FamilyMemberController:       familyMemberController,
 		ClaimController:              claimController,
 		YearlyBenefitClaimController: yearlyBenefitClaimController,
+		PatientBenefitController:     patientBenefitController,
 	}
 
 	routeConfig.Setup()
