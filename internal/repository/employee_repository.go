@@ -28,18 +28,22 @@ func (er *EmployeeRepository) GetDepartmentByID(db *gorm.DB, id uint) error {
 
 func (er *EmployeeRepository) FindById(db *gorm.DB, id uint, employee *entity.Employee) error {
 	return db.Where("id = ?", id).
-				Preload("Department").
-				Preload("PlanType").
-				Preload("FamilyMembers").
-				Preload("FamilyMembers.PlanType").
-				First(employee).Error
+		Preload("Department").
+		Preload("PlanType").
+		Preload("FamilyMembers").
+		Preload("FamilyMembers.PlanType").
+		First(employee).Error
 }
 
-func (er *EmployeeRepository) SearchEmployees(db *gorm.DB, request *model.PagingQuery) ([]entity.Employee, int64, error) {
+func (er *EmployeeRepository) SearchEmployees(db *gorm.DB, request *model.SearchPagingQuery) ([]entity.Employee, int64, error) {
 	var employees []entity.Employee
 	var total int64
 
 	baseQuery := db.Model(&entity.Employee{})
+
+	if request.SearchValue != "" {
+		baseQuery.Where("name LIKE ?", "%"+request.SearchValue+"%")
+	}
 
 	if err := baseQuery.Count(&total).Error; err != nil {
 		return nil, 0, err
