@@ -162,7 +162,8 @@ func (r *ClaimRepository) FindAllWithQuery(db *gorm.DB, query *model.ClaimFilter
 		Preload("PatientBenefit.Benefit").
 		Preload("PatientBenefit.Benefit.PlanType").
 		Preload("PatientBenefit.Benefit.LimitationType").
-		Preload("TransactionType")
+		Preload("TransactionType").
+		Order("COALESCE(claims.updated_at, claims.created_at) DESC")
 
 	// Terapkan pagination
 	offset := (query.Page - 1) * query.Limit
