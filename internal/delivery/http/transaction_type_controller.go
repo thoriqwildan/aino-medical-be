@@ -105,8 +105,8 @@ func (c *TransactionTypeController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *TransactionTypeController) Get(ctx *fiber.Ctx) error {
 	query := &model.PagingQuery{
-		Page:  ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
+		Page:  ctx.QueryInt("page"),
+		Limit: ctx.QueryInt("limit"),
 	}
 
 	responses, total, err := c.UseCase.Get(ctx.Context(), query)
