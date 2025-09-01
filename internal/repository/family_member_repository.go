@@ -20,11 +20,11 @@ func NewFamilyMemberRepository(log *logrus.Logger) *FamilyMemberRepository {
 
 func (r *FamilyMemberRepository) GetByID(db *gorm.DB, familyMember *entity.FamilyMember, id any) error {
 	return db.Where("id = ?", id).
-					Preload("PlanType").
-					Preload("Employee").
-					Preload("Employee.PlanType").
-					Preload("Employee.Department").
-					First(familyMember).Error
+		Preload("PlanType").
+		Preload("Employee").
+		Preload("Employee.PlanType").
+		Preload("Employee.Department").
+		First(familyMember).Error
 }
 
 func (r *FamilyMemberRepository) GetByName(db *gorm.DB, name string) error {
@@ -35,11 +35,15 @@ func (r *FamilyMemberRepository) GetEmployeeById(db *gorm.DB, employee *entity.E
 	return db.Where("id = ?", id).First(employee).Error
 }
 
-func (r *FamilyMemberRepository) SearchFamilyMember(db *gorm.DB, request *model.PagingQuery) ([]entity.FamilyMember, int64, error) {
+func (r *FamilyMemberRepository) SearchFamilyMember(db *gorm.DB, request *model.SearchPagingQuery) ([]entity.FamilyMember, int64, error) {
 	var familyMembers []entity.FamilyMember
 	var total int64
 
 	baseQuery := db.Model(&entity.FamilyMember{})
+
+	if request.SearchValue != "" {
+		baseQuery.Where("name LIKE ?", "%"+request.SearchValue+"%")
+	}
 
 	if err := baseQuery.Count(&total).Error; err != nil {
 		return nil, 0, err
