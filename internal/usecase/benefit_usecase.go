@@ -49,8 +49,8 @@ func (bu *BenefitUseCase) Create(ctx context.Context, request *model.CreateBenef
 		Detail:           request.Detail,
 		Code:             request.Code,
 		LimitationTypeID: request.LimitationTypeID,
-		Plafond:          request.Plafond,
-		YearlyMax:        request.YearlyMax,
+		Plafond:          &request.Plafond,
+		YearlyMax:        &request.YearlyMax,
 	}
 	if err := bu.Repository.Create(tx, benefit); err != nil {
 		bu.Log.WithError(err).Error("Error creating benefit")
@@ -125,8 +125,8 @@ func (bu *BenefitUseCase) Update(ctx context.Context, request *model.UpdateBenef
 		Detail:           request.Detail,
 		Code:             request.Code,
 		LimitationTypeID: request.LimitationTypeID,
-		Plafond:          request.Plafond,
-		YearlyMax:        request.YearlyMax,
+		Plafond:          &request.Plafond,
+		YearlyMax:        &request.YearlyMax,
 	}
 
 	if err := bu.Repository.Update(tx, benefit); err != nil {
