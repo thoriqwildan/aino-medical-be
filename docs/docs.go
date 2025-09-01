@@ -1460,247 +1460,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/limitation-types": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth bearer": []
-                    }
-                ],
-                "description": "Find limitation types by their attributes.",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Limitation Types"
-                ],
-                "summary": "Find limitation types",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Number of items per page",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.LimitationTypeResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth bearer": []
-                    }
-                ],
-                "description": "Create a new limitation type with the provided details.",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Plan Types"
-                ],
-                "summary": "Create a new limitation type",
-                "parameters": [
-                    {
-                        "description": "Create Limitation Type Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.LimitationTypeRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.LimitationTypeResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/limitation-types/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth bearer": []
-                    }
-                ],
-                "description": "Get a limitation type by its ID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Limitation Types"
-                ],
-                "summary": "Get a limitation type by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limitation Type ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.LimitationTypeResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth bearer": []
-                    }
-                ],
-                "description": "Update a limitation type with the provided details.",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Limitation Types"
-                ],
-                "summary": "Update a limitation type",
-                "parameters": [
-                    {
-                        "description": "Update Limitation Type Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.UpdateLimitationTypeRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Limitation Type ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.LimitationTypeResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth bearer": []
-                    }
-                ],
-                "description": "Delete a limitation type with the provided details.",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Limitation Types"
-                ],
-                "summary": "Delete a limitation type",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Limitation Type ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.LimitationTypeResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/plan-types": {
             "get": {
                 "security": [
@@ -2182,6 +1941,253 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/yearly-claims": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth bearer": []
+                    }
+                ],
+                "description": "Find yearly benefit claim by their attributes.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Yearly Benefit Claim"
+                ],
+                "summary": "Find yearly benefit claim",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Code for find the yearly benefit claim controller",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.YearlyBenefitClaimWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth bearer": []
+                    }
+                ],
+                "description": "Create a new yearly benefit claim with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Yearly Benefit Claim"
+                ],
+                "summary": "Create a new yearly benefit claim",
+                "parameters": [
+                    {
+                        "description": "Create Plan Type Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.YearlyBenefitClaimRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.YearlyBenefitClaimWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/yearly-claims/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth bearer": []
+                    }
+                ],
+                "description": "Get a yearly benefit claim its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Yearly Benefit Claim"
+                ],
+                "summary": "Get a yearly benefit claim ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.YearlyBenefitClaimWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth bearer": []
+                    }
+                ],
+                "description": "Update a yearly benefit claim with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Yearly Benefit Claim"
+                ],
+                "summary": "Update a yearly benefit claim",
+                "parameters": [
+                    {
+                        "description": "Update Yearly Benefit Claim",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateYearlyBenefitClaimRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.YearlyBenefitClaimWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth bearer": []
+                    }
+                ],
+                "description": "Delete a yearly benefit claim with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Yearly Benefit Claim"
+                ],
+                "summary": "Delete a yearly benefit claim",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.YearlyBenefitClaimWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -2198,7 +2204,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "limitation_type": {
-                    "$ref": "#/definitions/model.LimitationTypeResponse"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -2211,6 +2217,9 @@ const docTemplate = `{
                 },
                 "remaining_plafond": {
                     "type": "number"
+                },
+                "yearly_benefit_claim": {
+                    "$ref": "#/definitions/model.YearlyBenefitClaimResponse"
                 },
                 "yearly_max": {
                     "type": "number"
@@ -2240,6 +2249,12 @@ const docTemplate = `{
         },
         "model.ClaimRequest": {
             "type": "object",
+            "required": [
+                "benefit_code",
+                "claim_amount",
+                "patient_id",
+                "sla"
+            ],
             "properties": {
                 "benefit_code": {
                     "type": "string"
@@ -2249,6 +2264,13 @@ const docTemplate = `{
                 },
                 "patient_id": {
                     "type": "integer"
+                },
+                "sla": {
+                    "type": "string",
+                    "enum": [
+                        "meet",
+                        "overdue"
+                    ]
                 }
             }
         },
@@ -2360,7 +2382,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "code",
-                "limitation_type_id",
+                "limitation_type",
                 "name",
                 "plan_type_id"
             ],
@@ -2374,8 +2396,15 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 500
                 },
-                "limitation_type_id": {
-                    "type": "integer"
+                "limitation_type": {
+                    "type": "string",
+                    "enum": [
+                        "Per Year",
+                        "Per Month",
+                        "Per Day",
+                        "Per Incident",
+                        "Per Pregnancy"
+                    ]
                 },
                 "name": {
                     "type": "string",
@@ -2386,6 +2415,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "plan_type_id": {
+                    "type": "integer"
+                },
+                "yearly_claim_id": {
                     "type": "integer"
                 },
                 "yearly_max": {
@@ -2534,6 +2566,9 @@ const docTemplate = `{
                 },
                 "position": {
                     "type": "string"
+                },
+                "pro_rate": {
+                    "type": "number"
                 }
             }
         },
@@ -2604,7 +2639,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "relationship_type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "wife",
+                        "husband",
+                        "father",
+                        "mother",
+                        "child"
+                    ]
                 }
             }
         },
@@ -2642,7 +2684,14 @@ const docTemplate = `{
                     "$ref": "#/definitions/model.PlanTypeResponse"
                 },
                 "relationship_type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "wife",
+                        "husband",
+                        "father",
+                        "mother",
+                        "child"
+                    ]
                 }
             }
         },
@@ -2657,51 +2706,6 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/model.FamilyMemberResponse"
-                },
-                "errors": {},
-                "message": {
-                    "type": "string"
-                },
-                "meta": {
-                    "$ref": "#/definitions/model.PaginationPage"
-                }
-            }
-        },
-        "model.LimitationTypeRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                }
-            }
-        },
-        "model.LimitationTypeResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.LimitationTypeResponseWrapper": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "$ref": "#/definitions/model.LimitationTypeResponse"
                 },
                 "errors": {},
                 "message": {
@@ -2914,7 +2918,7 @@ const docTemplate = `{
             "required": [
                 "code",
                 "id",
-                "limitation_type_id",
+                "limitation_type",
                 "name",
                 "plan_type_id"
             ],
@@ -2931,8 +2935,15 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "limitation_type_id": {
-                    "type": "integer"
+                "limitation_type": {
+                    "type": "string",
+                    "enum": [
+                        "Per Year",
+                        "Per Month",
+                        "Per Day",
+                        "Per Incident",
+                        "Per Pregnancy"
+                    ]
                 },
                 "name": {
                     "type": "string",
@@ -2945,6 +2956,9 @@ const docTemplate = `{
                 "plan_type_id": {
                     "type": "integer"
                 },
+                "yearly_claim_id": {
+                    "type": "integer"
+                },
                 "yearly_max": {
                     "type": "number"
                 }
@@ -2953,10 +2967,18 @@ const docTemplate = `{
         "model.UpdateClaimRequest": {
             "type": "object",
             "required": [
+                "city",
                 "claim_amount",
                 "claim_status",
+                "diagnosis",
+                "doc_link",
                 "id",
-                "transaction_status"
+                "medical_facility",
+                "sla",
+                "submission_date",
+                "transaction_date",
+                "transaction_status",
+                "transaction_type_id"
             ],
             "properties": {
                 "city": {
@@ -3089,7 +3111,8 @@ const docTemplate = `{
                 "birth_date",
                 "gender",
                 "id",
-                "name"
+                "name",
+                "relationship_type"
             ],
             "properties": {
                 "birth_date": {
@@ -3107,23 +3130,16 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "model.UpdateLimitationTypeRequest": {
-            "type": "object",
-            "required": [
-                "id",
-                "name"
-            ],
-            "properties": {
-                "id": {
-                    "type": "integer"
                 },
-                "name": {
+                "relationship_type": {
                     "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
+                    "enum": [
+                        "wife",
+                        "husband",
+                        "father",
+                        "mother",
+                        "child"
+                    ]
                 }
             }
         },
@@ -3165,6 +3181,22 @@ const docTemplate = `{
                 }
             }
         },
+        "model.UpdateYearlyBenefitClaimRequest": {
+            "type": "object",
+            "required": [
+                "code",
+                "yearly_claim"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "yearly_claim": {
+                    "type": "number"
+                }
+            }
+        },
         "model.UserResponse": {
             "type": "object",
             "properties": {
@@ -3193,6 +3225,63 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/model.UserResponse"
+                },
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationPage"
+                }
+            }
+        },
+        "model.YearlyBenefitClaimRequest": {
+            "type": "object",
+            "required": [
+                "code",
+                "yearly_claim"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "yearly_claim": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.YearlyBenefitClaimResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "yearly_claim": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.YearlyBenefitClaimWrapper": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/model.YearlyBenefitClaimResponse"
                 },
                 "errors": {},
                 "message": {
