@@ -77,6 +77,7 @@ type Patient struct {
 	Claims          []Claim          `gorm:"foreignKey:PatientID"`
 	PatientBenefits []PatientBenefit `gorm:"foreignKey:PatientID"`
 	PlanType        PlanType         `gorm:"foreignKey:PlanTypeID"`
+	Benefits        []Benefit        `gorm:"many2many:patient_benefits;joinForeignKey:PatientID;joinReferences:BenefitID"`
 }
 
 type YearlyBenefitClaim struct {
@@ -105,6 +106,7 @@ type Benefit struct {
 	PlanType             PlanType            `gorm:"foreignKey:PlanTypeID"`
 	PatientBenefits      []PatientBenefit    `gorm:"foreignKey:BenefitID"` // Ini sudah benar
 	YearlyBenefitClaim   *YearlyBenefitClaim `gorm:"foreignKey:YearlyBenefitClaimID"`
+	Patients             []Patient           `gorm:"many2many:patient_benefits;joinForeignKey:BenefitID;joinReferences:PatientID"`
 }
 
 type PatientBenefit struct {
