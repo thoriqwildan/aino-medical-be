@@ -13,6 +13,7 @@ type RouteConfig struct {
 	TransactionTypeController    *http.TransactionTypeController
 	PlanTypeController           *http.PlanTypeController
 	YearlyBenefitClaimController *http.YearlyBenefitClaimController
+	PatientBenefitController     *http.PatientBenefitController
 	BenefitController            *http.BenefitController
 	DepartmentController         *http.DepartmentController
 	EmployeeController           *http.EmployeeController
@@ -31,6 +32,7 @@ func (rc *RouteConfig) Setup() {
 	rc.FamilyMemberRoutes()
 	rc.ClaimRoutes()
 	rc.YearlyBenefitClaimRoutes()
+	rc.PatientBenefitRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -70,6 +72,17 @@ func (rc *RouteConfig) YearlyBenefitClaimRoutes() {
 	yearlyBenefitClaim.Get("/", rc.YearlyBenefitClaimController.Get)
 	yearlyBenefitClaim.Put("/:id", rc.YearlyBenefitClaimController.Update)
 	yearlyBenefitClaim.Delete("/:id", rc.YearlyBenefitClaimController.Delete)
+}
+
+func (rc *RouteConfig) PatientBenefitRoutes() {
+	patientBenefit := rc.App.Group("/api/v1/patient-benefits", rc.JWT.JWTProtected())
+	patientBenefit.Post("/patients/{patientId}/benefits/{benefitId}/reset-remaining", rc.PatientBenefitController.ResetRemainingPlafondByPatientBenefitID)
+	patientBenefit.Post("/patients/{patientId}/benefits/{benefitId}/reset-all", rc.PatientBenefitController.ResetAllRemainingPlafond)
+	patientBenefit.Post("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.Create)
+	patientBenefit.Get("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.GetByPatientBenefitID)
+	patientBenefit.Put("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.Update)
+	patientBenefit.Delete("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.Delete)
+	patientBenefit.Get("/", rc.PatientBenefitController.GetAll)
 }
 
 func (rc *RouteConfig) BenefitRoutes() {
