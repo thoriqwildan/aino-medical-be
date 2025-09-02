@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -35,7 +36,7 @@ func (r *PatientBenefitRepository) FindOrCreate(
 		return &patientBenefit, nil
 	}
 
-	if err == gorm.ErrRecordNotFound {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		r.Log.Printf("PatientBenefit not found for PatientID: %d, BenefitID: %d. Creating new record...", patientID, benefitID)
 
 		newPatientBenefit := entity.PatientBenefit{
