@@ -46,7 +46,7 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 	}
 
 	now := time.Now()
-	SLA := entity.SLAOverdue
+	SLA := helper.DetermineSLAStatus(request.SLA)
 	startDateOfCurrentYear := time.Date(now.Year(), time.January, 1, 0, 0, 0, 0, now.Location())
 
 	benefit := &entity.Benefit{}
@@ -74,7 +74,7 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Patient's plan type does not match benefit's plan type")
 	}
 
-	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, patient.ID, benefit.ID, float64(benefit.Plafond), startDateOfCurrentYear)
+	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, patient.ID, benefit.ID, *benefit.Plafond, startDateOfCurrentYear)
 	if err != nil {
 		uc.Log.WithError(err).Error("Failed to find or create patient benefit")
 		return nil, err
@@ -220,7 +220,7 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 		return nil, err
 	}
 
-	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, claim.PatientID, benefit.ID, float64(benefit.Plafond), startDateOfCurrentYear)
+	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, claim.PatientID, benefit.ID, *benefit.Plafond, startDateOfCurrentYear)
 	if err != nil {
 		uc.Log.WithError(err).Error("Failed to find or create patient benefit in UpdateClaim")
 		return nil, err
