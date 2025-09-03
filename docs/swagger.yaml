@@ -9,7 +9,7 @@ definitions:
       id:
         type: integer
       limitation_type:
-        $ref: '#/definitions/model.LimitationTypeResponse'
+        type: string
       name:
         type: string
       plafond:
@@ -18,6 +18,8 @@ definitions:
         $ref: '#/definitions/model.PlanTypeResponse'
       remaining_plafond:
         type: number
+      yearly_benefit_claim:
+        $ref: '#/definitions/model.YearlyBenefitClaimResponse'
       yearly_max:
         type: number
     type: object
@@ -43,6 +45,16 @@ definitions:
         type: number
       patient_id:
         type: integer
+      sla:
+        enum:
+        - meet
+        - overdue
+        type: string
+    required:
+    - benefit_code
+    - claim_amount
+    - patient_id
+    - sla
     type: object
   model.ClaimResponse:
     properties:
@@ -122,8 +134,14 @@ definitions:
       detail:
         maxLength: 500
         type: string
-      limitation_type_id:
-        type: integer
+      limitation_type:
+        enum:
+        - Per Year
+        - Per Month
+        - Per Day
+        - Per Incident
+        - Per Pregnancy
+        type: string
       name:
         maxLength: 255
         minLength: 3
@@ -132,11 +150,13 @@ definitions:
         type: number
       plan_type_id:
         type: integer
+      yearly_claim_id:
+        type: integer
       yearly_max:
         type: number
     required:
     - code
-    - limitation_type_id
+    - limitation_type
     - name
     - plan_type_id
     type: object
@@ -237,6 +257,8 @@ definitions:
         $ref: '#/definitions/model.PlanTypeResponse'
       position:
         type: string
+      pro_rate:
+        type: number
     type: object
   model.EmployeeResponseWrapper:
     properties:
@@ -279,6 +301,12 @@ definitions:
       name:
         type: string
       relationship_type:
+        enum:
+        - wife
+        - husband
+        - father
+        - mother
+        - child
         type: string
     required:
     - birth_date
@@ -305,6 +333,12 @@ definitions:
       plan_type:
         $ref: '#/definitions/model.PlanTypeResponse'
       relationship_type:
+        enum:
+        - wife
+        - husband
+        - father
+        - mother
+        - child
         type: string
     required:
     - birth_date
@@ -322,36 +356,6 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/model.FamilyMemberResponse'
-      errors: {}
-      message:
-        type: string
-      meta:
-        $ref: '#/definitions/model.PaginationPage'
-    type: object
-  model.LimitationTypeRequest:
-    properties:
-      name:
-        maxLength: 100
-        minLength: 1
-        type: string
-    required:
-    - name
-    type: object
-  model.LimitationTypeResponse:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  model.LimitationTypeResponseWrapper:
-    properties:
-      access_token:
-        type: string
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/model.LimitationTypeResponse'
       errors: {}
       message:
         type: string
@@ -503,8 +507,14 @@ definitions:
         type: string
       id:
         type: integer
-      limitation_type_id:
-        type: integer
+      limitation_type:
+        enum:
+        - Per Year
+        - Per Month
+        - Per Day
+        - Per Incident
+        - Per Pregnancy
+        type: string
       name:
         maxLength: 255
         minLength: 3
@@ -513,12 +523,14 @@ definitions:
         type: number
       plan_type_id:
         type: integer
+      yearly_claim_id:
+        type: integer
       yearly_max:
         type: number
     required:
     - code
     - id
-    - limitation_type_id
+    - limitation_type
     - name
     - plan_type_id
     type: object
@@ -559,10 +571,18 @@ definitions:
       transaction_type_id:
         type: integer
     required:
+    - city
     - claim_amount
     - claim_status
+    - diagnosis
+    - doc_link
     - id
+    - medical_facility
+    - sla
+    - submission_date
+    - transaction_date
     - transaction_status
+    - transaction_type_id
     type: object
   model.UpdateDepartmentRequest:
     properties:
@@ -629,23 +649,20 @@ definitions:
         type: integer
       name:
         type: string
+      relationship_type:
+        enum:
+        - wife
+        - husband
+        - father
+        - mother
+        - child
+        type: string
     required:
     - birth_date
     - gender
     - id
     - name
-    type: object
-  model.UpdateLimitationTypeRequest:
-    properties:
-      id:
-        type: integer
-      name:
-        maxLength: 100
-        minLength: 1
-        type: string
-    required:
-    - id
-    - name
+    - relationship_type
     type: object
   model.UpdatePlanTypeRequest:
     properties:
@@ -674,6 +691,17 @@ definitions:
     - id
     - name
     type: object
+  model.UpdateYearlyBenefitClaimRequest:
+    properties:
+      code:
+        maxLength: 255
+        type: string
+      yearly_claim:
+        type: number
+    required:
+    - code
+    - yearly_claim
+    type: object
   model.UserResponse:
     properties:
       created_at:
@@ -693,6 +721,44 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/model.UserResponse'
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.YearlyBenefitClaimRequest:
+    properties:
+      code:
+        maxLength: 255
+        type: string
+      yearly_claim:
+        type: number
+    required:
+    - code
+    - yearly_claim
+    type: object
+  model.YearlyBenefitClaimResponse:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      updated_at:
+        type: string
+      yearly_claim:
+        type: number
+    type: object
+  model.YearlyBenefitClaimWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.YearlyBenefitClaimResponse'
       errors: {}
       message:
         type: string
@@ -1628,159 +1694,6 @@ paths:
       summary: Update a family member
       tags:
       - Family Members
-  /api/v1/limitation-types:
-    get:
-      consumes:
-      - application/json
-      description: Find limitation types by their attributes.
-      parameters:
-      - default: 1
-        description: Page number
-        in: query
-        name: page
-        type: integer
-      - description: Number of items per page
-        in: query
-        name: limit
-        type: integer
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-      security:
-      - BearerAuth bearer: []
-      summary: Find limitation types
-      tags:
-      - Limitation Types
-    post:
-      consumes:
-      - application/json
-      description: Create a new limitation type with the provided details.
-      parameters:
-      - description: Create Limitation Type Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/model.LimitationTypeRequest'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-      security:
-      - BearerAuth bearer: []
-      summary: Create a new limitation type
-      tags:
-      - Plan Types
-  /api/v1/limitation-types/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a limitation type with the provided details.
-      parameters:
-      - description: Limitation Type ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-      security:
-      - BearerAuth bearer: []
-      summary: Delete a limitation type
-      tags:
-      - Limitation Types
-    get:
-      consumes:
-      - application/json
-      description: Get a limitation type by its ID.
-      parameters:
-      - description: Limitation Type ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-      security:
-      - BearerAuth bearer: []
-      summary: Get a limitation type by ID
-      tags:
-      - Limitation Types
-    put:
-      consumes:
-      - application/json
-      description: Update a limitation type with the provided details.
-      parameters:
-      - description: Update Limitation Type Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/model.UpdateLimitationTypeRequest'
-      - description: Limitation Type ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.LimitationTypeResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-      security:
-      - BearerAuth bearer: []
-      summary: Update a limitation type
-      tags:
-      - Limitation Types
   /api/v1/plan-types:
     get:
       consumes:
@@ -2087,6 +2000,163 @@ paths:
       summary: Update a transaction type
       tags:
       - Transaction Types
+  /api/v1/yearly-claims:
+    get:
+      consumes:
+      - application/json
+      description: Find yearly benefit claim by their attributes.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Code for find the yearly benefit claim controller
+        in: query
+        name: code
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.YearlyBenefitClaimWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth bearer: []
+      summary: Find yearly benefit claim
+      tags:
+      - Yearly Benefit Claim
+    post:
+      consumes:
+      - application/json
+      description: Create a new yearly benefit claim with the provided details.
+      parameters:
+      - description: Create Plan Type Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.YearlyBenefitClaimRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.YearlyBenefitClaimWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth bearer: []
+      summary: Create a new yearly benefit claim
+      tags:
+      - Yearly Benefit Claim
+  /api/v1/yearly-claims/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a yearly benefit claim with the provided details.
+      parameters:
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.YearlyBenefitClaimWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth bearer: []
+      summary: Delete a yearly benefit claim
+      tags:
+      - Yearly Benefit Claim
+    get:
+      consumes:
+      - application/json
+      description: Get a yearly benefit claim its ID.
+      parameters:
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.YearlyBenefitClaimWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth bearer: []
+      summary: Get a yearly benefit claim ID
+      tags:
+      - Yearly Benefit Claim
+    put:
+      consumes:
+      - application/json
+      description: Update a yearly benefit claim with the provided details.
+      parameters:
+      - description: Update Yearly Benefit Claim
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateYearlyBenefitClaimRequest'
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.YearlyBenefitClaimWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth bearer: []
+      summary: Update a yearly benefit claim
+      tags:
+      - Yearly Benefit Claim
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.
