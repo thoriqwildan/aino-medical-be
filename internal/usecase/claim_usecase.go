@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -16,22 +17,22 @@ import (
 )
 
 type ClaimUseCase struct {
-	Repository *repository.ClaimRepository
+	Repository               *repository.ClaimRepository
 	PatientBenefitRepository *repository.PatientBenefitRepository
-	BenefitRepository *repository.BenefitRepository
-	Log *logrus.Logger
-	DB *gorm.DB
-	Validate *validator.Validate
+	BenefitRepository        *repository.BenefitRepository
+	Log                      *logrus.Logger
+	DB                       *gorm.DB
+	Validate                 *validator.Validate
 }
 
 func NewClaimUseCase(repo *repository.ClaimRepository, db *gorm.DB, validate *validator.Validate, log *logrus.Logger, patientBenefitRepository *repository.PatientBenefitRepository, benefitRepository *repository.BenefitRepository) *ClaimUseCase {
 	return &ClaimUseCase{
-		Repository: repo,
-		DB: db,
-		Validate: validate,
-		Log: log,
+		Repository:               repo,
+		DB:                       db,
+		Validate:                 validate,
+		Log:                      log,
 		PatientBenefitRepository: patientBenefitRepository,
-		BenefitRepository: benefitRepository,
+		BenefitRepository:        benefitRepository,
 	}
 }
 
@@ -50,9 +51,9 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 
 	benefit := &entity.Benefit{}
 	if err := uc.Repository.GetBenefitByCode(tx, benefit, request.BenefitCode); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			uc.Log.Error("Benefit not found")
-			return nil, err
+			return nil, fiber.NewError(fiber.StatusNotFound, "Benefit not found")
 		}
 		uc.Log.WithError(err).Error("Failed to get benefit by code")
 		return nil, err
@@ -60,7 +61,7 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 
 	patient := &entity.Patient{}
 	if err := uc.Repository.GetPatientByID(tx, patient, request.PatientID); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			uc.Log.Error("Patient not found")
 			return nil, fiber.NewError(fiber.StatusNotFound, "Patient not found")
 		}
@@ -80,10 +81,10 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 	}
 
 	claim := &entity.Claim{
-		PatientID: 	 request.PatientID,
-		PatientBenefitID: patientBenefit.ID,
-		ClaimAmount: request.ClaimAmount,
-		SLA: &SLA,
+		PatientID:         request.PatientID,
+		PatientBenefitID:  patientBenefit.ID,
+		ClaimAmount:       request.ClaimAmount,
+		SLA:               &SLA,
 		TransactionStatus: entity.TransactionStatusPending,
 	}
 
@@ -103,7 +104,7 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 
 	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, claim.ClaimAmount); err != nil {
 		uc.Log.WithError(err).Error("Failed to reduce patient benefit balance")
-		if err == gorm.ErrInvalidData {
+		if errors.Is(err, gorm.ErrInvalidData) {
 			return nil, fiber.NewError(fiber.StatusBadRequest, "Insufficient benefit balance")
 		}
 		return nil, err
@@ -112,7 +113,7 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 	if err := uc.Repository.Create(tx, claim); err != nil {
 		uc.Log.WithError(err).Error("Failed to create claim")
 		return nil, err
-	}	
+	}
 
 	if err := uc.Repository.GetByID(tx, claim, claim.ID); err != nil {
 		uc.Log.WithError(err).Error("Failed to retrieve claim by ID after creation")
@@ -150,41 +151,41 @@ func (uc *ClaimUseCase) GetPatient(ctx context.Context, request *model.PagingQue
 }
 
 func (uc *ClaimUseCase) GetBenefit(ctx context.Context, request *model.PagingQuery, patientId uint) ([]model.BenefitResponse, int64, error) {
-  tx := uc.DB.WithContext(ctx).Begin()
-  defer tx.Rollback()
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
 
-  patient := &entity.Patient{}
-  if err := uc.Repository.GetPatientByID(tx, patient, patientId); err != nil {
-    // ... error handling ...
-  }
-  
-  // PANGGIL METHOD REPOSITORY YANG BARU
-  benefits, remainingPlafondMap, total, err := uc.Repository.GetBenefitsWithPlafond(tx, request, patient.PlanTypeID, patientId)
-  if err != nil {
-    uc.Log.WithError(err).Error("Failed to get benefits with plafond")
-    return nil, 0, err
-  }
+	patient := &entity.Patient{}
+	if err := uc.Repository.GetPatientByID(tx, patient, patientId); err != nil {
+		// ... error handling ...
+	}
 
-  // Lakukan konversi dengan data tambahan
-  responses := make([]model.BenefitResponse, len(benefits))
-  for i, b := range benefits {
-    response := converter.BenefitToResponse(&b)
-    
-    // Cek apakah ada remaining plafond untuk benefit ini
-    if rp, ok := remainingPlafondMap[b.ID]; ok {
-      response.RemainingPlafond = &rp
-    }
-    
-    responses[i] = *response
-  }
-  
-  // Commit transaksi
-  if err := tx.Commit().Error; err != nil {
-      uc.Log.WithError(err).Error("Failed to commit transaction in GetBenefit")
-      return nil, 0, err
-  }
-  
-  return responses, total, nil
+	// PANGGIL METHOD REPOSITORY YANG BARU
+	benefits, remainingPlafondMap, total, err := uc.Repository.GetBenefitsWithPlafond(tx, request, patient.PlanTypeID, patientId)
+	if err != nil {
+		uc.Log.WithError(err).Error("Failed to get benefits with plafond")
+		return nil, 0, err
+	}
+
+	// Lakukan konversi dengan data tambahan
+	responses := make([]model.BenefitResponse, len(benefits))
+	for i, b := range benefits {
+		response := converter.BenefitToResponse(&b)
+
+		// Cek apakah ada remaining plafond untuk benefit ini
+		if rp, ok := remainingPlafondMap[b.ID]; ok {
+			response.RemainingPlafond = &rp
+		}
+
+		responses[i] = *response
+	}
+
+	// Commit transaksi
+	if err := tx.Commit().Error; err != nil {
+		uc.Log.WithError(err).Error("Failed to commit transaction in GetBenefit")
+		return nil, 0, err
+	}
+
+	return responses, total, nil
 }
 
 func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateClaimRequest) (*model.ClaimResponse, error) {
@@ -202,7 +203,7 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 
 	claim := &entity.Claim{}
 	if err := uc.Repository.GetByID(tx, claim, request.ID); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			uc.Log.WithField("id", request.ID).Error("Claim not found in UpdateClaim")
 			return nil, fiber.NewError(fiber.StatusNotFound, "Claim not found")
 		}
@@ -212,7 +213,7 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 
 	benefit := &entity.Benefit{}
 	if err := uc.BenefitRepository.GetById(tx, claim.PatientBenefit.BenefitID, benefit); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			uc.Log.WithField("benefitId", claim.PatientBenefit.BenefitID).Error("Benefit not found in UpdateClaim")
 			return nil, fiber.NewError(fiber.StatusNotFound, "Benefit not found")
 		}
@@ -229,7 +230,7 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 	patientBenefit.RemainingPlafond += *claim.ApprovedAmount
 	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, request.ClaimAmount); err != nil {
 		uc.Log.WithError(err).Error("Failed to reduce patient benefit balance in UpdateClaim")
-		if err == gorm.ErrInvalidData {
+		if errors.Is(err, gorm.ErrInvalidData) {
 			return nil, fiber.NewError(fiber.StatusBadRequest, "Insufficient benefit balance")
 		}
 		return nil, err
