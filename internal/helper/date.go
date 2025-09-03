@@ -1,6 +1,9 @@
 package helper
 
-import "time"
+import (
+	"math/rand"
+	"time"
+)
 
 func isAnniversary(join, now time.Time) bool {
 	if join.IsZero() {
@@ -26,4 +29,14 @@ func isAnniversary(join, now time.Time) bool {
 	}
 
 	return nM == jM && nD == jD && (jY != nY && jY < nY)
+}
+
+func RandomDate(start, end time.Time) time.Time {
+	startUnix := start.Unix()
+	endUnix := end.Unix()
+
+	delta := endUnix - startUnix
+	sec := rand.Int63n(delta) + startUnix
+
+	return time.Unix(sec, 0)
 }
