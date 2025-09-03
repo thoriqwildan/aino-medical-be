@@ -46,7 +46,7 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 	}
 
 	now := time.Now()
-	SLA := helper.DetermineSLAStatus(now)
+	SLA := entity.SLAOverdue
 	startDateOfCurrentYear := time.Date(now.Year(), time.January, 1, 0, 0, 0, 0, now.Location())
 
 	benefit := &entity.Benefit{}
@@ -198,7 +198,6 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 	}
 
 	now := time.Now()
-	SLA := helper.DetermineSLAStatus(now)
 	startDateOfCurrentYear := time.Date(now.Year(), time.January, 1, 0, 0, 0, 0, now.Location())
 
 	claim := &entity.Claim{}
@@ -237,7 +236,14 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 	}
 
 	claim.ClaimAmount = request.ClaimAmount
-	claim.SLA = &SLA
+	claim.SLA = func(value *model.UpdateClaimRequest) *entity.SLA {
+		if value.SLA != nil {
+			slaStatus := helper.DetermineSLAStatus(*value.SLA)
+			return &slaStatus
+		} else {
+			return claim.SLA
+		}
+	}(request)
 	claim.TransactionTypeID = request.TransactionTypeID
 	claim.TransactionStatus = entity.TransactionStatus(request.TransactionStatus)
 	if patientBenefit.RemainingPlafond < request.ClaimAmount {
@@ -278,7 +284,7 @@ func (uc *ClaimUseCase) GetClaim(ctx context.Context, id uint) (*model.ClaimResp
 
 	claim := &entity.Claim{}
 	if err := uc.Repository.GetByID(tx, claim, id); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			uc.Log.WithField("id", id).Error("Claim not found in GetClaim")
 			return nil, fiber.NewError(fiber.StatusNotFound, "Claim not found")
 		}
@@ -342,7 +348,6 @@ func (uc *ClaimUseCase) GetAll(ctx context.Context, request *model.ClaimFilterQu
 		uc.Log.WithError(err).Error("Validation error in GetAllClaims")
 		return nil, 0, err
 	}
-
 	claims, total, err := uc.Repository.FindAllWithQuery(tx, request)
 	if err != nil {
 		uc.Log.WithError(err).Error("Error searching claims")
