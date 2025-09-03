@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
+	"github.com/thoriqwildan/aino-medical-be/internal/helper"
 	"github.com/thoriqwildan/aino-medical-be/internal/model"
 	"github.com/thoriqwildan/aino-medical-be/internal/model/converter"
 	"github.com/thoriqwildan/aino-medical-be/internal/repository"
@@ -61,6 +62,7 @@ func (eu *EmployeeUseCase) Create(ctx context.Context, request *model.EmployeeRe
 		Dependence:   &request.Dependences,
 		BankNumber:   request.BankNumber,
 		JoinDate:     time.Time(request.JoinDate),
+		ProRate:      helper.ProRateRemainingMonthsPercent(time.Time(request.JoinDate)),
 		Patient: entity.Patient{
 			PlanTypeID:     request.PlanTypeID,
 			Name:           request.Name,
@@ -165,6 +167,7 @@ func (eu *EmployeeUseCase) Update(ctx context.Context, request *model.UpdateEmpl
 	employee.Dependence = &request.Dependences
 	employee.BankNumber = request.BankNumber
 	employee.JoinDate = time.Time(request.JoinDate)
+	employee.ProRate = helper.ProRateRemainingMonthsPercent(time.Time(request.JoinDate))
 
 	if err := eu.Repository.Update(tx, employee); err != nil {
 		eu.Log.WithError(err).Error("Error updating employee in UpdateEmployee")
