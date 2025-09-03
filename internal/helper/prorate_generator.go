@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"errors"
 	"math"
 	"time"
 
@@ -71,26 +72,39 @@ func ResetPatientBenefitRemainingPlafondDaily(db *gorm.DB) error {
 		Preload("Patient.Benefits").
 		FindInBatches(&batch, 100, func(txBatch *gorm.DB, _ int) error {
 			for _, emp := range batch {
-				if emp == nil || emp.Patient.ID == 0 || emp.JoinDate.IsZero() {
-					continue
-				}
-				if isAnniversary(emp.JoinDate, now) {
-					if err := tx.Model(&entity.PatientBenefit{}).
-						Where("patient_id = ?", emp.Patient.ID).
-						Update("remaining_plafond", 0).
-						Error; err != nil {
-						return err
-					}
-				}
 				for _, benefit := range emp.Patient.Benefits {
-					if benefit.YearlyMax != nil {
-						if err := tx.Model(&entity.PatientBenefit{}).
-							Where("benefit_id = ?", benefit.ID).
+					if emp == nil || emp.Patient.ID == 0 || emp.JoinDate.IsZero() {
+						continue
+					}
+					if isAnniversary(emp.JoinDate, now) {
+						var patientBenefit entity.PatientBenefit
+						err := tx.Model(entity.PatientBenefit{}).
 							Where("patient_id = ?", emp.Patient.ID).
-							Update("yearly_max", CalculateProrateYearlyMax(*benefit.YearlyMax, emp.ProRate)).Error; err != nil {
+							Where("benefit_id = ?", benefit.ID).
+							Take(&patientBenefit).Error
+						if err != nil {
+							if errors.Is(err, gorm.ErrRecordNotFound) {
+								continue
+							}
 							return err
 						}
+						if patientBenefit.InitialPlafond != nil {
+							patientBenefit.RemainingPlafond = patientBenefit.InitialPlafond
+						} else {
+							patientBenefit.RemainingPlafond = nil
+						}
+						db.Save(&patientBenefit)
+					}
+					for _, benefit := range emp.Patient.Benefits {
+						if benefit.YearlyMax != nil {
+							if err := tx.Model(&entity.PatientBenefit{}).
+								Where("benefit_id = ?", benefit.ID).
+								Where("patient_id = ?", emp.Patient.ID).
+								Update("yearly_max", CalculateProrateYearlyMax(*benefit.YearlyMax, emp.ProRate)).Error; err != nil {
+								return err
+							}
 
+						}
 					}
 				}
 			}
