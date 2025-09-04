@@ -50,22 +50,22 @@ func (eu *EmployeeUseCase) Create(ctx context.Context, request *model.EmployeeRe
 	}
 
 	employee := &entity.Employee{
-		Name: request.Name,
+		Name:         request.Name,
 		DepartmentID: request.DepartmentID,
-		Position: request.Position,
-		Email: request.Email,
-		Phone: request.Phone,
-		BirthDate: time.Time(request.BirthDate),
-		Gender: entity.Genders(request.Gender),
-		PlanTypeID: request.PlanTypeID,
-		Dependence: &request.Dependences,
-		BankNumber: request.BankNumber,
-		JoinDate: time.Time(request.JoinDate),
+		Position:     request.Position,
+		Email:        request.Email,
+		Phone:        request.Phone,
+		BirthDate:    time.Time(request.BirthDate),
+		Gender:       entity.Genders(request.Gender),
+		PlanTypeID:   request.PlanTypeID,
+		Dependence:   &request.Dependences,
+		BankNumber:   request.BankNumber,
+		JoinDate:     time.Time(request.JoinDate),
 		Patient: entity.Patient{
-			PlanTypeID: request.PlanTypeID,
-			Name: request.Name,
-			BirthDate: time.Time(request.BirthDate),
-			Gender: entity.Genders(request.Gender),
+			PlanTypeID:     request.PlanTypeID,
+			Name:           request.Name,
+			BirthDate:      time.Time(request.BirthDate),
+			Gender:         entity.Genders(request.Gender),
 			FamilyMemberID: nil,
 		},
 	}
@@ -105,7 +105,7 @@ func (eu *EmployeeUseCase) GetById(ctx context.Context, id uint) (*model.Employe
 	return converter.EmployeeToResponse(employee), nil
 }
 
-func (eu *EmployeeUseCase) GetAll(ctx context.Context, request *model.PagingQuery) ([]model.EmployeeResponse, int64, error) {
+func (eu *EmployeeUseCase) GetAll(ctx context.Context, request *model.SearchPagingQuery) ([]model.EmployeeResponse, int64, error) {
 	tx := eu.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
