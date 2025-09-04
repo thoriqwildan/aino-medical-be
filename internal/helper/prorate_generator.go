@@ -68,6 +68,7 @@ func ResetPatientBenefitRemainingPlafondDaily(db *gorm.DB) error {
 	batch := make([]*entity.Employee, 100)
 	if err := db.Model(&entity.Employee{}).
 		Preload("Patient").
+		Preload("Patient.Benefits").
 		FindInBatches(&batch, 100, func(txBatch *gorm.DB, _ int) error {
 			for _, emp := range batch {
 				if emp == nil || emp.Patient.ID == 0 || emp.JoinDate.IsZero() {
@@ -79,6 +80,17 @@ func ResetPatientBenefitRemainingPlafondDaily(db *gorm.DB) error {
 						Update("remaining_plafond", 0).
 						Error; err != nil {
 						return err
+					}
+				}
+				for _, benefit := range emp.Patient.Benefits {
+					if benefit.YearlyMax != nil {
+						if err := tx.Model(&entity.PatientBenefit{}).
+							Where("benefit_id = ?", benefit.ID).
+							Where("patient_id = ?", emp.Patient.ID).
+							Update("yearly_max", CalculateProrateYearlyMax(*benefit.YearlyMax, emp.ProRate)).Error; err != nil {
+							return err
+						}
+
 					}
 				}
 			}
