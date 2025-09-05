@@ -17,8 +17,8 @@ type PaginationPage struct {
 
 type SearchPagingQuery struct {
 	SearchValue string `query:"search_value" json:"search_value"`
-	Page        int    `json:"page,omitempty" validate:"omitempty,numeric"`
-	Limit       int    `json:"limit,omitempty" validate:"omitempty,numeric"`
+	Page        int    `json:"page,omitempty" query:"page" validate:"omitempty,numeric"`
+	Limit       int    `json:"limit,omitempty" query:"page" validate:"omitempty,numeric"`
 }
 
 type PagingQuery struct {
