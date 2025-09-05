@@ -10,7 +10,6 @@ import (
 type ClaimRequest struct {
 	PatientID   uint    `json:"patient_id" validate:"required"`
 	BenefitCode string  `json:"benefit_code" validate:"required"`
-	SLA         string  `json:"sla" validate:"required,oneof='meet' 'overdue'"`
 	ClaimAmount float64 `json:"claim_amount" validate:"required"`
 }
 
@@ -47,6 +46,7 @@ type ClaimResponse struct {
 type UpdateClaimRequest struct {
 	ID                uint               `json:"id" validate:"required"`
 	ClaimAmount       float64            `json:"claim_amount" validate:"required"`
+	ApproveAmount     float64            `json:"approve_amount" validate:"required"`
 	TransactionTypeID *uint              `json:"transaction_type_id" validate:"required"`
 	TransactionDate   *helper.CustomDate `json:"transaction_date" validate:"required"`
 	SubmissionDate    *helper.CustomDate `json:"submission_date" validate:"required"`
