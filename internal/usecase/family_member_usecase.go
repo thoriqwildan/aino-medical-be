@@ -16,17 +16,17 @@ import (
 
 type FamilyMemberUseCase struct {
 	Repository *repository.FamilyMemberRepository
-	DB *gorm.DB
-	Validate *validator.Validate
-	Log *logrus.Logger
+	DB         *gorm.DB
+	Validate   *validator.Validate
+	Log        *logrus.Logger
 }
 
 func NewFamilyMemberUseCase(repo *repository.FamilyMemberRepository, db *gorm.DB, validate *validator.Validate, log *logrus.Logger) *FamilyMemberUseCase {
 	return &FamilyMemberUseCase{
 		Repository: repo,
-		DB: db,
-		Validate: validate,
-		Log: log,
+		DB:         db,
+		Validate:   validate,
+		Log:        log,
 	}
 }
 
@@ -46,16 +46,17 @@ func (uc *FamilyMemberUseCase) Create(ctx context.Context, request *model.Family
 	}
 
 	familyMember := &entity.FamilyMember{
-		EmployeeID: request.EmployeeID,
-		Name: 		 request.Name,
-		PlanTypeID: employee.PlanTypeID,
-		BirthDate: time.Time(request.BirthDate),
-		Gender: entity.Genders(request.Gender),
+		EmployeeID:       request.EmployeeID,
+		Name:             request.Name,
+		PlanTypeID:       employee.PlanTypeID,
+		BirthDate:        time.Time(request.BirthDate),
+		Gender:           entity.Genders(request.Gender),
+		RelationshipType: entity.RelationshipTypes(request.RelationshipType),
 		Patient: entity.Patient{
 			PlanTypeID: employee.PlanTypeID,
-			Name: request.Name,
-			BirthDate: time.Time(request.BirthDate),
-			Gender: entity.Genders(request.Gender),
+			Name:       request.Name,
+			BirthDate:  time.Time(request.BirthDate),
+			Gender:     entity.Genders(request.Gender),
 		},
 	}
 
@@ -89,7 +90,7 @@ func (uc *FamilyMemberUseCase) GetByID(ctx context.Context, id uint) (*model.Fam
 	return converter.FamilyMemberToResponse(familyMember), nil
 }
 
-func (uc *FamilyMemberUseCase) GetAll(ctx context.Context, request *model.PagingQuery) ([]model.FamilyMemberResponse, int64, error) {
+func (uc *FamilyMemberUseCase) GetAll(ctx context.Context, request *model.SearchPagingQuery) ([]model.FamilyMemberResponse, int64, error) {
 	tx := uc.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -126,14 +127,14 @@ func (uc *FamilyMemberUseCase) Update(ctx context.Context, request *model.Update
 		return nil, fiber.NewError(fiber.StatusNotFound, "Family member not found")
 	}
 
-
 	familyMember.Name = request.Name
 	familyMember.BirthDate = time.Time(request.BirthDate)
 	familyMember.Gender = entity.Genders(request.Gender)
+	familyMember.RelationshipType = entity.RelationshipTypes(request.RelationshipType)
 	familyMember.Patient = entity.Patient{
-		Name: request.Name,
+		Name:      request.Name,
 		BirthDate: time.Time(request.BirthDate),
-		Gender: entity.Genders(request.Gender),
+		Gender:    entity.Genders(request.Gender),
 	}
 	if err := uc.Repository.Update(tx, familyMember); err != nil {
 		uc.Log.WithError(err).Error("Failed to update family member")
