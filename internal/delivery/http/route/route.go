@@ -7,17 +7,17 @@ import (
 )
 
 type RouteConfig struct {
-	App *fiber.App
-	JWT *middleware.MiddlewareConfig
-	UserController *http.UserController
-	TransactionTypeController *http.TransactionTypeController
-	PlanTypeController *http.PlanTypeController
-	LimitationTypeController *http.LimitationTypeController
-	BenefitController *http.BenefitController
-	DepartmentController *http.DepartmentController
-	EmployeeController *http.EmployeeController
-	FamilyMemberController *http.FamilyMemberController
-	ClaimController *http.ClaimController
+	App                          *fiber.App
+	JWT                          *middleware.MiddlewareConfig
+	UserController               *http.UserController
+	TransactionTypeController    *http.TransactionTypeController
+	PlanTypeController           *http.PlanTypeController
+	YearlyBenefitClaimController *http.YearlyBenefitClaimController
+	BenefitController            *http.BenefitController
+	DepartmentController         *http.DepartmentController
+	EmployeeController           *http.EmployeeController
+	FamilyMemberController       *http.FamilyMemberController
+	ClaimController              *http.ClaimController
 }
 
 func (rc *RouteConfig) Setup() {
@@ -25,12 +25,12 @@ func (rc *RouteConfig) Setup() {
 	rc.ProtectedRoutes()
 	rc.TransactionTypeRotes()
 	rc.PlanTypeRoutes()
-	rc.LimitationTypeRoutes()
 	rc.BenefitRoutes()
 	rc.DepartmentRoutes()
 	rc.EmployeeRoutes()
 	rc.FamilyMemberRoutes()
 	rc.ClaimRoutes()
+	rc.YearlyBenefitClaimRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -63,13 +63,13 @@ func (rc *RouteConfig) PlanTypeRoutes() {
 	planType.Delete("/:id", rc.PlanTypeController.Delete)
 }
 
-func (rc *RouteConfig) LimitationTypeRoutes() {
-	limitationType := rc.App.Group("/api/v1/limitation-types", rc.JWT.JWTProtected())
-	limitationType.Post("/", rc.LimitationTypeController.Create)
-	limitationType.Get("/:id", rc.LimitationTypeController.GetById)
-	limitationType.Get("/", rc.LimitationTypeController.GetAll)
-	limitationType.Put("/:id", rc.LimitationTypeController.Update)
-	limitationType.Delete("/:id", rc.LimitationTypeController.Delete)
+func (rc *RouteConfig) YearlyBenefitClaimRoutes() {
+	yearlyBenefitClaim := rc.App.Group("/api/v1/yearly-claims", rc.JWT.JWTProtected())
+	yearlyBenefitClaim.Post("/", rc.YearlyBenefitClaimController.Create)
+	yearlyBenefitClaim.Get("/:id", rc.YearlyBenefitClaimController.GetById)
+	yearlyBenefitClaim.Get("/", rc.YearlyBenefitClaimController.Get)
+	yearlyBenefitClaim.Put("/:id", rc.YearlyBenefitClaimController.Update)
+	yearlyBenefitClaim.Delete("/:id", rc.YearlyBenefitClaimController.Delete)
 }
 
 func (rc *RouteConfig) BenefitRoutes() {
