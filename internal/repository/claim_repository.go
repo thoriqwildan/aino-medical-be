@@ -53,14 +53,18 @@ func (r *ClaimRepository) GetPatients(db *gorm.DB, request *model.PagingQuery) (
 	if err := baseQuery.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-
+	if request.Limit > 0 {
+		baseQuery = baseQuery.Limit(request.Limit)
+	}
+	if request.Page > 0 {
+		baseQuery = baseQuery.Offset((request.Page - 1) * request.Limit)
+	}
 	err := baseQuery.
-		Offset((request.Page - 1) * request.Limit).
-		Limit(request.Limit).
 		Preload("PlanType").
 		Preload("Employee").
 		Preload("FamilyMember").
 		Preload("FamilyMember.Employee").
+		Order("name ASC").
 		Find(&patients).Error
 	if err != nil {
 		return nil, 0, err
@@ -78,10 +82,13 @@ func (r *ClaimRepository) GetBenefits(db *gorm.DB, request *model.PagingQuery, p
 	if err := baseQuery.Where("plan_type_id = ?", planTypeID).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-
+	if request.Limit > 0 {
+		baseQuery = baseQuery.Limit(request.Limit)
+	}
+	if request.Page > 0 {
+		baseQuery = baseQuery.Offset((request.Page - 1) * request.Limit)
+	}
 	err := baseQuery.
-		Offset((request.Page-1)*request.Limit).
-		Limit(request.Limit).
 		Where("plan_type_id = ?", planTypeID).
 		Preload("PlanType").
 		Find(&benefits).Error
@@ -105,9 +112,13 @@ func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.Pag
 	}
 
 	// Terapkan pagination dan preload
+	if request.Limit > 0 {
+		baseQuery = baseQuery.Limit(request.Limit)
+	}
+	if request.Page > 0 {
+		baseQuery = baseQuery.Offset((request.Page - 1) * request.Limit)
+	}
 	err := baseQuery.
-		Offset((request.Page - 1) * request.Limit).
-		Limit(request.Limit).
 		Preload("PlanType").
 		Find(&benefits).Error
 
@@ -165,13 +176,11 @@ func (r *ClaimRepository) FindAllWithQuery(db *gorm.DB, query *model.ClaimFilter
 		Order("claims.updated_at DESC")
 
 	// Terapkan pagination
-	offset := (query.Page - 1) * query.Limit
-	if offset < 0 {
-		offset = 0
+	if query.Limit != 0 {
+		queryDB = queryDB.Limit(query.Limit)
 	}
-
-	if query.Limit > 0 {
-		queryDB = queryDB.Limit(query.Limit).Offset(offset)
+	if query.Page != 0 {
+		queryDB = queryDB.Offset((query.Page - 1) * query.Limit)
 	}
 
 	err := queryDB.Find(&claims).Error
