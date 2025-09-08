@@ -31,10 +31,13 @@ func (r *DepartmentRepository) SearchDepartments(db *gorm.DB, request *model.Pag
 	if err := baseQuery.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-
+	if request.Limit > 0 {
+		baseQuery = baseQuery.Limit(request.Limit)
+	}
+	if request.Page > 0 {
+		baseQuery = baseQuery.Offset((request.Page - 1) * request.Limit)
+	}
 	err := baseQuery.
-		Offset((request.Page - 1) * request.Limit).
-		Limit(request.Limit).
 		Find(&departments).Error
 	if err != nil {
 		return nil, 0, err
