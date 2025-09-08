@@ -21,12 +21,6 @@ type TransactionType struct {
 	Claims []Claim `gorm:"foreignKey:TransactionTypeID"`
 }
 
-type LimitationType struct {
-	ID       uint      `gorm:"primaryKey;autoIncrement"`
-	Name     string    `gorm:"unique;not null"`
-	Benefits []Benefit `gorm:"foreignKey:LimitationTypeID"`
-}
-
 type Department struct {
 	ID        uint            `gorm:"primaryKey;autoIncrement"`
 	Name      string          `gorm:"unique;not null"`
@@ -85,18 +79,32 @@ type Patient struct {
 	PlanType        PlanType         `gorm:"foreignKey:PlanTypeID"`
 }
 
+type YearlyBenefitClaim struct {
+	ID          uint       `gorm:"primaryKey;autoIncrement"`
+	Code        string     `gorm:"column:code;not null"`
+	YearlyClaim float64    `gorm:"column:yearly_claim;not null"`
+	CreatedAt   time.Time  `gorm:"not null;autoCreateTime"`
+	UpdatedAt   time.Time  `gorm:"autoCreateTime;autoUpdateTime"`
+	Benefits    []*Benefit `gorm:"foreignKey:YearlyBenefitClaimID"`
+}
+
+func (e YearlyBenefitClaim) TableName() string {
+	return "yearly_benefit_claims"
+}
+
 type Benefit struct {
-	ID               uint             `gorm:"primaryKey;autoIncrement"`
-	Name             string           `gorm:"not null"`
-	PlanTypeID       uint             `gorm:"not null"`
-	Detail           *string          `gorm:"column:detail"`
-	Code             string           `gorm:"unique;not null"`
-	LimitationTypeID uint             `gorm:"not null"`
-	Plafond          *float64         `gorm:"not null"`
-	YearlyMax        *float64         `gorm:"column:yearly_max"`
-	PlanType         PlanType         `gorm:"foreignKey:PlanTypeID"`
-	LimitationType   LimitationType   `gorm:"foreignKey:LimitationTypeID"`
-	PatientBenefits  []PatientBenefit `gorm:"foreignKey:BenefitID"` // Ini sudah benar
+	ID                   uint                `gorm:"primaryKey;autoIncrement"`
+	Name                 string              `gorm:"not null"`
+	PlanTypeID           uint                `gorm:"not null"`
+	YearlyBenefitClaimID *uint               `gorm:"column:yearly_benefit_claim_id"`
+	Detail               *string             `gorm:"column:detail"`
+	Code                 string              `gorm:"unique;not null"`
+	LimitationType       LimitationType      `gorm:"enum('Per Day', 'Per Month', 'Per Year', 'Per Incident', 'Per Pregnancy');not null"`
+	Plafond              *float64            `gorm:"not null"`
+	YearlyMax            *float64            `gorm:"column:yearly_max"`
+	PlanType             PlanType            `gorm:"foreignKey:PlanTypeID"`
+	PatientBenefits      []PatientBenefit    `gorm:"foreignKey:BenefitID"` // Ini sudah benar
+	YearlyBenefitClaim   *YearlyBenefitClaim `gorm:"foreignKey:YearlyBenefitClaimID"`
 }
 
 type PatientBenefit struct {
@@ -105,6 +113,7 @@ type PatientBenefit struct {
 	BenefitID        uint                 `gorm:"not null"`
 	RemainingPlafond *float64             `gorm:"type:decimal(10,2);"`
 	InitialPlafond   *float64             `gorm:"type:decimal(10,2);"`
+	YearlyMax        *float64             `gorm:"column:yearly_max"`
 	StartDate        time.Time            `gorm:"type:date;not null"`
 	EndDate          *time.Time           `gorm:"type:date"`
 	Status           PatientBenefitStatus `gorm:"type:enum('active','exhausted','expired');default:'active'"`
@@ -134,7 +143,7 @@ type Claim struct {
 	DocLink             *string
 	TransactionStatus   TransactionStatus `gorm:"type:enum('Successful','Pending','Failed');not null"`
 	CreatedAt           time.Time         `gorm:"not null;autoCreateTime"`
-	UpdatedAt           *time.Time        `gorm:"autoUpdateTime"`
+	UpdatedAt           *time.Time        `gorm:"autoCreateTime;autoUpdateTime"`
 	DeletedAt           *gorm.DeletedAt   `gorm:"index"`
 
 	Patient         Patient          `gorm:"foreignKey:PatientID"`
