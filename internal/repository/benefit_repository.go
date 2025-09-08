@@ -34,10 +34,12 @@ func (br *BenefitRepository) SearchBenefits(db *gorm.DB, request *model.SearchPa
 	var benefits []entity.Benefit
 	var total int64
 
-	baseQuery := db.Model(&entity.Benefit{})
+	baseQuery := db.Model(&entity.Benefit{}).
+		Preload("YearlyBenefitClaim").
+		Preload("PlanType")
 
 	if request.SearchValue != "" {
-		baseQuery.Where("name LIKE ?", "%"+request.SearchValue+"%")
+		baseQuery = baseQuery.Where("name LIKE ?", "%"+request.SearchValue+"%")
 	}
 
 	if err := baseQuery.Count(&total).Error; err != nil {
@@ -50,8 +52,7 @@ func (br *BenefitRepository) SearchBenefits(db *gorm.DB, request *model.SearchPa
 		baseQuery = baseQuery.Offset((request.Page - 1) * request.Limit)
 	}
 	err := baseQuery.
-		Preload("PlanType").
-		Preload("YearlyBenefitClaim").
+		Order("plan_type_id ASC").
 		Find(&benefits).Error
 	if err != nil {
 		return nil, 0, err
