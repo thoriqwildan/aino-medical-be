@@ -46,3 +46,13 @@ const (
 	PatientBenefitStatusExhausted PatientBenefitStatus = "exhausted"
 	PatientBenefitStatusExpired   PatientBenefitStatus = "expired"
 )
+
+type LimitationType string
+
+const (
+	LimitationTypePerDay       LimitationType = "Per Day"
+	LimitationTypePerMonth     LimitationType = "Per Month"
+	LimitationTypePerYear      LimitationType = "Per Year"
+	LimitationTypePerIncident  LimitationType = "Per Incident"
+	LimitationTypePerPregnancy LimitationType = "Per Pregnancy"
+)
