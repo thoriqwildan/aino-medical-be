@@ -120,6 +120,7 @@ func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.Pag
 	}
 	err := baseQuery.
 		Preload("PlanType").
+		Preload("YearlyBenefitClaim").
 		Find(&benefits).Error
 
 	if err != nil {
