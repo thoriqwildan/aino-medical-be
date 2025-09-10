@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"github.com/thoriqwildan/aino-medical-be/internal/helper"
+	"github.com/thoriqwildan/aino-medical-be/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -19,6 +20,52 @@ func NewPatientBenefitRepository(log *logrus.Logger) *PatientBenefitRepository {
 	return &PatientBenefitRepository{
 		Log: log,
 	}
+}
+
+func (r *PatientBenefitRepository) GetAll(db *gorm.DB, request *model.PagingQuery) ([]*entity.PatientBenefit, int64, error) {
+	var patientBenefit []*entity.PatientBenefit
+	var total int64
+
+	baseQuery := db.Model(&entity.PatientBenefit{})
+
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if request.Limit > 0 {
+		baseQuery = baseQuery.Limit(request.Limit)
+	}
+	if request.Page > 0 {
+		baseQuery = baseQuery.Offset((request.Page - 1) * request.Limit)
+	}
+	err := baseQuery.
+		Preload("Patient").
+		Preload("Benefit").
+		Preload("Claims").
+		Find(&patientBenefit).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return patientBenefit, total, nil
+}
+
+func (r *PatientBenefitRepository) GetByPatientBenefitID(db *gorm.DB, patientId, benefitId uint) (*entity.PatientBenefit, error) {
+	var patientBenefit entity.PatientBenefit
+
+	baseQuery := db.Model(&entity.PatientBenefit{})
+
+	err := baseQuery.
+		Where("patient_id = ? ", patientId).
+		Where("benefit_id = ? ", benefitId).
+		Preload("Patient").
+		Preload("Benefit").
+		Preload("Claims").
+		Take(&patientBenefit).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &patientBenefit, nil
 }
 
 func (r *PatientBenefitRepository) FindOrCreate(
