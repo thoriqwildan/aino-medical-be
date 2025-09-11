@@ -163,7 +163,7 @@ func (uc *ClaimUseCase) GetBenefit(ctx context.Context, request *model.PagingQue
 
 	patient := &entity.Patient{}
 	if err := uc.Repository.GetPatientByID(tx, patient, patientId); err != nil {
-		// ... error handling ...
+		return nil, 0, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	// PANGGIL METHOD REPOSITORY YANG BARU
@@ -175,6 +175,7 @@ func (uc *ClaimUseCase) GetBenefit(ctx context.Context, request *model.PagingQue
 
 	// Lakukan konversi dengan data tambahan
 	responses := make([]model.BenefitResponse, len(benefits))
+
 	for i, b := range benefits {
 		response := converter.BenefitToResponse(&b)
 
