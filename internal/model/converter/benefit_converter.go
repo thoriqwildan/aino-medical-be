@@ -7,12 +7,15 @@ import (
 
 func BenefitToResponse(benefit *entity.Benefit) *model.BenefitResponse {
 	response := &model.BenefitResponse{
-		ID:     benefit.ID,
-		Name:   benefit.Name,
-		Detail: benefit.Detail,
-		Code:   benefit.Code,
+		ID:             benefit.ID,
+		Name:           benefit.Name,
+		Detail:         benefit.Detail,
+		Code:           benefit.Code,
+		LimitationType: string(benefit.LimitationType),
 	}
-
+	if benefit.YearlyBenefitClaim != nil {
+		response.YearlyBenefitClaim = YearlyBenefitClaimToResponse(benefit.YearlyBenefitClaim)
+	}
 	if benefit.YearlyMax != nil {
 		response.YearlyMax = benefit.YearlyMax
 	} else {
@@ -27,8 +30,6 @@ func BenefitToResponse(benefit *entity.Benefit) *model.BenefitResponse {
 	if benefit.PlanType.ID != 0 {
 		response.PlanType = *PlanTypeToResponse(&benefit.PlanType)
 	}
-	if benefit.LimitationType.ID != 0 {
-		response.LimitationType = *LimitationTypeToResponse(&benefit.LimitationType)
-	}
+
 	return response
 }
