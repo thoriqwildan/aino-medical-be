@@ -46,7 +46,6 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 	}
 
 	now := time.Now()
-	SLA := helper.DetermineSLAStatus(request.SLA)
 	startDateOfCurrentYear := time.Date(now.Year(), time.January, 1, 0, 0, 0, 0, now.Location())
 
 	benefit := &entity.Benefit{}
@@ -84,7 +83,6 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 		PatientID:         request.PatientID,
 		PatientBenefitID:  patientBenefit.ID,
 		ClaimAmount:       request.ClaimAmount,
-		SLA:               &SLA,
 		TransactionStatus: entity.TransactionStatusPending,
 	}
 
@@ -103,14 +101,14 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 	} else {
 		claim.EmployeeID = *patient.EmployeeID
 	}
-
-	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, claim.ClaimAmount); err != nil {
-		uc.Log.WithError(err).Error("Failed to reduce patient benefit balance")
-		if errors.Is(err, gorm.ErrInvalidData) {
-			return nil, fiber.NewError(fiber.StatusBadRequest, "Insufficient benefit balance")
-		}
-		return nil, err
-	}
+	// DELETED: Cause claim amount not represent amount has been claim approve
+	//if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, claim.ClaimAmount); err != nil {
+	//	uc.Log.WithError(err).Error("Failed to reduce patient benefit balance")
+	//	if errors.Is(err, gorm.ErrInvalidData) {
+	//		return nil, fiber.NewError(fiber.StatusBadRequest, "Insufficient benefit balance")
+	//	}
+	//	return nil, err
+	//}
 
 	if err := uc.Repository.Create(tx, claim); err != nil {
 		uc.Log.WithError(err).Error("Failed to create claim")
@@ -228,8 +226,10 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 		return nil, err
 	}
 
-	*patientBenefit.RemainingPlafond += *claim.ApprovedAmount
-	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, request.ClaimAmount); err != nil {
+	if claim.ApprovedAmount != nil {
+		*patientBenefit.RemainingPlafond += *claim.ApprovedAmount
+	}
+	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, request.ApproveAmount); err != nil {
 		uc.Log.WithError(err).Error("Failed to reduce patient benefit balance in UpdateClaim")
 		if errors.Is(err, gorm.ErrInvalidData) {
 			return nil, fiber.NewError(fiber.StatusBadRequest, "Insufficient benefit balance")
@@ -251,10 +251,10 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 	if patientBenefit.RemainingPlafond != nil {
 		if *patientBenefit.RemainingPlafond < request.ClaimAmount {
 			claim.ClaimStatus = entity.ClaimStatusOverPlafond
-			claim.ApprovedAmount = patientBenefit.RemainingPlafond
+			//claim.ApprovedAmount = patientBenefit.RemainingPlafond
 		} else {
 			claim.ClaimStatus = entity.ClaimStatusOnPlafond
-			claim.ApprovedAmount = &request.ClaimAmount
+			//claim.ApprovedAmount = &request.ClaimAmount
 		}
 	}
 	claim.SubmissionDate = (*time.Time)(request.SubmissionDate)
@@ -306,7 +306,7 @@ func (uc *ClaimUseCase) DeleteClaim(ctx context.Context, id uint) error {
 
 	claim := &entity.Claim{}
 	if err := uc.Repository.GetByID(tx, claim, id); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			uc.Log.WithField("id", id).Error("Claim not found in DeleteClaim")
 			return fiber.NewError(fiber.StatusNotFound, "Claim not found")
 		}
