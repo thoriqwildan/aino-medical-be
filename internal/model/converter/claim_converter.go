@@ -73,7 +73,6 @@ func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
 		updatedAt = nil
 	}
 
-
 	result := &model.ClaimResponse{
 		ID:                claim.ID,
 		ClaimAmount:       claim.ClaimAmount,
@@ -87,8 +86,8 @@ func ClaimToResponse(claim *entity.Claim) *model.ClaimResponse {
 		Diagnosis:         diagnosis,
 		DocLink:           docLink,
 		TransactionStatus: string(claim.TransactionStatus),
-		CreatedAt:         claim.CreatedAt,  
-		UpdatedAt:         updatedAt,                       
+		CreatedAt:         claim.CreatedAt,
+		UpdatedAt:         updatedAt,
 	}
 
 	if claim.TransactionType != nil {
@@ -120,8 +119,8 @@ func PatientToResponse(patient *entity.Patient) *model.PatientResponse {
 		ID:        patient.ID,
 		Name:      patient.Name,
 		BirthDate: helper.CustomDate(patient.BirthDate),
-		Gender: string(patient.Gender),
-		PlanType: *PlanTypeToResponse(&patient.PlanType),
+		Gender:    string(patient.Gender),
+		PlanType:  *PlanTypeToResponse(&patient.PlanType),
 	}
 
 	if patient.Employee != nil {
