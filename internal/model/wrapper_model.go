@@ -16,8 +16,8 @@ type PlanTypeResponseWrapper struct {
 	WebResponse[PlanTypeResponse]
 }
 
-type LimitationTypeResponseWrapper struct {
-	WebResponse[LimitationTypeResponse]
+type YearlyBenefitClaimWrapper struct {
+	WebResponse[YearlyBenefitClaimResponse]
 }
 
 type BenefitResponseWrapper struct {
