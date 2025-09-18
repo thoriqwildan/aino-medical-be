@@ -27,7 +27,7 @@ func (br *BenefitRepository) GetByCode(db *gorm.DB, code string) error {
 }
 
 func (br *BenefitRepository) GetById(db *gorm.DB, id uint, benefit *entity.Benefit) error {
-	return db.Where("id = ?", id).Preload("PlanType").Preload("LimitationType").First(benefit).Error
+	return db.Where("id = ?", id).Preload("PlanType").First(benefit).Error
 }
 
 func (br *BenefitRepository) SearchBenefits(db *gorm.DB, request *model.SearchPagingQuery) ([]entity.Benefit, int64, error) {
@@ -48,7 +48,7 @@ func (br *BenefitRepository) SearchBenefits(db *gorm.DB, request *model.SearchPa
 		Offset((request.Page - 1) * request.Limit).
 		Limit(request.Limit).
 		Preload("PlanType").
-		Preload("LimitationType").
+		Preload("YearlyBenefitClaim").
 		Find(&benefits).Error
 	if err != nil {
 		return nil, 0, err
