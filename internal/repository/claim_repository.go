@@ -23,7 +23,6 @@ func NewClaimRepository(log *logrus.Logger) *ClaimRepository {
 func (r *ClaimRepository) GetBenefitByCode(db *gorm.DB, benefit *entity.Benefit, code string) error {
 	return db.Where("code = ?", code).
 		Preload("PlanType").
-		Preload("LimitationType").
 		First(benefit).Error
 }
 
@@ -33,7 +32,6 @@ func (r *ClaimRepository) GetByID(db *gorm.DB, claim *entity.Claim, id any) erro
 		Preload("Employee").
 		Preload("PatientBenefit.Benefit").
 		Preload("PatientBenefit.Benefit.PlanType").
-		Preload("PatientBenefit.Benefit.LimitationType").
 		Preload("TransactionType").
 		First(claim).Error
 }
@@ -85,7 +83,6 @@ func (r *ClaimRepository) GetBenefits(db *gorm.DB, request *model.PagingQuery, p
 		Offset((request.Page-1)*request.Limit).
 		Limit(request.Limit).
 		Where("plan_type_id = ?", planTypeID).
-		Preload("LimitationType").
 		Preload("PlanType").
 		Find(&benefits).Error
 	if err != nil {
@@ -111,7 +108,6 @@ func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.Pag
 	err := baseQuery.
 		Offset((request.Page - 1) * request.Limit).
 		Limit(request.Limit).
-		Preload("LimitationType").
 		Preload("PlanType").
 		Find(&benefits).Error
 
@@ -165,9 +161,8 @@ func (r *ClaimRepository) FindAllWithQuery(db *gorm.DB, query *model.ClaimFilter
 		Preload("Employee.FamilyMembers.Employee").
 		Preload("PatientBenefit.Benefit").
 		Preload("PatientBenefit.Benefit.PlanType").
-		Preload("PatientBenefit.Benefit.LimitationType").
 		Preload("TransactionType").
-		Order("COALESCE(claims.updated_at, claims.created_at) DESC")
+		Order("claims.updated_at DESC")
 
 	// Terapkan pagination
 	offset := (query.Page - 1) * query.Limit
