@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS claims;
 DROP TABLE IF EXISTS patient_benefits;
+DROP TABLE IF EXISTS patient_yearly_benefit_claims;
 DROP TABLE IF EXISTS benefits;
 DROP TABLE IF EXISTS patients;
 DROP TABLE IF EXISTS yearly_benefit_claims;
