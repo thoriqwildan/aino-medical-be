@@ -56,6 +56,7 @@ func (r *FamilyMemberRepository) SearchFamilyMember(db *gorm.DB, request *model.
 		Preload("Employee").
 		Preload("Employee.PlanType").
 		Preload("Employee.Department").
+		Order("name ASC").
 		Find(&familyMembers).Error
 	if err != nil {
 		return nil, 0, err
