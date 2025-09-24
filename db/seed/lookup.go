@@ -1,7 +1,6 @@
 package seed
 
 import (
-	"errors"
 	"log"
 	"time"
 
@@ -37,106 +36,36 @@ func SeedTransactionTypes(db *gorm.DB) {
 	}
 }
 
-func SeedFamilyMemberAndEmployee(db *gorm.DB) {
-	var department entity.Department
-	if db.Where("name = ?", "IT Support").First(&department).Error != nil {
-		log.Fatalf("Department IT Support not found")
-	}
-	var planType entity.PlanType
-	if db.Where("name = ?", "PLAN A").First(&planType).Error != nil {
-		log.Fatalf("PlanType 'PLAN A' not found")
-	}
-	birthDate, errParse := time.Parse("2006-01-02", "2006-08-17")
-	if errParse != nil {
-		log.Fatalf("Error parsing birth date: %v", errParse)
-	}
-	dependence := "One Child, One Wife"
-	employees := []entity.Employee{
-		{
-			Name:         "John Doe",
-			DepartmentID: department.ID,
-			Position:     department.Name,
-			Email:        "johndoe@gmail.com",
-			Phone:        "+1 2887 2982 2394",
-			BirthDate:    birthDate,
-			Gender:       "male",
-			PlanTypeID:   planType.ID,
-			Dependence:   &dependence,
-			BankNumber:   "1234-456-789",
-			ProRate:      70.00,
-		},
-		{
-			Name:         "Mary Jane",
-			DepartmentID: department.ID,
-			Position:     department.Name,
-			Email:        "maryjane@gmail.com",
-			Phone:        "+1 2878 2982 2394",
-			BirthDate:    birthDate,
-			Gender:       "female",
-			PlanTypeID:   planType.ID,
-			Dependence:   &dependence,
-			BankNumber:   "1243-456-789",
-			ProRate:      70.00,
-		},
-	}
-
-	for _, employee := range employees {
-		var existingEmpl entity.Employee
-		if err := db.Where("name = ?", employee.Name).First(&existingEmpl).Error; err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				if err := db.Create(&employee).Error; err != nil {
-					log.Printf("Error seeding employee %s: %v\n", employee.Name, err)
-				} else {
-					if db.Create(&entity.FamilyMember{
-						EmployeeID: employee.ID,
-						Name:       employee.Name,
-						RelationshipType: func(gender entity.Genders) entity.RelationshipTypes {
-							if gender == entity.GenderMale {
-								return "husband"
-							} else {
-								return "wife"
-							}
-						}(employee.Gender),
-						PlanTypeID: employee.PlanTypeID,
-						BirthDate:  employee.BirthDate,
-						Gender:     employee.Gender,
-					}).Error != nil {
-						log.Printf("Error seeding employee %s: %v\n", employee.Name, err)
-					}
-					log.Printf("Employee %s seeded successfully.\n", employee.Name)
-				}
-			} else {
-				log.Printf("Error checking employee %s: %v\n", employee.Name, err)
-			}
-		} else {
-			log.Printf("Employee %s already exists, skipping.\n", existingEmpl.Name)
-		}
-	}
-}
-
 func SeedClaimsAndPatients(db *gorm.DB) {
 
 	for i := 0; i < 100; i++ {
 
 		genders := []string{"male", "female"}
 		relationshipTypes := []string{"husband", "wife", "child", "father", "mother"}
-		benefits := make([]entity.Benefit, 10)
-		if errFindBenefits := db.Find(&benefits).Limit(10).Error; errFindBenefits != nil {
-			log.Fatalf("Error find benefits: %v\n", errFindBenefits)
+		var benefits []entity.Benefit
+		if err := db.Preload("YearlyBenefitClaim").Limit(10).Find(&benefits).Error; err != nil {
+			log.Fatalf("Error find benefits: %v\n", err)
 		}
-		planTypes := make([]entity.PlanType, 4)
-		if errFindPlanTypes := db.Find(&planTypes).Limit(4).Error; errFindPlanTypes != nil {
-			log.Fatalf("Error find planTypes: %v\n", errFindPlanTypes)
-		}
-
-		transactionTypes := make([]entity.TransactionType, 4)
-		if errFindTransactionTypes := db.Find(&transactionTypes).Limit(4).Error; errFindTransactionTypes != nil {
-			log.Fatalf("Error find transactionTypes: %v\n", errFindTransactionTypes)
+		if len(benefits) == 0 {
+			log.Fatal("No benefits found")
 		}
 
-		departments := make([]entity.Department, 4)
-		if errFindDepartment := db.Find(&departments).Limit(4).Error; errFindDepartment != nil {
-			log.Fatalf("Error find departments: %v\n", errFindDepartment)
+		var planTypes []entity.PlanType
+		if err := db.Limit(4).Find(&planTypes).Error; err != nil {
+			log.Fatalf("Error find planTypes: %v\n", err)
+		}
+		if len(planTypes) == 0 {
+			log.Fatal("No planTypes found")
+		}
+
+		var transactionTypes []entity.TransactionType
+		if err := db.Limit(4).Find(&transactionTypes).Error; err != nil {
+			log.Fatalf("Error find transactionTypes: %v\n", err)
+		}
+
+		var departments []entity.Department
+		if err := db.Limit(4).Find(&departments).Error; err != nil {
+			log.Fatalf("Error find departments: %v\n", err)
 		}
 
 		randomBenefit := helper.RandomInt(0, len(benefits)-1)
@@ -159,7 +88,7 @@ func SeedClaimsAndPatients(db *gorm.DB) {
 			PlanTypeID:   planTypes[randomPlanType].ID,
 			Dependence:   ptrString(faker.Word()),
 			BankNumber:   faker.CreditCardNumber,
-			ProRate:      helper.ProRateRemainingMonthsPercent(time.Now(), time.Now()),
+			ProRate:      helper.ProRateRemainingMonthsPercent(time.Now(), time.Now().AddDate(0, 2, 0)),
 			JoinDate:     time.Now(),
 		}
 		if err := db.Create(&employee).Error; err != nil {
@@ -191,6 +120,26 @@ func SeedClaimsAndPatients(db *gorm.DB) {
 			StartDate:        employee.JoinDate,
 			EndDate:          &employee.JoinDate,
 			Status:           entity.PatientBenefitStatusActive,
+		}
+		if benefits[randomBenefit].YearlyBenefitClaimID != nil && benefits[randomBenefit].YearlyBenefitClaim != nil {
+			var count int64
+			errFind := db.Model(entity.PatientYearlyBenefitClaim{}).
+				Where("yearly_benefit_claim_id = ?", *benefits[randomBenefit].YearlyBenefitClaimID).
+				Where("patient_id = ?", patientBenefit.PatientID).
+				Count(&count).Error
+			if errFind != nil {
+				log.Fatalf("Error finding patient yearly benefit claims: %v\n", errFind)
+			}
+			if count == 0 {
+				if errCreate := db.Model(entity.PatientYearlyBenefitClaim{}).
+					Create(&entity.PatientYearlyBenefitClaim{
+						PatientID:            patientBenefit.PatientID,
+						YearlyBenefitClaimID: *benefits[randomBenefit].YearlyBenefitClaimID,
+						YearlyClaimRemaining: benefits[randomBenefit].YearlyBenefitClaim.YearlyClaim,
+					}).Error; errCreate != nil {
+					log.Fatalf("Error creating patient yearly benefit claims: %v\n", errCreate)
+				}
+			}
 		}
 		if err := db.Create(&patientBenefit).Error; err != nil {
 			log.Fatalf("Error when seeding patient: %v\n", err)
