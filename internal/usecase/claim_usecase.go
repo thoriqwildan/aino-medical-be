@@ -74,7 +74,7 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Patient's plan type does not match benefit's plan type")
 	}
 
-	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, patient.ID, benefit.ID, *benefit.Plafond, startDateOfCurrentYear)
+	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, patient, benefit, *benefit.Plafond, startDateOfCurrentYear, patient.Employee.ProRate)
 	if err != nil {
 		uc.Log.WithError(err).Error("Failed to find or create patient benefit")
 		return nil, err
@@ -222,7 +222,7 @@ func (uc *ClaimUseCase) UpdateClaim(ctx context.Context, request *model.UpdateCl
 		return nil, err
 	}
 
-	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, claim.PatientID, benefit.ID, *benefit.Plafond, startDateOfCurrentYear)
+	patientBenefit, err := uc.PatientBenefitRepository.FindOrCreate(tx, &claim.Patient, benefit, *benefit.Plafond, startDateOfCurrentYear, claim.Employee.ProRate)
 	if err != nil {
 		uc.Log.WithError(err).Error("Failed to find or create patient benefit in UpdateClaim")
 		return nil, err
@@ -316,7 +316,7 @@ func (uc *ClaimUseCase) DeleteClaim(ctx context.Context, id uint) error {
 
 	patientBenefit := &entity.PatientBenefit{}
 	if err := uc.PatientBenefitRepository.FindById(tx, patientBenefit, claim.PatientBenefitID); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			uc.Log.WithField("patientBenefitId", claim.PatientBenefitID).Error("Patient benefit not found in DeleteClaim")
 			return fiber.NewError(fiber.StatusNotFound, "Patient benefit not found")
 		}
@@ -325,7 +325,7 @@ func (uc *ClaimUseCase) DeleteClaim(ctx context.Context, id uint) error {
 	}
 	if err := uc.PatientBenefitRepository.BalanceReduction(tx, patientBenefit, -(*claim.ApprovedAmount)); err != nil {
 		uc.Log.WithError(err).Error("Failed to restore patient benefit balance in DeleteClaim")
-		if err == gorm.ErrInvalidData {
+		if errors.Is(err, gorm.ErrInvalidData) {
 			return fiber.NewError(fiber.StatusBadRequest, "Invalid patient benefit data")
 		}
 		return err
