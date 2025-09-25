@@ -45,7 +45,7 @@ func main() {
 	app := config.NewFiber(viperConfig)
 	db := config.NewDatabase(viperConfig, logg)
 	validator := config.NewValidator(viperConfig)
-	jwtMiddleware := middleware.NewMiddlewareConfig(viperConfig, app)
+	jwtMiddleware := middleware.NewMiddlewareConfig(viperConfig, app, db)
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
