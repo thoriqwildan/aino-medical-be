@@ -5,7 +5,7 @@ services:
     env_file:
       - .env.mysql
     ports:
-      - 3308:3306
+      - 3310:3306
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
