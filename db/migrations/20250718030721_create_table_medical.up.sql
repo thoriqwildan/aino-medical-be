@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS patients (
                                         name VARCHAR(255) NOT NULL,
     birth_date DATE NOT NULL,
     gender ENUM('male', 'female', 'prefer not say') NOT NULL DEFAULT 'prefer not say',
-    employee_id INT UNIQUE,
+    employee_id INT,
     family_member_id INT UNIQUE,
     plan_type_id INT NOT NULL,
     CONSTRAINT fk_patients_employee_cascade
@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS patients (
     ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_patients_plan_type
     FOREIGN KEY (plan_type_id) REFERENCES plan_types(id)
-    ON DELETE CASCADE ON UPDATE CASCADE
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (name, employee_id)
     ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS yearly_benefit_claims (
