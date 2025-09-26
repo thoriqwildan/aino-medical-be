@@ -62,7 +62,7 @@ func (eu *EmployeeUseCase) Create(ctx context.Context, request *model.EmployeeRe
 		Dependence:   &request.Dependences,
 		BankNumber:   request.BankNumber,
 		JoinDate:     time.Time(request.JoinDate),
-		ProRate:      helper.ProRateRemainingMonthsPercent(time.Time(request.JoinDate)),
+		ProRate:      helper.ProRateRemainingMonthsPercent(time.Now(), time.Time(request.JoinDate)),
 		Patient: entity.Patient{
 			PlanTypeID:     request.PlanTypeID,
 			Name:           request.Name,
@@ -167,7 +167,7 @@ func (eu *EmployeeUseCase) Update(ctx context.Context, request *model.UpdateEmpl
 	employee.Dependence = &request.Dependences
 	employee.BankNumber = request.BankNumber
 	employee.JoinDate = time.Time(request.JoinDate)
-	employee.ProRate = helper.ProRateRemainingMonthsPercent(time.Time(request.JoinDate))
+	employee.ProRate = helper.ProRateRemainingMonthsPercent(time.Now(), time.Time(request.JoinDate))
 
 	if err := eu.Repository.Update(tx, employee); err != nil {
 		eu.Log.WithError(err).Error("Error updating employee in UpdateEmployee")
