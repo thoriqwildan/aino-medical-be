@@ -324,7 +324,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.BenefitResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -594,6 +594,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/claims/import": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth bearer": []
+                    }
+                ],
+                "description": "Imports claims with strategy update or insert",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Claims"
+                ],
+                "summary": "Import claims",
+                "parameters": [
+                    {
+                        "description": "Import Claims Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ClaimsImportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/claims/{id}": {
             "get": {
                 "security": [
@@ -719,7 +767,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.ClaimResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -960,7 +1008,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.DepartmentResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -1201,7 +1249,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.EmployeeResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -1442,7 +1490,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.FamilyMemberResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -1496,51 +1544,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.PatientBenefitListResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorWrapper"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Patient Benefits"
-                ],
-                "summary": "Create patient benefit (find or create for current year)",
-                "parameters": [
-                    {
-                        "description": "Create Patient Benefit",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.PatientBenefitParams"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/model.PatientBenefitResponseWrapper"
                         }
                     },
                     "400": {
@@ -1680,6 +1683,40 @@ const docTemplate = `{
                     }
                 }
             },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Benefits"
+                ],
+                "summary": "Create patient benefit (find or create for current year)",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.PatientBenefitResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -1713,7 +1750,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PatientBenefitResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -1795,7 +1832,37 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/patient-benefits/reset-all": {
+        "/api/v1/patient-benefits/patients/{patientId}/reset-remaining": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Benefits"
+                ],
+                "summary": "Reset all remaining plafonds by patient id (batch)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/patient-benefits/reset-remaining-all": {
             "post": {
                 "security": [
                     {
@@ -1809,6 +1876,365 @@ const docTemplate = `{
                     "Patient Benefits"
                 ],
                 "summary": "Reset all remaining plafonds (batch)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/patient-yearly-claims/patients/{patientId}/reset-remaining": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "Reset all yearly remainings by patient id (batch)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/patient-yearly-claims/patients/{patientId}/yearly-claims/{yearlyBenefitClaimId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "Get patient yearly benefit claim by patientId \u0026 yearlyBenefitClaimId",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "yearlyBenefitClaimId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PatientYearlyBenefitClaimResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "Update patient yearly benefit claim (yearly remaining)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "yearlyBenefitClaimId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PatientYearlyBenefitClaimResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "Create or find patient yearly benefit claim",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "yearlyBenefitClaimId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.PatientYearlyBenefitClaimResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "Delete patient yearly benefit claim",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "yearlyBenefitClaimId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/patient-yearly-claims/patients/{patientId}/yearly-claims/{yearlyBenefitClaimId}/reset-remaining": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "Reset yearly remaining by patient \u0026 yearly benefit claim",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Yearly Benefit Claim ID",
+                        "name": "yearlyBenefitClaimId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PatientYearlyBenefitClaimResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/patient-yearly-claims/reset-remaining-all": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "Reset all yearly remainings (batch)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2048,7 +2474,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PlanTypeResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -2289,7 +2715,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.TransactionTypeResponseWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
                         }
                     },
                     "400": {
@@ -2536,7 +2962,59 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.YearlyBenefitClaimWrapper"
+                            "$ref": "#/definitions/model.BaseResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/patient-yearly-claims": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Patient Yearly Benefit Claims"
+                ],
+                "summary": "List patient yearly benefit claims (paged)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PatientYearlyBenefitClaimListResponseWrapper"
                         }
                     },
                     "400": {
@@ -2604,9 +3082,6 @@ const docTemplate = `{
                 },
                 "yearly_benefit_claim": {
                     "$ref": "#/definitions/model.YearlyBenefitClaimResponse"
-                },
-                "yearly_max": {
-                    "type": "number"
                 }
             }
         },
@@ -2628,6 +3103,102 @@ const docTemplate = `{
                 },
                 "meta": {
                     "$ref": "#/definitions/model.PaginationPage"
+                }
+            }
+        },
+        "model.ClaimImportRequest": {
+            "type": "object",
+            "required": [
+                "approve_amount",
+                "bank_number",
+                "benefit_code",
+                "city",
+                "claim_amount",
+                "claim_status",
+                "department",
+                "diagnosis",
+                "doc_link",
+                "employee_name",
+                "medical_facility",
+                "patient_name",
+                "plafond",
+                "plan_type",
+                "sla",
+                "submission_date",
+                "transaction_date",
+                "transaction_status",
+                "transaction_type"
+            ],
+            "properties": {
+                "approve_amount": {
+                    "type": "number"
+                },
+                "bank_number": {
+                    "type": "string"
+                },
+                "benefit_code": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "claim_amount": {
+                    "type": "number"
+                },
+                "claim_status": {
+                    "type": "string",
+                    "enum": [
+                        "On Plafond",
+                        "Over Plafond"
+                    ]
+                },
+                "department": {
+                    "type": "string"
+                },
+                "diagnosis": {
+                    "type": "string"
+                },
+                "doc_link": {
+                    "type": "string"
+                },
+                "employee_name": {
+                    "type": "string"
+                },
+                "medical_facility": {
+                    "type": "string"
+                },
+                "patient_name": {
+                    "type": "string"
+                },
+                "plafond": {
+                    "type": "number"
+                },
+                "plan_type": {
+                    "type": "string"
+                },
+                "sla": {
+                    "type": "string",
+                    "enum": [
+                        "meet",
+                        "overdue"
+                    ]
+                },
+                "submission_date": {
+                    "type": "string"
+                },
+                "transaction_date": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "type": "string",
+                    "enum": [
+                        "Successful",
+                        "Pending",
+                        "Failed"
+                    ]
+                },
+                "transaction_type": {
+                    "type": "string"
                 }
             }
         },
@@ -2754,6 +3325,21 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ClaimsImportRequest": {
+            "type": "object",
+            "required": [
+                "claims"
+            ],
+            "properties": {
+                "claims": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/model.ClaimImportRequest"
+                    }
+                }
+            }
+        },
         "model.CreateBenefitRequest": {
             "type": "object",
             "required": [
@@ -2795,9 +3381,6 @@ const docTemplate = `{
                 },
                 "yearly_claim_id": {
                     "type": "integer"
-                },
-                "yearly_max": {
-                    "type": "number"
                 }
             }
         },
@@ -3149,21 +3732,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.PatientBenefitParams": {
-            "type": "object",
-            "required": [
-                "benefitID",
-                "patientID"
-            ],
-            "properties": {
-                "benefitID": {
-                    "type": "integer"
-                },
-                "patientID": {
-                    "type": "integer"
-                }
-            }
-        },
         "model.PatientBenefitResponse": {
             "type": "object",
             "properties": {
@@ -3253,6 +3821,12 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "patient_yearly_benefit_claim_response": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PatientYearlyBenefitClaimResponse"
+                    }
+                },
                 "plan_type": {
                     "$ref": "#/definitions/model.PlanTypeResponse"
                 }
@@ -3276,6 +3850,59 @@ const docTemplate = `{
                 },
                 "meta": {
                     "$ref": "#/definitions/model.PaginationPage"
+                }
+            }
+        },
+        "model.PatientYearlyBenefitClaimListResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PatientYearlyBenefitClaimResponse"
+                    }
+                },
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationPage"
+                }
+            }
+        },
+        "model.PatientYearlyBenefitClaimResponse": {
+            "type": "object",
+            "properties": {
+                "benefit": {
+                    "$ref": "#/definitions/model.YearlyBenefitClaimResponse"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "patient": {
+                    "$ref": "#/definitions/model.PatientResponse"
+                },
+                "patient_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "yearly_benefit_claim_id": {
+                    "type": "integer"
+                },
+                "yearly_remaining": {
+                    "type": "number"
                 }
             }
         },
@@ -3648,10 +4275,6 @@ const docTemplate = `{
                     "type": "number",
                     "minimum": 0
                 },
-                "remaining_plafond": {
-                    "type": "number",
-                    "minimum": 0
-                },
                 "start_date": {
                     "type": "string"
                 },
@@ -3662,10 +4285,6 @@ const docTemplate = `{
                         "exhausted",
                         "expired"
                     ]
-                },
-                "yearly_max": {
-                    "type": "number",
-                    "minimum": 0
                 }
             }
         },
@@ -3780,6 +4399,12 @@ const docTemplate = `{
         "model.YearlyBenefitClaimResponse": {
             "type": "object",
             "properties": {
+                "benefits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.BenefitResponse"
+                    }
+                },
                 "code": {
                     "type": "string"
                 },
@@ -3832,9 +4457,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000",
+	Host:             "aino-medical.tirtahakimpambudhi.web.id",
 	BasePath:         "/",
-	Schemes:          []string{},
+	Schemes:          []string{"https"},
 	Title:            "Aino Medical API",
 	Description:      "This is a sample swagger for Fiber",
 	InfoInstanceName: "swagger",
