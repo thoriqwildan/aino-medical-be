@@ -289,7 +289,6 @@ func (uc *ClaimUseCase) Create(ctx context.Context, request *model.ClaimRequest)
 		return nil, err
 	}
 
-
 	if err := tx.Commit().Error; err != nil {
 		uc.Log.WithError(err).Error("Failed to commit transaction in CreateClaim")
 		return nil, err
