@@ -33,8 +33,6 @@ definitions:
         type: number
       yearly_benefit_claim:
         $ref: '#/definitions/model.YearlyBenefitClaimResponse'
-      yearly_max:
-        type: number
     type: object
   model.BenefitResponseWrapper:
     properties:
@@ -49,6 +47,77 @@ definitions:
         type: string
       meta:
         $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.ClaimImportRequest:
+    properties:
+      approve_amount:
+        type: number
+      bank_number:
+        type: string
+      benefit_code:
+        type: string
+      city:
+        type: string
+      claim_amount:
+        type: number
+      claim_status:
+        enum:
+        - On Plafond
+        - Over Plafond
+        type: string
+      department:
+        type: string
+      diagnosis:
+        type: string
+      doc_link:
+        type: string
+      employee_name:
+        type: string
+      medical_facility:
+        type: string
+      patient_name:
+        type: string
+      plafond:
+        type: number
+      plan_type:
+        type: string
+      sla:
+        enum:
+        - meet
+        - overdue
+        type: string
+      submission_date:
+        type: string
+      transaction_date:
+        type: string
+      transaction_status:
+        enum:
+        - Successful
+        - Pending
+        - Failed
+        type: string
+      transaction_type:
+        type: string
+    required:
+    - approve_amount
+    - bank_number
+    - benefit_code
+    - city
+    - claim_amount
+    - claim_status
+    - department
+    - diagnosis
+    - doc_link
+    - employee_name
+    - medical_facility
+    - patient_name
+    - plafond
+    - plan_type
+    - sla
+    - submission_date
+    - transaction_date
+    - transaction_status
+    - transaction_type
     type: object
   model.ClaimRequest:
     properties:
@@ -132,6 +201,16 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
+  model.ClaimsImportRequest:
+    properties:
+      claims:
+        items:
+          $ref: '#/definitions/model.ClaimImportRequest'
+        minItems: 1
+        type: array
+    required:
+    - claims
+    type: object
   model.CreateBenefitRequest:
     properties:
       code:
@@ -159,8 +238,6 @@ definitions:
         type: integer
       yearly_claim_id:
         type: integer
-      yearly_max:
-        type: number
     required:
     - code
     - limitation_type
@@ -408,16 +485,6 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
-  model.PatientBenefitParams:
-    properties:
-      benefitID:
-        type: integer
-      patientID:
-        type: integer
-    required:
-    - benefitID
-    - patientID
-    type: object
   model.PatientBenefitResponse:
     properties:
       benefit:
@@ -477,6 +544,10 @@ definitions:
         type: integer
       name:
         type: string
+      patient_yearly_benefit_claim_response:
+        items:
+          $ref: '#/definitions/model.PatientYearlyBenefitClaimResponse'
+        type: array
       plan_type:
         $ref: '#/definitions/model.PlanTypeResponse'
     type: object
@@ -493,6 +564,41 @@ definitions:
         type: string
       meta:
         $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.PatientYearlyBenefitClaimListResponseWrapper:
+    properties:
+      access_token:
+        type: string
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.PatientYearlyBenefitClaimResponse'
+        type: array
+      errors: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.PaginationPage'
+    type: object
+  model.PatientYearlyBenefitClaimResponse:
+    properties:
+      benefit:
+        $ref: '#/definitions/model.YearlyBenefitClaimResponse'
+      created_at:
+        type: string
+      id:
+        type: integer
+      patient:
+        $ref: '#/definitions/model.PatientResponse'
+      patient_id:
+        type: integer
+      updated_at:
+        type: string
+      yearly_benefit_claim_id:
+        type: integer
+      yearly_remaining:
+        type: number
     type: object
   model.PlanTypeRequest:
     properties:
@@ -754,9 +860,6 @@ definitions:
       initial_plafond:
         minimum: 0
         type: number
-      remaining_plafond:
-        minimum: 0
-        type: number
       start_date:
         type: string
       status:
@@ -765,9 +868,6 @@ definitions:
         - exhausted
         - expired
         type: string
-      yearly_max:
-        minimum: 0
-        type: number
     required:
     - end_date
     - start_date
@@ -849,6 +949,10 @@ definitions:
     type: object
   model.YearlyBenefitClaimResponse:
     properties:
+      benefits:
+        items:
+          $ref: '#/definitions/model.BenefitResponse'
+        type: array
       code:
         type: string
       created_at:
@@ -874,7 +978,7 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationPage'
     type: object
-host: localhost:3000
+host: aino-medical.tirtahakimpambudhi.web.id
 info:
   contact: {}
   description: This is a sample swagger for Fiber
@@ -1014,7 +1118,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.BenefitResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1197,7 +1301,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ClaimResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1344,6 +1448,36 @@ paths:
       summary: Find patients
       tags:
       - Claims
+  /api/v1/claims/import:
+    patch:
+      consumes:
+      - application/json
+      description: Imports claims with strategy update or insert
+      parameters:
+      - description: Import Claims Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ClaimsImportRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth bearer: []
+      summary: Import claims
+      tags:
+      - Claims
   /api/v1/departments:
     get:
       consumes:
@@ -1421,7 +1555,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.DepartmentResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1574,7 +1708,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.EmployeeResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1727,7 +1861,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.FamilyMemberResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1837,34 +1971,6 @@ paths:
       summary: List patient benefits (paged)
       tags:
       - Patient Benefits
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Create Patient Benefit
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/model.PatientBenefitParams'
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorWrapper'
-      security:
-      - BearerAuth: []
-      summary: Create patient benefit (find or create for current year)
-      tags:
-      - Patient Benefits
   /api/v1/patient-benefits/patients/{patientId}/benefits/{benefitId}:
     delete:
       consumes:
@@ -1884,7 +1990,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1936,6 +2042,27 @@ paths:
       security:
       - BearerAuth: []
       summary: Get patient benefit by patientId & benefitId
+      tags:
+      - Patient Benefits
+    post:
+      consumes:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.PatientBenefitResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Create patient benefit (find or create for current year)
       tags:
       - Patient Benefits
     put:
@@ -2017,7 +2144,25 @@ paths:
       summary: Reset remaining plafond for a specific patient benefit
       tags:
       - Patient Benefits
-  /api/v1/patient-benefits/reset-all:
+  /api/v1/patient-benefits/patients/{patientId}/reset-remaining:
+    post:
+      consumes:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponseWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Reset all remaining plafonds by patient id (batch)
+      tags:
+      - Patient Benefits
+  /api/v1/patient-benefits/reset-remaining-all:
     post:
       consumes:
       - application/json
@@ -2035,6 +2180,234 @@ paths:
       summary: Reset all remaining plafonds (batch)
       tags:
       - Patient Benefits
+  /api/v1/patient-yearly-claims/patients/{patientId}/reset-remaining:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Reset all yearly remainings by patient id (batch)
+      tags:
+      - Patient Yearly Benefit Claims
+  /api/v1/patient-yearly-claims/patients/{patientId}/yearly-claims/{yearlyBenefitClaimId}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: yearlyBenefitClaimId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Delete patient yearly benefit claim
+      tags:
+      - Patient Yearly Benefit Claims
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: yearlyBenefitClaimId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientYearlyBenefitClaimResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Get patient yearly benefit claim by patientId & yearlyBenefitClaimId
+      tags:
+      - Patient Yearly Benefit Claims
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: yearlyBenefitClaimId
+        required: true
+        type: integer
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.PatientYearlyBenefitClaimResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Create or find patient yearly benefit claim
+      tags:
+      - Patient Yearly Benefit Claims
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: yearlyBenefitClaimId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientYearlyBenefitClaimResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Update patient yearly benefit claim (yearly remaining)
+      tags:
+      - Patient Yearly Benefit Claims
+  /api/v1/patient-yearly-claims/patients/{patientId}/yearly-claims/{yearlyBenefitClaimId}/reset-remaining:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patientId
+        required: true
+        type: integer
+      - description: Yearly Benefit Claim ID
+        in: path
+        name: yearlyBenefitClaimId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientYearlyBenefitClaimResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Reset yearly remaining by patient & yearly benefit claim
+      tags:
+      - Patient Yearly Benefit Claims
+  /api/v1/patient-yearly-claims/reset-remaining-all:
+    post:
+      consumes:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponseWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: Reset all yearly remainings (batch)
+      tags:
+      - Patient Yearly Benefit Claims
   /api/v1/plan-types:
     get:
       consumes:
@@ -2112,7 +2485,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PlanTypeResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -2265,7 +2638,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.TransactionTypeResponseWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -2422,7 +2795,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.YearlyBenefitClaimWrapper'
+            $ref: '#/definitions/model.BaseResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -2498,6 +2871,41 @@ paths:
       summary: Update a yearly benefit claim
       tags:
       - Yearly Benefit Claim
+  /patient-yearly-claims:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PatientYearlyBenefitClaimListResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      summary: List patient yearly benefit claims (paged)
+      tags:
+      - Patient Yearly Benefit Claims
+schemes:
+- https
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.
