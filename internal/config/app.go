@@ -34,6 +34,8 @@ func Bootstrap(config *BootstrapConfig) {
 	patientBenefitRepository := repository.NewPatientBenefitRepository(config.Log)
 	yearlyBenefitClaimRepository := repository.NewYearlyBenefitClaimRepository(config.Log)
 
+	patientYearlyBenefitClaimRepository := repository.NewPatientYearlyBenefitClaimRepository(config.Log)
+
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, config.Validate)
 	transactionTypeUseCase := usecase.NewTransactionTypeUseCase(config.DB, config.Log, transactionTypeRepository, config.Validate)
 	planTypeUseCase := usecase.NewPlanTypeUseCase(config.DB, config.Log, planTypeRepository, config.Validate)
@@ -41,9 +43,23 @@ func Bootstrap(config *BootstrapConfig) {
 	departmentUseCase := usecase.NewDepartmentUseCase(departmentRepository, config.DB, config.Log, config.Validate)
 	employeeUseCase := usecase.NewEmployeeUseCase(config.DB, config.Log, employeeRepository, config.Validate)
 	familyMemberUseCase := usecase.NewFamilyMemberUseCase(familyMemberRepository, config.DB, config.Validate, config.Log)
-	claimUseCase := usecase.NewClaimUseCase(claimRepository, config.DB, config.Validate, config.Log, patientBenefitRepository, benefitRepository)
+	claimUseCase := usecase.NewClaimUseCase(
+		claimRepository,
+		config.DB,
+		config.Validate,
+		config.Log,
+		patientBenefitRepository,
+		transactionTypeRepository,
+		employeeRepository,
+		patientYearlyBenefitClaimRepository,
+		benefitRepository,
+		departmentRepository,
+		planTypeRepository,
+		yearlyBenefitClaimRepository,
+	)
 	yearlyBenefitClaimUsecase := usecase.NewYearlyBenefitClaimUsecase(yearlyBenefitClaimRepository, config.Validate, config.DB, config.Log)
 	patientBenefitUsecase := usecase.NewPatientBenefitUsecase(patientBenefitRepository, config.Log, config.DB, config.Validate)
+	patientYearlyBenefitClaimUsecase := usecase.NewPatientYearlyBenefitClaimUsecase(patientYearlyBenefitClaimRepository, config.Log, config.DB, config.Validate)
 
 	userController := http.NewUserController(userUseCase, config.Log, config.Config)
 	transactionTypeController := http.NewTransactionTypeController(transactionTypeUseCase, config.Log, config.Config)
@@ -55,20 +71,22 @@ func Bootstrap(config *BootstrapConfig) {
 	claimController := http.NewClaimController(claimUseCase, config.Log)
 	yearlyBenefitClaimController := http.NewYearlyBenefitClaimController(yearlyBenefitClaimUsecase, config.Log)
 	patientBenefitController := http.NewPatientBenefitController(patientBenefitUsecase, config.Log)
+	patientYearlyBenefitClaimController := http.NewPatientYearlyBenefitClaimController(patientYearlyBenefitClaimUsecase, config.Log)
 
 	routeConfig := route.RouteConfig{
-		App:                          config.App,
-		JWT:                          config.JWT,
-		UserController:               userController,
-		TransactionTypeController:    transactionTypeController,
-		PlanTypeController:           planTypeController,
-		BenefitController:            benefitController,
-		DepartmentController:         departmentController,
-		EmployeeController:           employeeController,
-		FamilyMemberController:       familyMemberController,
-		ClaimController:              claimController,
-		YearlyBenefitClaimController: yearlyBenefitClaimController,
-		PatientBenefitController:     patientBenefitController,
+		App:                                 config.App,
+		JWT:                                 config.JWT,
+		UserController:                      userController,
+		TransactionTypeController:           transactionTypeController,
+		PlanTypeController:                  planTypeController,
+		BenefitController:                   benefitController,
+		DepartmentController:                departmentController,
+		EmployeeController:                  employeeController,
+		FamilyMemberController:              familyMemberController,
+		ClaimController:                     claimController,
+		YearlyBenefitClaimController:        yearlyBenefitClaimController,
+		PatientBenefitController:            patientBenefitController,
+		PatientYearlyBenefitClaimController: patientYearlyBenefitClaimController,
 	}
 
 	routeConfig.Setup()
