@@ -165,7 +165,7 @@ func (c *BenefitController) Update(ctx *fiber.Ctx) error {
 
 // @Router /api/v1/benefits/{id} [delete]
 // @Param id path string true "Benefit ID"
-// @Success 200 {object} model.BenefitResponseWrapper
+// @Success 200 {object} model.BaseResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Benefit Types
