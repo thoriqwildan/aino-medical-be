@@ -52,6 +52,34 @@ func (c *ClaimController) CreateClaim(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Router /api/v1/claims/import [patch]
+// @Param  request body model.ClaimsImportRequest true "Import Claims Request"
+// @Success 200 {object} model.BaseResponseWrapper
+// @Failure 400 {object} model.ErrorWrapper "Bad Request"
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Claims
+// @Security    BearerAuth bearer
+// @Summary Import claims
+// @Description Imports claims with strategy update or insert
+// @Accept json
+func (c *ClaimController) ImportClaims(ctx *fiber.Ctx) error {
+	request := new(model.ClaimsImportRequest)
+	if err := ctx.BodyParser(request); err != nil {
+		c.Log.WithError(err).Error("Failed to parse request body")
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	}
+
+	err := c.UseCase.ImportClaims(ctx.Context(), request)
+	if err != nil {
+		c.Log.WithError(err).Error("Failed to import claims")
+		return err
+	}
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
+		Message: "Import claim successfully",
+	})
+}
+
 // @Router /api/v1/claims/get-patients [get]
 // @Success 200 {object} model.PatientResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
@@ -215,7 +243,7 @@ func (c *ClaimController) GetById(ctx *fiber.Ctx) error {
 
 // @Router /api/v1/claims/{id} [delete]
 // @Param id path string true "Claim ID"
-// @Success 200 {object} model.ClaimResponseWrapper
+// @Success 200 {object} model.BaseResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Claims
