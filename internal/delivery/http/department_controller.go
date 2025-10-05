@@ -164,7 +164,7 @@ func (dc *DepartmentController) Update(ctx *fiber.Ctx) error {
 
 // @Router /api/v1/departments/{id} [delete]
 // @Param id path string true "Department ID"
-// @Success 200 {object} model.DepartmentResponseWrapper
+// @Success 200 {object} model.BaseResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Departments
