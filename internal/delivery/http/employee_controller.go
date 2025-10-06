@@ -152,7 +152,7 @@ func (c *EmployeeController) Update(ctx *fiber.Ctx) error {
 
 	response, err := c.UseCase.Update(ctx.Context(), request)
 	if err != nil {
-		c.Log.WithError(err).Error("Error updating limitation type")
+		c.Log.WithError(err).Error("Error updating employee type")
 		return err
 	}
 
@@ -165,7 +165,7 @@ func (c *EmployeeController) Update(ctx *fiber.Ctx) error {
 
 // @Router /api/v1/employees/{id} [delete]
 // @Param id path string true "Employee ID"
-// @Success 200 {object} model.EmployeeResponseWrapper
+// @Success 200 {object} model.BaseResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Employees
@@ -186,7 +186,7 @@ func (c *EmployeeController) Delete(ctx *fiber.Ctx) error {
 	}
 
 	if err := c.UseCase.Delete(ctx.Context(), uint(idUint)); err != nil {
-		c.Log.WithError(err).Error("Error deleting limitation type")
+		c.Log.WithError(err).Error("Error deleting employee type")
 		return err
 	}
 
