@@ -33,8 +33,7 @@ func (c *PatientBenefitController) parseIDs(patientIDStr, benefitIDStr string) (
 	return uint(pid), uint(bid), nil
 }
 
-// @Router /api/v1/patient-benefits [post]
-// @Param  request body model.PatientBenefitParams true "Create Patient Benefit"
+// @Router /api/v1/patient-benefits/patients/{patientId}/benefits/{benefitId} [post]
 // @Success 201 {object} model.PatientBenefitResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
@@ -43,9 +42,20 @@ func (c *PatientBenefitController) parseIDs(patientIDStr, benefitIDStr string) (
 // @Summary Create patient benefit (find or create for current year)
 // @Accept json
 func (c *PatientBenefitController) Create(ctx *fiber.Ctx) error {
-	req := new(model.PatientBenefitParams)
-	if err := ctx.BodyParser(req); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "invalid request body")
+	patientIDStr := ctx.Params("patientId")
+	benefitIDStr := ctx.Params("benefitId")
+	if patientIDStr == "" || benefitIDStr == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "patientId and benefitId are required")
+	}
+
+	pid, bid, err := c.parseIDs(patientIDStr, benefitIDStr)
+	if err != nil {
+		return err
+	}
+
+	req := &model.PatientBenefitParams{
+		PatientID: pid,
+		BenefitID: bid,
 	}
 
 	res, err := c.Usecase.Create(ctx.Context(), req)
@@ -114,9 +124,10 @@ func (c *PatientBenefitController) GetByPatientBenefitID(ctx *fiber.Ctx) error {
 // @Description Returns paginated patient benefits for the current filters.
 // @Accept json
 func (c *PatientBenefitController) GetAll(ctx *fiber.Ctx) error {
-	query := &model.PagingQuery{
-		Page:  ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
+	query := &model.SearchPagingQuery{
+		Page:  ctx.QueryInt("page", 0),
+		Limit: ctx.QueryInt("limit", 0),
+		SearchValue: ctx.Query("search_value", ""),
 	}
 
 	items, total, err := c.Usecase.GetAll(ctx.Context(), query)
@@ -225,7 +236,7 @@ func (c *PatientBenefitController) ResetRemainingPlafondByPatientBenefitID(ctx *
 	})
 }
 
-// @Router /api/v1/patient-benefits/reset-all [post]
+// @Router /api/v1/patient-benefits/reset-remaining-all [post]
 // @Success 200 {object} model.BaseResponseWrapper
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Patient Benefits
@@ -244,10 +255,37 @@ func (c *PatientBenefitController) ResetAllRemainingPlafond(ctx *fiber.Ctx) erro
 	})
 }
 
+// @Router /api/v1/patient-benefits/patients/{patientId}/reset-remaining [post]
+// @Success 200 {object} model.BaseResponseWrapper
+// @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
+// @Tags Patient Benefits
+// @Security BearerAuth
+// @Summary Reset all remaining plafonds by patient id (batch)
+// @Accept json
+func (c *PatientBenefitController) ResetRemainingPlafondByPatientID(ctx *fiber.Ctx) error {
+	patientIDStr := ctx.Params("patientId")
+	if patientIDStr == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "patientId are required")
+	}
+	patientID, err := strconv.Atoi(patientIDStr)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "invalid value patientId must be number")
+	}
+	if err := c.Usecase.ResetRemainingPlafondByPatientID(ctx.Context(), uint(patientID)); err != nil {
+		c.Log.WithError(err).Error("ResetRemainingPlafondByPatientID failed")
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
+		Code:    fiber.StatusOK,
+		Message: "All remaining plafonds by patient id reset successfully",
+	})
+}
+
 // @Router /api/v1/patient-benefits/patients/{patientId}/benefits/{benefitId} [delete]
 // @Param  patientId path int true "Patient ID"
 // @Param  benefitId path int true "Benefit ID"
-// @Success 200 {object} model.PatientBenefitResponseWrapper
+// @Success 200 {object} model.BaseResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 404 {object} model.ErrorWrapper "Not Found"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
@@ -271,15 +309,13 @@ func (c *PatientBenefitController) Delete(ctx *fiber.Ctx) error {
 		BenefitID: bid,
 	}
 
-	res, err := c.Usecase.Delete(ctx.Context(), params)
-	if err != nil {
+	if err := c.Usecase.Delete(ctx.Context(), params); err != nil {
 		c.Log.WithError(err).Error("Delete patient benefit failed")
 		return err
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[model.PatientBenefitResponse]{
+	return ctx.Status(fiber.StatusOK).JSON(model.WebResponse[any]{
 		Code:    fiber.StatusOK,
 		Message: "Patient benefit deleted successfully",
-		Data:    res,
 	})
 }
