@@ -7,18 +7,19 @@ import (
 )
 
 type RouteConfig struct {
-	App                          *fiber.App
-	JWT                          *middleware.MiddlewareConfig
-	UserController               *http.UserController
-	TransactionTypeController    *http.TransactionTypeController
-	PlanTypeController           *http.PlanTypeController
-	YearlyBenefitClaimController *http.YearlyBenefitClaimController
-	PatientBenefitController     *http.PatientBenefitController
-	BenefitController            *http.BenefitController
-	DepartmentController         *http.DepartmentController
-	EmployeeController           *http.EmployeeController
-	FamilyMemberController       *http.FamilyMemberController
-	ClaimController              *http.ClaimController
+	App                                 *fiber.App
+	JWT                                 *middleware.MiddlewareConfig
+	UserController                      *http.UserController
+	TransactionTypeController           *http.TransactionTypeController
+	PlanTypeController                  *http.PlanTypeController
+	YearlyBenefitClaimController        *http.YearlyBenefitClaimController
+	PatientBenefitController            *http.PatientBenefitController
+	PatientYearlyBenefitClaimController *http.PatientYearlyBenefitClaimController
+	BenefitController                   *http.BenefitController
+	DepartmentController                *http.DepartmentController
+	EmployeeController                  *http.EmployeeController
+	FamilyMemberController              *http.FamilyMemberController
+	ClaimController                     *http.ClaimController
 }
 
 func (rc *RouteConfig) Setup() {
@@ -33,6 +34,7 @@ func (rc *RouteConfig) Setup() {
 	rc.ClaimRoutes()
 	rc.YearlyBenefitClaimRoutes()
 	rc.PatientBenefitRoutes()
+	rc.PatientYearlyBenefitClaimRoutes()
 }
 
 func (rc *RouteConfig) GeneralRoutes() {
@@ -76,13 +78,32 @@ func (rc *RouteConfig) YearlyBenefitClaimRoutes() {
 
 func (rc *RouteConfig) PatientBenefitRoutes() {
 	patientBenefit := rc.App.Group("/api/v1/patient-benefits", rc.JWT.JWTProtected())
-	patientBenefit.Post("/patients/{patientId}/benefits/{benefitId}/reset-remaining", rc.PatientBenefitController.ResetRemainingPlafondByPatientBenefitID)
-	patientBenefit.Post("/patients/{patientId}/benefits/{benefitId}/reset-all", rc.PatientBenefitController.ResetAllRemainingPlafond)
-	patientBenefit.Post("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.Create)
-	patientBenefit.Get("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.GetByPatientBenefitID)
-	patientBenefit.Put("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.Update)
-	patientBenefit.Delete("/patients/{patientId}/benefits/{benefitId}", rc.PatientBenefitController.Delete)
+
 	patientBenefit.Get("/", rc.PatientBenefitController.GetAll)
+
+	patientBenefit.Post("/patients/:patientId/benefits/:benefitId", rc.PatientBenefitController.Create)
+	patientBenefit.Get("/patients/:patientId/benefits/:benefitId", rc.PatientBenefitController.GetByPatientBenefitID)
+	patientBenefit.Put("/patients/:patientId/benefits/:benefitId", rc.PatientBenefitController.Update)
+	patientBenefit.Delete("/patients/:patientId/benefits/:benefitId", rc.PatientBenefitController.Delete)
+	patientBenefit.Post("/patients/:patientId/benefits/:benefitId/reset-remaining", rc.PatientBenefitController.ResetRemainingPlafondByPatientBenefitID)
+	patientBenefit.Post("/patients/:patientId/reset-remaining", rc.PatientBenefitController.ResetRemainingPlafondByPatientID)
+
+	patientBenefit.Post("/reset-remaining-all", rc.PatientBenefitController.ResetAllRemainingPlafond)
+}
+
+func (rc *RouteConfig) PatientYearlyBenefitClaimRoutes() {
+	patientYearlyBenefitClaims := rc.App.Group("/api/v1/patient-yearly-claims", rc.JWT.JWTProtected())
+
+	patientYearlyBenefitClaims.Get("/", rc.PatientYearlyBenefitClaimController.GetAll)
+
+	patientYearlyBenefitClaims.Post("/patients/:patientId/yearly-claims/:yearlyBenefitClaimId", rc.PatientYearlyBenefitClaimController.Create)
+	patientYearlyBenefitClaims.Get("/patients/:patientId/yearly-claims/:yearlyBenefitClaimId", rc.PatientYearlyBenefitClaimController.GetByPatientYearlyBenefitClaimID)
+	patientYearlyBenefitClaims.Put("/patients/:patientId/yearly-claims/:yearlyBenefitClaimId", rc.PatientYearlyBenefitClaimController.Update)
+	patientYearlyBenefitClaims.Delete("/patients/:patientId/yearly-claims/:yearlyBenefitClaimId", rc.PatientYearlyBenefitClaimController.Delete)
+	patientYearlyBenefitClaims.Post("/patients/:patientId/yearly-claims/:yearlyBenefitClaimId/reset-remaining", rc.PatientYearlyBenefitClaimController.ResetRemainingPlafondByPatientYearlyBenefitClaimID)
+	patientYearlyBenefitClaims.Post("/patients/:patientId/reset-remaining", rc.PatientYearlyBenefitClaimController.ResetRemainingPlafondByPatientID)
+
+	patientYearlyBenefitClaims.Post("/reset-remaining-all", rc.PatientYearlyBenefitClaimController.ResetAllRemainingPlafond)
 }
 
 func (rc *RouteConfig) BenefitRoutes() {
@@ -124,6 +145,7 @@ func (rc *RouteConfig) FamilyMemberRoutes() {
 func (rc *RouteConfig) ClaimRoutes() {
 	claim := rc.App.Group("/api/v1/claims", rc.JWT.JWTProtected())
 	claim.Post("/", rc.ClaimController.CreateClaim)
+	claim.Patch("/import", rc.ClaimController.ImportClaims)
 	claim.Get("/get-patients", rc.ClaimController.GetAllPatient)
 	claim.Get("/get-benefits/:patientId", rc.ClaimController.GetAllBenefits)
 	claim.Put("/:id", rc.ClaimController.Update)
