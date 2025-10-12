@@ -175,7 +175,7 @@ func (c *TransactionTypeController) Update(ctx *fiber.Ctx) error {
 
 // @Router /api/v1/transaction-types/{id} [delete]
 // @Param id path string true "Transaction Type ID"
-// @Success 200 {object} model.TransactionTypeResponseWrapper
+// @Success 200 {object} model.BaseResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Transaction Types
