@@ -98,8 +98,8 @@ func (c *YearlyBenefitClaimController) GetById(ctx *fiber.Ctx) error {
 // @Accept json
 func (c *YearlyBenefitClaimController) Get(ctx *fiber.Ctx) error {
 	query := &model.YearlyBenefitClaimFilter{
-		Page:  ctx.QueryInt("page", 1),
-		Limit: ctx.QueryInt("limit", 10),
+		Page:  ctx.QueryInt("page", 0),
+		Limit: ctx.QueryInt("limit", 0),
 		Code:  ctx.Query("code"),
 	}
 
@@ -166,7 +166,7 @@ func (c *YearlyBenefitClaimController) Update(ctx *fiber.Ctx) error {
 
 // @Router /api/v1/yearly-claims/{id} [delete]
 // @Param id path string true "Yearly Benefit Claim ID"
-// @Success 200 {object} model.YearlyBenefitClaimWrapper
+// @Success 200 {object} model.BaseResponseWrapper
 // @Failure 400 {object} model.ErrorWrapper "Bad Request"
 // @Failure 500 {object} model.ErrorWrapper "Internal Server Error"
 // @Tags Yearly Benefit Claim
