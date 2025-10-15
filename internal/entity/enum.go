@@ -3,8 +3,9 @@ package entity
 type Genders string
 
 const (
-	GenderMale   Genders = "male"
-	GenderFemale Genders = "female"
+	GenderMale         Genders = "male"
+	GenderFemale       Genders = "female"
+	GenderPreferNotSay Genders = "prefer not say"
 )
 
 type RelationshipTypes string
