@@ -9,31 +9,36 @@ import (
 	"gorm.io/gorm"
 )
 
-func ProRateRemainingMonthsFraction(t time.Time) float64 {
-	rem := 13 - int(t.Month()) // exclude current month
-	return float64(rem) / 12.0
+func CalculateProratePlafond(plafond float64, prorate float64) float64 {
+	return plafond * (prorate / 100)
 }
 
-func CalculateProrateYearlyMax(yearlyMax float64, prorate float64) float64 {
-	prorateYearlyMax := yearlyMax * (prorate / 100)
-	finalYearlyMax := yearlyMax - prorateYearlyMax
-	return finalYearlyMax
+func monthsRemainingFromMonth(m time.Month, includeCurrent bool) int {
+	if includeCurrent {
+		return 13 - int(m) // include current month: Sep (9) -> 4 (Sep..Dec)
+	}
+	return 12 - int(m) // exclude current month: Sep (9) -> 3 (Oct..Dec)
 }
 
 func ProRateRemainingMonthsPercent(now, join time.Time) float64 {
 	if join.IsZero() {
 		return 0
 	}
+
 	if now.Location() != join.Location() {
 		now = now.In(join.Location())
 	}
-	if now.Before(join) {
-		return 0
-	}
+
 	if !now.Before(join.AddDate(1, 0, 0)) {
 		return 100.0
 	}
-	return ProRateRemainingMonthsFraction(now)
+
+	rem := monthsRemainingFromMonth(join.Month(), true)
+	if rem < 0 {
+		rem = 0
+	}
+	percent := (float64(rem) / 12.0) * 100.0
+	return math.Round(percent*100) / 100
 }
 
 func ResetBenefitProRateDaily(db *gorm.DB) error {
@@ -70,6 +75,7 @@ func ResetPatientBenefitRemainingPlafondDaily(db *gorm.DB) error {
 	if err := db.Model(&entity.Employee{}).
 		Preload("Patient").
 		Preload("Patient.Benefits").
+		Preload("Patient.Benefits.YearlyBenefitClaim").
 		FindInBatches(&batch, 100, func(txBatch *gorm.DB, _ int) error {
 			for _, emp := range batch {
 				for _, benefit := range emp.Patient.Benefits {
@@ -77,6 +83,23 @@ func ResetPatientBenefitRemainingPlafondDaily(db *gorm.DB) error {
 						continue
 					}
 					if isAnniversary(emp.JoinDate, now) {
+						if benefit.YearlyBenefitClaimID != nil {
+							var patientYearlyBenefitClaim entity.PatientYearlyBenefitClaim
+							err := tx.Model(&entity.PatientYearlyBenefitClaim{}).
+								Where("patient_id = ?", emp.Patient.ID).
+								Where("yearly_benefit_claim_id = ?", benefit.YearlyBenefitClaimID).
+								Take(&patientYearlyBenefitClaim).Error
+							if err != nil {
+								if errors.Is(err, gorm.ErrRecordNotFound) {
+									continue
+								}
+								return err
+							}
+							if benefit.YearlyBenefitClaim != nil {
+								patientYearlyBenefitClaim.YearlyClaimRemaining = benefit.YearlyBenefitClaim.YearlyClaim
+							}
+							tx.Save(&patientYearlyBenefitClaim)
+						}
 						var patientBenefit entity.PatientBenefit
 						err := tx.Model(entity.PatientBenefit{}).
 							Where("patient_id = ?", emp.Patient.ID).
@@ -95,17 +118,6 @@ func ResetPatientBenefitRemainingPlafondDaily(db *gorm.DB) error {
 						}
 						db.Save(&patientBenefit)
 					}
-					for _, benefit := range emp.Patient.Benefits {
-						if benefit.YearlyMax != nil {
-							if err := tx.Model(&entity.PatientBenefit{}).
-								Where("benefit_id = ?", benefit.ID).
-								Where("patient_id = ?", emp.Patient.ID).
-								Update("yearly_max", CalculateProrateYearlyMax(*benefit.YearlyMax, emp.ProRate)).Error; err != nil {
-								return err
-							}
-
-						}
-					}
 				}
 			}
 			return nil
@@ -116,5 +128,3 @@ func ResetPatientBenefitRemainingPlafondDaily(db *gorm.DB) error {
 
 	return tx.Commit().Error
 }
-
-func round2(x float64) float64 { return math.Round(x*100) / 100 }
