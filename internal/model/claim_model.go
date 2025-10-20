@@ -13,34 +13,61 @@ type ClaimRequest struct {
 	ClaimAmount float64 `json:"claim_amount" validate:"required"`
 }
 
+type ClaimImportRequest struct {
+	PatientName       string             `json:"patient_name" validate:"required"`
+	Department        string             `json:"department" validate:"required"`
+	BankNumber        string             `json:"bank_number" validate:"required"`
+	PlantType         string             `json:"plan_type" validate:"required"`
+	BenefitCode       string             `json:"benefit_code" validate:"required"`
+	EmployeeName      string             `json:"employee_name" validate:"required"`
+	ClaimAmount       float64            `json:"claim_amount" validate:"required"`
+	Plafond           float64            `json:"plafond" validate:"required"`
+	ApproveAmount     *float64           `json:"approve_amount" validate:"required"`
+	TransactionType   *string            `json:"transaction_type" validate:"required"`
+	TransactionDate   *helper.CustomDate `json:"transaction_date" validate:"required"`
+	SubmissionDate    *helper.CustomDate `json:"submission_date" validate:"required"`
+	SLA               string             `json:"sla" validate:"required,oneof='meet' 'overdue'"`
+	ClaimStatus       string             `json:"claim_status" validate:"required,oneof='On Plafond' 'Over Plafond'"`
+	MedicalFacility   string             `json:"medical_facility" validate:"required"`
+	City              string             `json:"city" validate:"required"`
+	Diagnosis         string             `json:"diagnosis" validate:"required"`
+	DocLink           string             `json:"doc_link" validate:"required"`
+	TransactionStatus string             `json:"transaction_status" validate:"required,oneof='Successful' 'Pending' 'Failed'"`
+}
+
+type ClaimsImportRequest struct {
+	Claims []*ClaimImportRequest `json:"claims" validate:"required,min=1,dive,required"`
+}
+
 type PatientResponse struct {
-	ID        uint              `json:"id"`
-	Name      string            `json:"name"`
-	BirthDate helper.CustomDate `json:"birth_date"`
-	Gender    string            `json:"gender"`
-	PlanType  PlanTypeResponse  `json:"plan_type"`
-	Employee  *EmployeeResponse `json:"employee,omitempty"`
+	ID                                uint                                 `json:"id"`
+	Name                              string                               `json:"name"`
+	BirthDate                         helper.CustomDate                    `json:"birth_date"`
+	Gender                            string                               `json:"gender"`
+	PlanType                          PlanTypeResponse                     `json:"plan_type"`
+	Employee                          *EmployeeResponse                    `json:"employee,omitempty"`
+	PatientYearlyBenefitClaimResponse []*PatientYearlyBenefitClaimResponse `json:"patient_yearly_benefit_claim_response,omitempty"`
 }
 
 type ClaimResponse struct {
-	ID                uint                    `json:"id"`
-	ClaimAmount       float64                 `json:"claim_amount"`
-	TransactionDate   helper.CustomDate       `json:"transaction_date"`
-	SubmissionDate    helper.CustomDate       `json:"submission_date"`
-	SLAStatus         string                  `json:"sla_status"`
-	ApprovedAmount    float64                 `json:"approved_amount"`
-	ClaimStatus       string                  `json:"claim_status"`
-	MedicalFacility   string                  `json:"medical_facility"`
-	City              string                  `json:"city"`
-	Diagnosis         string                  `json:"diagnosis"`
-	DocLink           string                  `json:"doc_link"`
-	TransactionStatus string                  `json:"transaction_status"`
-	CreatedAt         time.Time               `json:"created_at"`
-	UpdatedAt         *time.Time              `json:"updated_at"`
-	TransactionType   TransactionTypeResponse `json:"transaction_type"`
-	Patient           PatientResponse         `json:"patient"`
-	Benefit           BenefitResponse         `json:"benefit"`
-	Employee          *EmployeeResponse       `json:"employee,omitempty"`
+	ID                uint                     `json:"id"`
+	ClaimAmount       float64                  `json:"claim_amount"`
+	TransactionDate   helper.CustomDate        `json:"transaction_date"`
+	SubmissionDate    helper.CustomDate        `json:"submission_date"`
+	SLAStatus         string                   `json:"sla_status"`
+	ApprovedAmount    *float64                 `json:"approved_amount"`
+	ClaimStatus       string                   `json:"claim_status"`
+	MedicalFacility   string                   `json:"medical_facility"`
+	City              string                   `json:"city"`
+	Diagnosis         string                   `json:"diagnosis"`
+	DocLink           string                   `json:"doc_link"`
+	TransactionStatus string                   `json:"transaction_status"`
+	CreatedAt         time.Time                `json:"created_at"`
+	UpdatedAt         *time.Time               `json:"updated_at"`
+	TransactionType   *TransactionTypeResponse `json:"transaction_type,omitempty"`
+	Patient           *PatientResponse         `json:"patient,omitempty"`
+	Benefit           *BenefitResponse         `json:"benefit,omitempty"`
+	Employee          *EmployeeResponse        `json:"employee,omitempty"`
 }
 
 type UpdateClaimRequest struct {
