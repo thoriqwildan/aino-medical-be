@@ -15,10 +15,13 @@ func EmployeeToResponse(employee *entity.Employee) *model.EmployeeResponse {
 		Position:    employee.Position,
 		BirthDate:   helper.CustomDate(employee.BirthDate),
 		Gender:      string(employee.Gender),
-		Dependences: *employee.Dependence,
 		BankNumber:  employee.BankNumber,
 		JoinDate:    helper.CustomDate(employee.JoinDate),
 		ProRate:     employee.ProRate,
+	}
+
+	if employee.Dependence != nil {
+		response.Dependences = *employee.Dependence
 	}
 
 	if len(employee.FamilyMembers) > 0 {
@@ -28,11 +31,11 @@ func EmployeeToResponse(employee *entity.Employee) *model.EmployeeResponse {
 	}
 
 	if employee.PlanType.ID != 0 || employee.PlanType.Name != "" {
-		response.PlanType = *PlanTypeToResponse(&employee.PlanType)
+		response.PlanType = PlanTypeToResponse(&employee.PlanType)
 	}
 
 	if employee.Department.ID != 0 || employee.Department.Name != "" {
-		response.Department = *DepartmentToResponse(&employee.Department)
+		response.Department = DepartmentToResponse(&employee.Department)
 	}
 
 	if len(employee.FamilyMembers) > 0 {
