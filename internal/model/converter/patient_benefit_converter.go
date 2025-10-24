@@ -12,7 +12,6 @@ func PatientBenefitToResponse(patientBenefit *entity.PatientBenefit) *model.Pati
 		BenefitID:        patientBenefit.BenefitID,
 		RemainingPlafond: patientBenefit.RemainingPlafond,
 		InitialPlafond:   patientBenefit.InitialPlafond,
-		YearlyMax:        patientBenefit.YearlyMax,
 		StartDate:        patientBenefit.StartDate,
 		EndDate:          patientBenefit.EndDate,
 		Status:           string(patientBenefit.Status),
