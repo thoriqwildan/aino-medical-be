@@ -30,8 +30,8 @@ type EmployeeResponse struct {
 	BankNumber    string                 `json:"bank_number"`
 	JoinDate      helper.CustomDate      `json:"join_date"`
 	ProRate       float64                `json:"pro_rate"`
-	PlanType      PlanTypeResponse       `json:"plan_type"`
-	Department    DepartmentResponse     `json:"department"`
+	PlanType      *PlanTypeResponse      `json:"plan_type,omitempty"`
+	Department    *DepartmentResponse    `json:"department,omitempty"`
 	FamilyMembers []FamilyMemberResponse `json:"family_members,omitempty"`
 }
 
