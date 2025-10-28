@@ -7,12 +7,10 @@ import (
 )
 
 type UpdatePatientBenefitRequest struct {
-	StartDate        *helper.CustomDate `json:"start_date" validate:"required"`
-	EndDate          *helper.CustomDate `json:"end_date" validate:"required"`
-	RemainingPlafond *float64           `json:"remaining_plafond" validate:"omitempty,gte=0"`
-	InitialPlafond   *float64           `json:"initial_plafond" validate:"omitempty,gte=0"`
-	YearlyMax        *float64           `json:"yearly_max" validate:"omitempty,gte=0"`
-	Status           string             `json:"status" validate:"required,oneof='active' 'exhausted' 'expired'"`
+	StartDate      *helper.CustomDate `json:"start_date" validate:"required"`
+	EndDate        *helper.CustomDate `json:"end_date" validate:"required"`
+	InitialPlafond *float64           `json:"initial_plafond" validate:"omitempty,gte=0"`
+	Status         string             `json:"status" validate:"required,oneof='active' 'exhausted' 'expired'"`
 }
 
 type PatientBenefitParams struct {
