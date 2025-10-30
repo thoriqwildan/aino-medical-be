@@ -32,6 +32,14 @@ type PatientBenefitListResponseWrapper struct {
 	WebResponse[[]PatientBenefitResponse]
 }
 
+type PatientYearlyBenefitClaimResponseWrapper struct {
+	WebResponse[PatientYearlyBenefitClaimResponse]
+}
+
+type PatientYearlyBenefitClaimListResponseWrapper struct {
+	WebResponse[[]PatientYearlyBenefitClaimResponse]
+}
+
 type BaseResponseWrapper struct {
 	WebResponse[any]
 }
