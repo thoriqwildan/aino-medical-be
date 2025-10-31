@@ -13,11 +13,12 @@ type UpdateYearlyBenefitClaimRequest struct {
 }
 
 type YearlyBenefitClaimResponse struct {
-	ID          uint      `json:"id"`
-	Code        string    `json:"code"`
-	YearlyClaim float64   `json:"yearly_claim"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID          uint               `json:"id"`
+	Code        string             `json:"code"`
+	YearlyClaim float64            `json:"yearly_claim"`
+	Benefits    []*BenefitResponse `json:"benefits,omitempty"`
+	CreatedAt   time.Time          `json:"created_at"`
+	UpdatedAt   time.Time          `json:"updated_at"`
 }
 
 type YearlyBenefitClaimFilter struct {
