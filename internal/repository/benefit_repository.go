@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/sirupsen/logrus"
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"github.com/thoriqwildan/aino-medical-be/internal/model"
@@ -16,6 +18,27 @@ func NewBenefitRepository(log *logrus.Logger) *BenefitRepository {
 	return &BenefitRepository{
 		Log: log,
 	}
+}
+
+func (br *BenefitRepository) FindOrCreate(db *gorm.DB, benefit *entity.Benefit) (*entity.Benefit,error) {
+	var result entity.Benefit
+	errTake := db.Model(entity.Benefit{}).Where("code = ?", benefit.Code).Take(&result).Error
+	if errTake != nil && !errors.Is(errTake, gorm.ErrRecordNotFound) {
+		br.Log.Error("Error when find benefit in method find or create", errTake.Error())
+		return nil, errTake
+	}
+
+	if errTake == nil {
+		return &result, nil 
+	}
+
+	errCreate := db.Create(benefit).Error
+	if errCreate != nil {
+		br.Log.Error("Error when create benefit in method find or create")
+		return nil, errCreate
+	}
+
+	return benefit, nil
 }
 
 func (br *BenefitRepository) GetByName(db *gorm.DB, name string) error {
