@@ -7,6 +7,7 @@ import (
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"github.com/thoriqwildan/aino-medical-be/internal/model"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type ClaimRepository struct {
@@ -23,6 +24,7 @@ func NewClaimRepository(log *logrus.Logger) *ClaimRepository {
 func (r *ClaimRepository) GetBenefitByCode(db *gorm.DB, benefit *entity.Benefit, code string) error {
 	return db.Where("code = ?", code).
 		Preload("PlanType").
+		Preload("YearlyBenefitClaim").
 		First(benefit).Error
 }
 
@@ -60,6 +62,7 @@ func (r *ClaimRepository) GetPatients(db *gorm.DB, request *model.PagingQuery) (
 		baseQuery = baseQuery.Offset((request.Page - 1) * request.Limit)
 	}
 	err := baseQuery.
+		Preload("PatientYearlyBenefitClaims").
 		Preload("PlanType").
 		Preload("Employee").
 		Preload("FamilyMember").
@@ -90,6 +93,7 @@ func (r *ClaimRepository) GetBenefits(db *gorm.DB, request *model.PagingQuery, p
 	}
 	err := baseQuery.
 		Where("plan_type_id = ?", planTypeID).
+		Preload("YearlyBenefitClaim").
 		Preload("PlanType").
 		Find(&benefits).Error
 	if err != nil {
@@ -99,7 +103,7 @@ func (r *ClaimRepository) GetBenefits(db *gorm.DB, request *model.PagingQuery, p
 	return benefits, total, nil
 }
 
-func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.PagingQuery, planTypeID uint, patientID uint) ([]entity.Benefit, map[uint]float64, int64, error) {
+func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.PagingQuery, planTypeID uint, patientID uint) ([]entity.Benefit, map[uint]*float64, int64, error) {
 	var benefits []entity.Benefit
 	var total int64
 
@@ -137,12 +141,12 @@ func (r *ClaimRepository) GetBenefitsWithPlafond(db *gorm.DB, request *model.Pag
 	db.Where("patient_id = ? AND benefit_id IN ?", patientID, benefitIDs).Find(&patientBenefits)
 
 	// 3. Buat map untuk memudahkan pencarian remaining_plafond
-	remainingPlafondMap := make(map[uint]float64)
+	remainingPlafondMap := make(map[uint]*float64)
 	for _, pb := range patientBenefits {
 		if pb.RemainingPlafond != nil {
-			remainingPlafondMap[pb.BenefitID] = *pb.RemainingPlafond
+			remainingPlafondMap[pb.BenefitID] = pb.RemainingPlafond
 		} else {
-			remainingPlafondMap[pb.BenefitID] = 0
+			remainingPlafondMap[pb.BenefitID] = nil
 		}
 	}
 
@@ -165,6 +169,7 @@ func (r *ClaimRepository) FindAllWithQuery(db *gorm.DB, query *model.ClaimFilter
 	// Terapkan Preload yang Anda butuhkan
 	queryDB = queryDB.
 		Preload("Patient").
+		Preload("Patient.PatientYearlyBenefitClaims").
 		Preload("Patient.PlanType").
 		Preload("Employee").
 		Preload("Employee.PlanType").
@@ -257,4 +262,32 @@ func (r *ClaimRepository) applyFilters(db *gorm.DB, query *model.ClaimFilterQuer
 	}
 
 	return db
+}
+
+func (r *ClaimRepository) UpsertBatches(db *gorm.DB, claims []*entity.Claim) error {
+	if len(claims) == 0 {
+		return nil
+	}
+
+	const batchSize = 500
+
+	return db.Transaction(func(tx *gorm.DB) error {
+		for start := 0; start < len(claims); start += batchSize {
+			end := start + batchSize
+			if end > len(claims) {
+				end = len(claims)
+			}
+			chunk := claims[start:end]
+
+			if err := tx.
+				Clauses(clause.OnConflict{
+					Columns:   []clause.Column{{Name: "id"}},
+					UpdateAll: true,
+				}).
+				Create(&chunk).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 }
