@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/sirupsen/logrus"
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"github.com/thoriqwildan/aino-medical-be/internal/model"
@@ -24,6 +26,27 @@ func (er *EmployeeRepository) GetByEmail(db *gorm.DB, email string) error {
 
 func (er *EmployeeRepository) GetDepartmentByID(db *gorm.DB, id uint) error {
 	return db.Where("id = ?", id).First(&entity.Department{}).Error
+}
+
+func (er *EmployeeRepository) FindOrCreate(db *gorm.DB, employee *entity.Employee) (*entity.Employee, error) {
+	var result entity.Employee
+	errTake := db.Model(entity.Employee{}).Where("name = ?", employee.Name).Take(&result).Error
+	if errTake != nil && !errors.Is(errTake, gorm.ErrRecordNotFound) {
+		er.Log.Error("Error when find employee in method find or create ", errTake.Error())
+		return nil, errTake
+	}
+
+	if errTake == nil {
+		return &result, nil 
+	}
+
+	errCreate := db.Create(employee).Error
+	if errCreate != nil {
+		er.Log.Error("Error when create employee in method find or create ", errCreate.Error())
+		return nil, errCreate
+	}
+
+	return employee, nil
 }
 
 func (er *EmployeeRepository) FindById(db *gorm.DB, id uint, employee *entity.Employee) error {
