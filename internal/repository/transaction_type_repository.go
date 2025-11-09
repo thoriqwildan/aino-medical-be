@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/sirupsen/logrus"
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
 	"github.com/thoriqwildan/aino-medical-be/internal/model"
@@ -16,6 +18,27 @@ func NewTransactionTypeRepository(log *logrus.Logger) *TransactionTypeRepository
 	return &TransactionTypeRepository{
 		Log: log,
 	}
+}
+
+func (ttr *TransactionTypeRepository) FindOrCreate(db *gorm.DB, transactionType *entity.TransactionType) (*entity.TransactionType, error) {
+	var result entity.TransactionType
+	errTake := db.Model(entity.TransactionType{}).Where("name = ?", transactionType.Name).Take(&result).Error
+	if errTake != nil && !errors.Is(errTake, gorm.ErrRecordNotFound) {
+		ttr.Log.Error("Error when find transaction type in method find or create", errTake.Error())
+		return nil, errTake
+	}
+
+	if errTake == nil {
+		return &result, nil 
+	}
+
+	errCreate := db.Create(transactionType).Error
+	if errCreate != nil {
+		ttr.Log.Error("Error when create transaction type in method find or create")
+		return nil, errCreate
+	}
+
+	return transactionType, nil
 }
 
 func (ttr *TransactionTypeRepository) FindByName(db *gorm.DB, name string) error {
