@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -49,7 +50,6 @@ func (eu *EmployeeUseCase) Create(ctx context.Context, request *model.EmployeeRe
 		eu.Log.WithField("email", request.Email).Error("Employee with this email already exists")
 		return nil, fiber.NewError(fiber.StatusConflict, "Employee with this email already exists")
 	}
-
 	employee := &entity.Employee{
 		Name:         request.Name,
 		DepartmentID: request.DepartmentID,
@@ -96,7 +96,7 @@ func (eu *EmployeeUseCase) GetById(ctx context.Context, id uint) (*model.Employe
 
 	employee := &entity.Employee{}
 	if err := eu.Repository.FindById(tx, id, employee); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			eu.Log.WithField("id", id).Error("Employee not found in GetById")
 			return nil, fiber.NewError(fiber.StatusNotFound, "Employee not found")
 		}
@@ -140,7 +140,7 @@ func (eu *EmployeeUseCase) Update(ctx context.Context, request *model.UpdateEmpl
 
 	employee := &entity.Employee{}
 	if err := eu.Repository.FindById(tx, request.ID, employee); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			eu.Log.WithField("id", request.ID).Error("Employee not found in UpdateEmployee")
 			return nil, fiber.NewError(fiber.StatusNotFound, "Employee not found")
 		}
@@ -193,7 +193,7 @@ func (eu *EmployeeUseCase) Delete(ctx context.Context, id uint) error {
 
 	employee := &entity.Employee{}
 	if err := eu.Repository.FindById(tx, id, employee); err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			eu.Log.WithField("id", id).Error("Employee not found in Delete")
 			return fiber.NewError(fiber.StatusNotFound, "Employee not found")
 		}
