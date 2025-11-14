@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/thoriqwildan/aino-medical-be/internal/entity"
+	"github.com/thoriqwildan/aino-medical-be/internal/helper"
 	"github.com/thoriqwildan/aino-medical-be/internal/model"
 	"github.com/thoriqwildan/aino-medical-be/internal/model/converter"
 	"github.com/thoriqwildan/aino-medical-be/internal/repository"
@@ -107,7 +108,7 @@ func (p *PatientBenefitUsecase) GetByPatientBenefitID(ctx context.Context, reque
 	return converter.PatientBenefitToResponse(pb), nil
 }
 
-func (p PatientBenefitUsecase) GetAll(ctx context.Context, request *model.PagingQuery) ([]*model.PatientBenefitResponse, int64, error) {
+func (p PatientBenefitUsecase) GetAll(ctx context.Context, request *model.SearchPagingQuery) ([]*model.PatientBenefitResponse, int64, error) {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
@@ -158,14 +159,8 @@ func (p *PatientBenefitUsecase) Update(ctx context.Context, params *model.Patien
 		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	if request.YearlyMax != nil {
-		pb.YearlyMax = request.YearlyMax
-	}
 	if request.InitialPlafond != nil {
 		pb.InitialPlafond = request.InitialPlafond
-	}
-	if request.RemainingPlafond != nil {
-		pb.RemainingPlafond = request.RemainingPlafond
 	}
 	if request.EndDate != nil {
 		pb.EndDate = (*time.Time)(request.EndDate)
@@ -175,6 +170,11 @@ func (p *PatientBenefitUsecase) Update(ctx context.Context, params *model.Patien
 		pb.StartDate = (time.Time)(t)
 	}
 
+	if pb.InitialPlafond != nil {
+		results := helper.CalculateProratePlafond(*pb.InitialPlafond, patient.Employee.ProRate)
+		pb.RemainingPlafond = &results
+	}
+
 	switch request.Status {
 	case "active":
 		pb.Status = entity.PatientBenefitStatusActive
@@ -182,7 +182,6 @@ func (p *PatientBenefitUsecase) Update(ctx context.Context, params *model.Patien
 		pb.Status = entity.PatientBenefitStatusExhausted
 	case "expired":
 		pb.Status = entity.PatientBenefitStatusExpired
-		// default: no change
 	}
 
 	if err := tx.Save(pb).Error; err != nil {
@@ -228,14 +227,12 @@ func (p *PatientBenefitUsecase) ResetRemainingPlafondByPatientBenefitID(ctx cont
 	return converter.PatientBenefitToResponse(pb), nil
 }
 
-func (p *PatientBenefitUsecase) ResetAllRemainingPlafond(ctx context.Context) error {
+func (p *PatientBenefitUsecase) ResetRemainingPlafondByPatientID(ctx context.Context, patientId uint) error {
 	return p.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var list []*entity.PatientBenefit
 		return tx.Model(&entity.PatientBenefit{}).
-			FindInBatches(&[]*entity.PatientBenefit{}, 100, func(tx *gorm.DB, batch int) error {
-				var list []*entity.PatientBenefit
-				if err := tx.Find(&list).Error; err != nil {
-					return err
-				}
+			Where("patient_id = ?", patientId).
+			FindInBatches(&list, 100, func(tx *gorm.DB, batch int) error {
 				for _, pb := range list {
 					pb.RemainingPlafond = pb.InitialPlafond
 					if err := tx.Save(pb).Error; err != nil {
@@ -247,38 +244,54 @@ func (p *PatientBenefitUsecase) ResetAllRemainingPlafond(ctx context.Context) er
 	})
 }
 
-func (p *PatientBenefitUsecase) Delete(ctx context.Context, params *model.PatientBenefitParams) (*model.PatientBenefitResponse, error) {
+func (p *PatientBenefitUsecase) ResetAllRemainingPlafond(ctx context.Context) error {
+	return p.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var list []*entity.PatientBenefit
+		return tx.Model(&entity.PatientBenefit{}).
+			FindInBatches(&list, 100, func(tx *gorm.DB, batch int) error {
+				for _, pb := range list {
+					pb.RemainingPlafond = pb.InitialPlafond
+					if err := tx.Save(pb).Error; err != nil {
+						return err
+					}
+				}
+				return nil
+			}).Error
+	})
+}
+
+func (p *PatientBenefitUsecase) Delete(ctx context.Context, params *model.PatientBenefitParams) error {
 	tx := p.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
 	if err := p.Validate.Struct(params); err != nil {
 		p.Log.WithField("usecase", "PatientBenefitUsecase").Errorf("validate params delete patient benefit: %v", err)
-		return nil, err
+		return err
 	}
 
 	patient, benefit, err := p.checkPatientBenefit(tx, params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	pb, err := p.Repository.GetByPatientBenefitID(tx, patient.ID, benefit.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("error cause patient benefit not found: %v", err))
+			return fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("error cause patient benefit not found: %v", err))
 		}
-		return nil, fiber.NewError(fiber.StatusInternalServerError, err.Error())
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 	if pb == nil || pb.ID == 0 {
-		return nil, fiber.NewError(fiber.StatusNotFound, "patient benefit not found")
+		return fiber.NewError(fiber.StatusNotFound, "patient benefit not found")
 	}
 
-	if err := tx.Delete(pb).Error; err != nil { // penting: JANGAN &pb (itu pointer ke pointer)
-		return nil, fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("error when delete patient benefit: %s", err.Error()))
+	if err := tx.Delete(pb).Error; err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, fmt.Sprintf("error when delete patient benefit: %s", err.Error()))
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		p.Log.WithError(err).Error("commit delete patient benefit")
-		return nil, err
+		return err
 	}
-	return converter.PatientBenefitToResponse(pb), nil
+	return nil
 }
