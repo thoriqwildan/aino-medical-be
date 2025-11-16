@@ -22,8 +22,9 @@ type YearlyBenefitClaimUsecase struct {
 	Log        *logrus.Logger
 }
 
-func NewYearlyBenefitClaimUsecase(repository *repository.YearlyBenefitClaimRepository, validate *validator.Validate, DB *gorm.DB, log *logrus.Logger) *YearlyBenefitClaimUsecase {
-	return &YearlyBenefitClaimUsecase{Repository: repository, Validate: validate, DB: DB, Log: log}
+func NewYearlyBenefitClaimUsecase(repo *repository.YearlyBenefitClaimRepository, validate *validator.Validate, DB *gorm.DB, log *logrus.Logger) *YearlyBenefitClaimUsecase {
+
+	return &YearlyBenefitClaimUsecase{Repository: repo, Validate: validate, DB: DB, Log: log}
 }
 
 func (yu YearlyBenefitClaimUsecase) Create(ctx context.Context, request *model.YearlyBenefitClaimRequest) (*model.YearlyBenefitClaimResponse, error) {
